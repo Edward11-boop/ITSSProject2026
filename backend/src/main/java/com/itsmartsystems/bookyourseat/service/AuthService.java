@@ -27,6 +27,14 @@ public class AuthService {
     public void register(RegisterRequest request){
             Optional<User> user0 = userRepository.findByEmail(request.getEmail());
             if(user0.isPresent()) throw new IllegalArgumentException("Email already registered !");
+            if(request.getPassword() == null || request.getPassword().length() == 0) throw new IllegalArgumentException("Password must not be empty !");
+            int counter = 0 ;
+            String specialChars = "@#$%&*";
+            for(char c : request.getPassword().toCharArray())
+            {
+                if(specialChars.indexOf(c) != -1) counter++;
+            }
+            if(counter < 2) throw new IllegalArgumentException("Password must contain at least 2 special characters .");
             String crypted = passwordEncoder.encode(request.getPassword());
             User user = new User(request.getName() , request.getEmail() , crypted , request.getRole());
             userRepository.save(user);

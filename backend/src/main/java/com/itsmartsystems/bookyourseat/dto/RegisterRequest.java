@@ -14,6 +14,7 @@ public class RegisterRequest {
     // To be implemented -> edge cases , email without @itsmartsystems.eu and empty password or both empty
 
     public RegisterRequest(String email, String name , String password, User.Role role){
+
         this.email = email;
         this.name = name;
         this.password = password;
