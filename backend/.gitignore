@@ -33,5 +33,5 @@ build/
 .vscode/
 
 ### Sensitive config ###
-src/main/resources/application.propertie
+src/main/resources/application.properties
 
