@@ -1,5 +1,6 @@
 package com.itsmartsystems.bookyourseat.controller;
 
+import com.itsmartsystems.bookyourseat.dto.ChangePasswordRequest;
 import com.itsmartsystems.bookyourseat.dto.LoginRequest;
 import com.itsmartsystems.bookyourseat.dto.RegisterRequest;
 import com.itsmartsystems.bookyourseat.service.AuthService;
@@ -26,9 +27,23 @@ public class AuthController {
     @PostMapping("/login")
     public String login(@RequestBody LoginRequest request)
     {
-        authService.login(request);
-        return "Logged successfully ! ";
+        boolean mustChangePassword = authService.login(request);
+        if(mustChangePassword) {
+            return "Password must be changed !";
+        }
+        else {
+            return "Logged successfully !";
+        }
     }
+
+    @PutMapping("/change-password")
+    public String changePassword(@RequestBody ChangePasswordRequest request)
+    {
+        authService.changePassword(request);
+        return "Password has been successfully changed !";
+    }
+
+
 
 
 }
