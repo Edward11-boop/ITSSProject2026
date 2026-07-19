@@ -14,6 +14,4 @@ public class BookYourSeatApplication {
         SpringApplication.run(BookYourSeatApplication.class, args);
     }
 
-
-
 }

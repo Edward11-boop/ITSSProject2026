@@ -5,6 +5,13 @@ import com.itsmartsystems.bookyourseat.dto.LoginRequest;
 import com.itsmartsystems.bookyourseat.dto.RegisterRequest;
 import com.itsmartsystems.bookyourseat.model.User;
 import com.itsmartsystems.bookyourseat.repository.UserRepository;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -15,11 +22,25 @@ public class AuthService {
 
     private final UserRepository userRepository ;
     private final PasswordEncoder passwordEncoder;
-
-    public AuthService(UserRepository userRepository , PasswordEncoder passwordEncoder)
-    {
+    private final AuthenticationManager authenticationManager;
+    public AuthService(UserRepository userRepository , PasswordEncoder passwordEncoder , AuthenticationManager authenticationManager) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.authenticationManager = authenticationManager;
+    }
+
+
+
+    // Method for checking the password
+    private boolean checkPassword(String password)
+    {
+        if(password == null || password.length() == 0) throw new IllegalArgumentException("Password must not be empty !");
+        String specialChars = "!@#$%&*";
+        int counter = 0;
+        for(char c : password.toCharArray())
+            if(specialChars.indexOf(c) != -1 ) counter++;
+        if ( counter < 2) throw new IllegalArgumentException("Password MUST contain at least 2 special characters !");
+        return true;
     }
 
 
@@ -29,13 +50,8 @@ public class AuthService {
             Optional<User> user0 = userRepository.findByEmail(request.getEmail());
             if(user0.isPresent()) throw new IllegalArgumentException("Email already registered !");
             if(request.getPassword() == null || request.getPassword().length() == 0) throw new IllegalArgumentException("Password must not be empty !");
-            int counter = 0 ;
-            String specialChars = "@#$%&*!";
-            for(char c : request.getPassword().toCharArray())
-            {
-                if(specialChars.indexOf(c) != -1) counter++;
-            }
-            if(counter < 2) throw new IllegalArgumentException("Password must contain at least 2 special characters .");
+
+            checkPassword(request.getPassword());
             String crypted = passwordEncoder.encode(request.getPassword());
             User user = new User(request.getName() , request.getEmail() , crypted , request.getRole() , true );
             userRepository.save(user);
@@ -44,9 +60,10 @@ public class AuthService {
     // --- LOGIN ---
 
     public boolean login(LoginRequest request){
+
         Optional<User> u = userRepository.findByEmail(request.getEmail());
-        if(u.isEmpty()) throw new IllegalArgumentException("Email isnt registered ! ");
-        if(!passwordEncoder.matches(request.getPassword() , u.get().getPassword())) throw new IllegalArgumentException("Passwords doesnt match !");
+        Authentication auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail() , request.getPassword()));
+        SecurityContextHolder.getContext().setAuthentication(auth);
         return u.get().isFirstLog();
     }
 
@@ -60,14 +77,7 @@ public class AuthService {
         if(!passwordEncoder.matches(request.getOldPassword() , u.get().getPassword())) throw new IllegalArgumentException("Passwords doesnt match !");
         // -- Updating the user's password and firstLog obviously
 
-        int counter = 0 ;
-        String specialChars = "@#$%&*!";
-        for(char c : request.getNewPassword().toCharArray())
-        {
-            if(specialChars.indexOf(c) != -1) counter++;
-        }
-        if(counter < 2) throw new IllegalArgumentException("Password must contain at least 2 special characters .");
-
+        checkPassword(request.getNewPassword());
         String crypted = passwordEncoder.encode(request.getNewPassword()); // crypting the new one
         User existingUser = u.get();    // getting the user
         existingUser.setPassword(crypted); // updating now
