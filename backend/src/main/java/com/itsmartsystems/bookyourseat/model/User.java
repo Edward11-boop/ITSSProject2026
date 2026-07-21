@@ -3,6 +3,9 @@ package com.itsmartsystems.bookyourseat.model;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 @Document(collection = "users")
 public class User {
 
@@ -21,6 +24,8 @@ public class User {
     private String password ;
     private Role role ;
     private boolean firstLog ;
+    private String token ;
+    private LocalDateTime tokenExpiresAt ;
 
     public User(String name, String email , String password, Role role , boolean firstLog )
     {
@@ -57,7 +62,12 @@ public class User {
     }
 
 
+
+
+
     public boolean isFirstLog() {return this.firstLog;}
     public void setFirstLog(boolean value) {this.firstLog = value; }
     public void setPassword(String password) {this.password = password;}
+    public void setToken(String token) {this.token = token;}
+    public void setTokenExpiresAt(LocalDateTime tokenExpiresAt) {this.tokenExpiresAt = tokenExpiresAt;}
 }
