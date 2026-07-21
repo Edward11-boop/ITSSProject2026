@@ -1,7 +1,7 @@
 package com.itsmartsystems.bookyourseat.service;
 
 import com.itsmartsystems.bookyourseat.dto.ChangePasswordRequest;
-import com.itsmartsystems.bookyourseat.dto.ForgotPasswordRequest;
+import com.itsmartsystems.bookyourseat.dto.EmailRequest;
 import com.itsmartsystems.bookyourseat.dto.LoginRequest;
 import com.itsmartsystems.bookyourseat.dto.RegisterRequest;
 import com.itsmartsystems.bookyourseat.model.User;
@@ -13,7 +13,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.html.Option;
+import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class AuthService {
@@ -84,9 +87,17 @@ public class AuthService {
 
     }
 
-    public void forgotPassword(ForgotPasswordRequest forgotPassword){
-
-
+    public void emailRequestforChanging(EmailRequest request){
+       // -- VERIFY THE EMAIL FIRST
+        if(request.getEmail().endsWith("@itsmartsystems.eu") == false) throw new IllegalArgumentException("Wrong email !");
+        Optional<User> u = userRepository.findByEmail(request.getEmail());
+        if(u.isEmpty()) throw new IllegalArgumentException("User field is empty !");
+        String token = String.valueOf(UUID.randomUUID());
+        LocalDateTime expiresAt = LocalDateTime.now().plusMinutes(15);
+        User user = u.get();
+        user.setToken(token);
+        user.setTokenExpiresAt(expiresAt);
+        userRepository.save(user);
     }
 
 

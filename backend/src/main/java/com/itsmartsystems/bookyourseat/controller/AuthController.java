@@ -1,7 +1,7 @@
 package com.itsmartsystems.bookyourseat.controller;
 
 import com.itsmartsystems.bookyourseat.dto.ChangePasswordRequest;
-import com.itsmartsystems.bookyourseat.dto.ForgotPasswordRequest;
+import com.itsmartsystems.bookyourseat.dto.EmailRequest;
 import com.itsmartsystems.bookyourseat.dto.LoginRequest;
 import com.itsmartsystems.bookyourseat.dto.RegisterRequest;
 import com.itsmartsystems.bookyourseat.service.AuthService;
@@ -55,14 +55,9 @@ public class AuthController {
         return "Password has been successfully changed !";
     }
     @PostMapping("/forgot-password")
-    public String forgotPassword(@Valid @RequestBody ForgotPasswordRequest forgotPasswordRequest){
-        authService.forgotPassword();
+    public String forgotPassword(@Valid @RequestBody EmailRequest emailRequest){
+        authService.emailRequestforChanging(emailRequest);
         return "If the email exists you'll receive an email to change the password !";
     }
-
-
-
-
-
 
 }
