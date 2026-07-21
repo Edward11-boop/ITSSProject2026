@@ -1,9 +1,6 @@
 package com.itsmartsystems.bookyourseat.controller;
 
-import com.itsmartsystems.bookyourseat.dto.ChangePasswordRequest;
-import com.itsmartsystems.bookyourseat.dto.EmailRequest;
-import com.itsmartsystems.bookyourseat.dto.LoginRequest;
-import com.itsmartsystems.bookyourseat.dto.RegisterRequest;
+import com.itsmartsystems.bookyourseat.dto.*;
 import com.itsmartsystems.bookyourseat.service.AuthService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -20,7 +17,6 @@ public class AuthController {
         this.authService = authService ;
     }
 
-    @Valid
     @PostMapping("/register")
     public String register(@Valid @RequestBody RegisterRequest request)
     {
@@ -54,10 +50,18 @@ public class AuthController {
         authService.changePassword(request);
         return "Password has been successfully changed !";
     }
+
     @PostMapping("/forgot-password")
     public String forgotPassword(@Valid @RequestBody EmailRequest emailRequest){
         authService.emailRequestforChanging(emailRequest);
         return "If the email exists you'll receive an email to change the password !";
+    }
+
+    @PostMapping("/reset-password")
+    public String resetPassword(@Valid @RequestBody ChangeNewPasswordRequest request){
+        authService.forgotPassword(request);
+        return "Successfully changing the password , next time note it ! :))" ;
+
     }
 
 }

@@ -61,8 +61,7 @@ public class User {
         return this.id;
     }
 
-
-
+    public LocalDateTime getTokenExpiresAt() {return this.tokenExpiresAt;}
 
 
     public boolean isFirstLog() {return this.firstLog;}

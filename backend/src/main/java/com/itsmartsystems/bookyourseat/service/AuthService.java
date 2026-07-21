@@ -1,9 +1,6 @@
 package com.itsmartsystems.bookyourseat.service;
 
-import com.itsmartsystems.bookyourseat.dto.ChangePasswordRequest;
-import com.itsmartsystems.bookyourseat.dto.EmailRequest;
-import com.itsmartsystems.bookyourseat.dto.LoginRequest;
-import com.itsmartsystems.bookyourseat.dto.RegisterRequest;
+import com.itsmartsystems.bookyourseat.dto.*;
 import com.itsmartsystems.bookyourseat.model.User;
 import com.itsmartsystems.bookyourseat.repository.UserRepository;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -13,7 +10,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.swing.text.html.Option;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
@@ -35,12 +31,12 @@ public class AuthService {
     // Method for checking the password
     private boolean checkPassword(String password)
     {
-        if(password == null || password.length() == 0) throw new IllegalArgumentException("Password must not be empty !");
+        if(password == null || password.length() == 0) return false;
         String specialChars = "!@#$%&*";
         int counter = 0;
         for(char c : password.toCharArray())
             if(specialChars.indexOf(c) != -1 ) counter++;
-        if ( counter < 2) throw new IllegalArgumentException("Password MUST contain at least 2 special characters !");
+        if ( counter < 2 || password.length() < 10) return false;
         return true;
     }
 
@@ -52,7 +48,7 @@ public class AuthService {
             if(user0.isPresent()) throw new IllegalArgumentException("Email already registered !");
             if(request.getPassword() == null || request.getPassword().length() == 0) throw new IllegalArgumentException("Password must not be empty !");
 
-            checkPassword(request.getPassword());
+            if(!checkPassword(request.getPassword()) ) throw new IllegalArgumentException("Password must contain at least 2 special chars and to be >= 10 chars !");
             String crypted = passwordEncoder.encode(request.getPassword());
             User user = new User(request.getName() , request.getEmail() , crypted , request.getRole() , true );
             userRepository.save(user);
@@ -78,7 +74,7 @@ public class AuthService {
         if(!passwordEncoder.matches(request.getOldPassword() , u.get().getPassword())) throw new IllegalArgumentException("Passwords doesnt match !");
         // -- Updating the user's password and firstLog obviously
 
-        checkPassword(request.getNewPassword());
+        if(!checkPassword(request.getNewPassword())) throw new IllegalArgumentException("Password must contain at least 2 special chars and to be >= 10 chars");
         String crypted = passwordEncoder.encode(request.getNewPassword()); // crypting the new one
         User existingUser = u.get();    // getting the user
         existingUser.setPassword(crypted); // updating now
@@ -99,6 +95,27 @@ public class AuthService {
         user.setTokenExpiresAt(expiresAt);
         userRepository.save(user);
     }
+
+    public void forgotPassword(ChangeNewPasswordRequest request)
+    {
+        if(!request.getNewPassword().equals(request.getcNewPassword())) throw new IllegalArgumentException("Passwords must be the same !");
+        if(!checkPassword(request.getcNewPassword()) ) throw new IllegalArgumentException("Password must contain at least 2 special chars and to be >= 10 chars !");
+
+        Optional<User> u = userRepository.findByToken(request.token());
+
+        if(u.isEmpty()) throw new IllegalArgumentException("User doesnt exist !");
+        LocalDateTime now = LocalDateTime.now();
+        if(now.isAfter(u.get().getTokenExpiresAt()) == true ) throw new IllegalArgumentException("Expired session !");
+
+        User user = u.get();
+        String crypted = passwordEncoder.encode(request.getNewPassword());
+        user.setPassword(crypted);
+        user.setToken(null);
+            // after the user changed the password one time the token will be null
+            // so that he cant reset the password 30 times in 15 minutes
+        userRepository.save(user);
+    }
+
 
 
 
