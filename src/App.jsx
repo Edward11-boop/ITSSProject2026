@@ -6,6 +6,7 @@ import './App.css'
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import Login from './pages/Login';
 import ForgotPassword from './pages/ForgotPassword'
+import Register from './pages/Register';
 import Topbar from './components/Topbar'
 
 function App() {
@@ -16,6 +17,7 @@ function App() {
       <div>
         <Routes>
           <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Register />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
         </Routes>
       </div>
