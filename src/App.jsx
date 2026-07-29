@@ -8,7 +8,9 @@ import Login from './pages/Login';
 import ForgotPassword from './pages/ForgotPassword'
 import Register from './pages/Register';
 import Home from './pages/Home';
-import Topbar from './components/Topbar'
+import Topbar from './components/Topbar';
+import Dashboard from './pages/Dashboard'
+
 
 function App() {
   return (
@@ -21,6 +23,7 @@ function App() {
           <Route path="/signup" element={<Register />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/" element={<Home />} />
+          <Route path="/dashboard" element={<Dashboard />} />
         </Routes>
       </div>
     </BrowserRouter>
