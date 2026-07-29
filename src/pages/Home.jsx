@@ -1,3 +1,4 @@
+import officeBg from '../assets/office-bg.jpeg'
 import { Link } from 'react-router-dom'
 import heroImg from '../assets/hero.png'
 import logo_noBG from "../assets/Logo_without_bg.svg";
@@ -7,10 +8,10 @@ const Home = () => {
 
         <div
             className="relative flex min-h-screen flex-col items-center justify-center bg-cover bg-center"
-            style={{ backgroundImage: `url(${heroImg})` }}
+            style={{ backgroundImage: `url(${officeBg})` }}
         >
 
-            <div className="absolute inset-0 bg-[#312E81] opacity-80"></div>
+            <div className="absolute inset-0 bg-[#29255E] opacity-80"></div>
 
 
             <div className="relative z-10 flex max-w-2xl flex-col items-center px-4 text-center text-white">
