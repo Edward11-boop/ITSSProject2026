@@ -1,33 +1,105 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
-import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
-import Login from './pages/Login';
-import ForgotPassword from './pages/ForgotPassword'
-import Register from './pages/Register';
-import Home from './pages/Home';
-import Topbar from './components/Topbar';
-import Dashboard from './pages/Dashboard'
+import { useState } from "react";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  useLocation,
+} from "react-router-dom";
 
+import "./App.css";
+
+import Login from "./pages/Login";
+import ForgotPassword from "./pages/ForgotPassword";
+import Register from "./pages/Register";
+import Home from "./pages/Home";
+import Dashboard from "./pages/Dashboard";
+
+import Topbar from "./components/Topbar";
+import Sidebar from "./components/Sidebar";
+
+const AppContent = () => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  const location = useLocation();
+
+  /*
+    Sidebar-ul apare:
+    - temporar, când intri direct pe /dashboard;
+    - pe ruta /, atunci când utilizatorul este autentificat.
+  */
+  const showDashboardLayout =
+    location.pathname === "/dashboard" ||
+    (location.pathname === "/" && isLoggedIn);
+
+  return (
+    <div
+      className={
+        showDashboardLayout
+          ? "flex h-screen overflow-hidden"
+          : "min-h-screen"
+      }
+    >
+      {showDashboardLayout && <Sidebar />}
+
+      <div
+        className={
+          showDashboardLayout
+            ? "flex min-w-0 flex-1 flex-col"
+            : "min-h-screen"
+        }
+      >
+        <Topbar />
+
+        <main
+          className={
+            showDashboardLayout
+              ? "flex-1 overflow-y-auto"
+              : ""
+          }
+        >
+          <Routes>
+            <Route
+              path="/"
+              element={
+                isLoggedIn ? <Dashboard /> : <Home />
+              }
+            />
+
+            <Route
+              path="/login"
+              element={
+                <Login setIsLoggedIn={setIsLoggedIn} />
+              }
+            />
+
+            <Route
+              path="/signup"
+              element={<Register />}
+            />
+
+            <Route
+              path="/forgot-password"
+              element={<ForgotPassword />}
+            />
+
+            {/* Acces temporar fără autentificare */}
+            <Route
+              path="/dashboard"
+              element={<Dashboard />}
+            />
+          </Routes>
+        </main>
+      </div>
+    </div>
+  );
+};
 
 function App() {
   return (
     <BrowserRouter>
-      <Topbar />
-
-      <div>
-        <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Register />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
-          <Route path="/" element={<Home />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-        </Routes>
-      </div>
+      <AppContent />
     </BrowserRouter>
-  )
+  );
 }
 
-export default App
+export default App;
