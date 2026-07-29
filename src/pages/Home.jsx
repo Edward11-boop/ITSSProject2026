@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import heroImg from '../assets/hero.png'
+import logo_noBG from "../assets/Logo_without_bg.svg";
 
 const Home = () => {
     return (
@@ -15,10 +16,12 @@ const Home = () => {
             <div className="relative z-10 flex max-w-2xl flex-col items-center px-4 text-center text-white">
 
 
-                <h1 className="mb-6 flex items-center gap-3 text-6xl font-bold">
-
-                    <span className="text-4xl">💺</span> BookIT
-                </h1>
+                <div className="flex items-center gap-3 text-64px">
+                    <img src={logo_noBG} alt="Logo" className="h-20" />
+                    <h1 className="text-[64px] font-semibold text-white">
+                        BookIT
+                    </h1>
+                </div>
 
 
                 <p className="mb-10 text-xl text-gray-200">
