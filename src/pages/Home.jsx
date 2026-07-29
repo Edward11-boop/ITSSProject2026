@@ -30,7 +30,7 @@ const Home = () => {
                 <div className="flex gap-6">
                     <Link
                         to="/signup"
-                        className="rounded-lg bg-white px-8 py-3 text-xl font-bold text-[#6D28D9] transition hover:bg-gray-100"
+                        className="rounded-lg bg-white px-8 py-3 text-xl font-bold text-[#6D28D9] transition hover:bg-gray-200"
                     >
                         Register
                     </Link>
