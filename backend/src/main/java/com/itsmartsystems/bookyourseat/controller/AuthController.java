@@ -5,6 +5,7 @@ import com.itsmartsystems.bookyourseat.service.AuthService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
+import jakarta.mail.MessagingException;
 
 @RestController
 public class AuthController {
@@ -52,7 +53,7 @@ public class AuthController {
     }
 
     @PostMapping("/forgot-password")
-    public String forgotPassword(@Valid @RequestBody EmailRequest emailRequest){
+    public String forgotPassword(@Valid @RequestBody EmailRequest emailRequest) throws MessagingException{
         authService.emailRequestforChanging(emailRequest);
         return "If the email exists you'll receive an email to change the password !";
     }

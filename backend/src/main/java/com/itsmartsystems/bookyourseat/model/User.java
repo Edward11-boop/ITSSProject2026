@@ -30,7 +30,7 @@ public class User {
     public User(String name, String email , String password, Role role , boolean firstLog )
     {
         if(name.isEmpty()) throw new IllegalArgumentException("Name must not be EMPTY !");
-        if(email.contains("@itsmartsystems.eu") == false) throw new IllegalArgumentException("Email doesnt correspond to the company !");
+        //if(email.contains("@itsmartsystems.eu") == false) throw new IllegalArgumentException("Email doesnt correspond to the company !");
 
         this.name = name;
         this.email = email;
@@ -60,6 +60,8 @@ public class User {
     public String getId(){
         return this.id;
     }
+
+    public String getToken() {return this.token;}
 
     public LocalDateTime getTokenExpiresAt() {return this.tokenExpiresAt;}
 

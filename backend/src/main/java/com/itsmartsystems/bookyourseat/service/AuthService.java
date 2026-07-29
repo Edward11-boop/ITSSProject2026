@@ -10,6 +10,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import jakarta.mail.MessagingException;
+
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
@@ -17,16 +19,17 @@ import java.util.UUID;
 @Service
 public class AuthService {
 
-    private final UserRepository userRepository ;
+    private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
-    public AuthService(UserRepository userRepository , PasswordEncoder passwordEncoder , AuthenticationManager authenticationManager) {
+    private final EmailService emailService;
+
+    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, EmailService emailService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.authenticationManager = authenticationManager;
+        this.emailService = emailService;
     }
-
-
 
     // Method for checking the password
     private boolean checkPassword(String password)
@@ -40,28 +43,25 @@ public class AuthService {
         return true;
     }
 
-
     //  --- REGISTER ---
-
     public void register(RegisterRequest request){
-            Optional<User> user0 = userRepository.findByEmail(request.getEmail());
-            if(user0.isPresent()) throw new IllegalArgumentException("Email already registered !");
-            if(request.getPassword() == null || request.getPassword().length() == 0) throw new IllegalArgumentException("Password must not be empty !");
+        Optional<User> user0 = userRepository.findByEmail(request.getEmail());
+        if(user0.isPresent()) throw new IllegalArgumentException("Email already registered !");
+        if(request.getPassword() == null || request.getPassword().length() == 0) throw new IllegalArgumentException("Password must not be empty !");
 
-            if(!checkPassword(request.getPassword()) ) throw new IllegalArgumentException("Password must contain at least 2 special chars and to be >= 10 chars !");
-            String crypted = passwordEncoder.encode(request.getPassword());
-            User user = new User(request.getName() , request.getEmail() , crypted , request.getRole() , true );
-            userRepository.save(user);
+        if(!checkPassword(request.getPassword())) throw new IllegalArgumentException("Password must contain at least 2 special chars and to be >= 10 chars");
+        String crypted = passwordEncoder.encode(request.getPassword());
+        User user = new User(request.getName(), request.getEmail(), crypted, request.getRole(), true);
+        userRepository.save(user);
     }
 
     // --- LOGIN ---
-
     public boolean login(LoginRequest request){
-
         Optional<User> u = userRepository.findByEmail(request.getEmail());
-        Authentication auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail() , request.getPassword()));
+        Authentication auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
+        if (u.get().isFirstLog()) throw new IllegalArgumentException("Password must be changed before login !");
         SecurityContextHolder.getContext().setAuthentication(auth);
-        return u.get().isFirstLog();
+        return false;
     }
 
     // --- PASSWORD MUST BE CHANGED ---
@@ -71,21 +71,19 @@ public class AuthService {
         if(u.isEmpty()) throw new IllegalArgumentException("Email isnt registered !");
         if(request.getOldPassword() == null || request.getOldPassword().length() == 0 ) throw new IllegalArgumentException("OldPassword must not be empty !");
         if(request.getNewPassword() == null || request.getNewPassword().length() == 0 ) throw new IllegalArgumentException("NewPassword must not be empty !");
-        if(!passwordEncoder.matches(request.getOldPassword() , u.get().getPassword())) throw new IllegalArgumentException("Passwords doesnt match !");
-        // -- Updating the user's password and firstLog obviously
+        if(!passwordEncoder.matches(request.getOldPassword(), u.get().getPassword())) throw new IllegalArgumentException("Passwords doesnt match !");
 
         if(!checkPassword(request.getNewPassword())) throw new IllegalArgumentException("Password must contain at least 2 special chars and to be >= 10 chars");
-        String crypted = passwordEncoder.encode(request.getNewPassword()); // crypting the new one
-        User existingUser = u.get();    // getting the user
-        existingUser.setPassword(crypted); // updating now
+        String crypted = passwordEncoder.encode(request.getNewPassword());
+        User existingUser = u.get();
+        existingUser.setPassword(crypted);
         existingUser.setFirstLog(false);
-        userRepository.save(existingUser); // saving the user with the new password
-
+        userRepository.save(existingUser);
     }
 
-    public void emailRequestforChanging(EmailRequest request){
-       // -- VERIFY THE EMAIL FIRST
-        if(request.getEmail().endsWith("@itsmartsystems.eu") == false) throw new IllegalArgumentException("Wrong email !");
+    public void emailRequestforChanging(EmailRequest request) throws MessagingException {
+        // -- VERIFY THE EMAIL FIRST
+        //if(request.getEmail().endsWith("@itsmartsystems.eu") == false) throw new IllegalArgumentException("Wrong email !");
         Optional<User> u = userRepository.findByEmail(request.getEmail());
         if(u.isEmpty()) throw new IllegalArgumentException("User field is empty !");
         String token = String.valueOf(UUID.randomUUID());
@@ -94,12 +92,13 @@ public class AuthService {
         user.setToken(token);
         user.setTokenExpiresAt(expiresAt);
         userRepository.save(user);
+        emailService.emailToSend(user.getEmail(), token);
     }
 
     public void forgotPassword(ChangeNewPasswordRequest request)
     {
         if(!request.getNewPassword().equals(request.getcNewPassword())) throw new IllegalArgumentException("Passwords must be the same !");
-        if(!checkPassword(request.getcNewPassword()) ) throw new IllegalArgumentException("Password must contain at least 2 special chars and to be >= 10 chars !");
+        if(!checkPassword(request.getcNewPassword())) throw new IllegalArgumentException("Password must contain at least 2 special chars and to be >= 10 chars !");
 
         Optional<User> u = userRepository.findByToken(request.token());
 
@@ -111,12 +110,9 @@ public class AuthService {
         String crypted = passwordEncoder.encode(request.getNewPassword());
         user.setPassword(crypted);
         user.setToken(null);
-            // after the user changed the password one time the token will be null
-            // so that he cant reset the password 30 times in 15 minutes
+        // after the user changed the password one time the token will be null
+        // so that he cant reset the password 30 times in 15 minutes
         userRepository.save(user);
     }
-
-
-
 
 }
