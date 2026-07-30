@@ -40,8 +40,6 @@ const History = () => {
     return (
         <div className="flex min-h-[calc(100vh-64px)] bg-white relative">
 
-            <Sidebar />
-
             <div className="relative flex-1 p-8">
                 <div className="mx-auto max-w-5xl">
 
@@ -89,15 +87,33 @@ const History = () => {
                                         </div>
 
                                         <div className="flex gap-3">
-                                            <button className="rounded-full border border-[#6D28D9] px-6 py-2 text-sm font-bold text-[#6D28D9] transition hover:bg-purple-50">
-                                                Modifica
-                                            </button>
-                                            <button
-                                                onClick={() => handleDeleteClick(booking.id)}
-                                                className="rounded-full border border-red-300 px-6 py-2 text-sm font-bold text-red-400 transition hover:bg-red-50"
-                                            >
-                                                Sterge
-                                            </button>
+
+                                            {(booking.tab === "Viitoare" && booking.status === "In asteptare") &&
+                                                <>   
+                                                   <button
+                                                        onClick={() => handleDeleteClick(booking.id)}
+                                                        className="rounded-full border border-red-300 px-6 py-2 text-sm font-bold text-red-400 transition hover:bg-red-50"
+                                                    >
+                                                        Sterge
+                                                    </button>
+                                                    <button className="rounded-full border border-[#6D28D9] px-6 py-2 text-sm font-bold text-[#6D28D9] transition hover:bg-purple-50">
+                                                        Modifica
+                                                    </button>
+                                                </>
+                                            }
+
+                                            {(booking.tab !== "Viitoare" || booking.status === "Confirmat") &&
+                                                <>   
+                                                   <button
+                                                        className="rounded-full border border-[#6B7280] px-6 py-2 text-sm font-bold text-[#6B7280] transition"
+                                                    >
+                                                        Sterge
+                                                    </button>
+                                                    <button className="rounded-full border border-[#6B7280] px-6 py-2 text-sm font-bold text-[#6B7280] transition">
+                                                        Modifica
+                                                    </button>
+                                                </>
+                                            }  
                                         </div>
 
                                     </div>

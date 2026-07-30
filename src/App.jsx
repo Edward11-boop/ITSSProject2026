@@ -28,6 +28,7 @@ const AppContent = () => {
   const dashboardPages = [
     "/dashboard",
     "/notifications",
+    "/history",
   ];
 
   const showDashboardLayout =
