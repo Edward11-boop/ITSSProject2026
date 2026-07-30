@@ -13,24 +13,25 @@ import ForgotPassword from "./pages/ForgotPassword";
 import Register from "./pages/Register";
 import Home from "./pages/Home";
 import Dashboard from "./pages/Dashboard";
+import ChangePassword from "./pages/ChangePassword";
+import Notifications from "./pages/Notifications";
 import History from './pages/History';
 
 import Topbar from "./components/Topbar";
 import Sidebar from "./components/Sidebar";
-import ChangePassword from "./pages/ChangePassword";
+
 
 const AppContent = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-
   const location = useLocation();
 
-  /*
-    Sidebar-ul apare:
-    - temporar, când intri direct pe /dashboard;
-    - pe ruta /, atunci când utilizatorul este autentificat.
-  */
+  const dashboardPages = [
+    "/dashboard",
+    "/notifications",
+  ];
+
   const showDashboardLayout =
-    location.pathname === "/dashboard" ||
+    dashboardPages.includes(location.pathname) ||
     (location.pathname === "/" && isLoggedIn);
 
   return (
@@ -62,9 +63,7 @@ const AppContent = () => {
           <Routes>
             <Route
               path="/"
-              element={
-                isLoggedIn ? <Dashboard /> : <Home />
-              }
+              element={isLoggedIn ? <Dashboard /> : <Home />}
             />
 
             <Route
@@ -88,13 +87,18 @@ const AppContent = () => {
               path="/change-password"
               element={<ChangePassword />}
             />
+
             {/* Acces temporar fără autentificare */}
             <Route
               path="/dashboard"
               element={<Dashboard />}
             />
             <Route
-              path="/history"
+              path="/dashboard"
+              element={<Notifications />}
+            />
+            <Route
+              path="/dashboard"
               element={<History />}
             />
           </Routes>
