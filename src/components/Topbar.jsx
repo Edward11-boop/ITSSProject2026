@@ -16,6 +16,7 @@ const Topbar = () => {
     "/login",
     "/signup",
     "/forgot-password",
+    "/change-password"
   ];
 
   const hiddenButtons = authPages.includes(location.pathname);

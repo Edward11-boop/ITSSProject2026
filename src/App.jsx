@@ -16,6 +16,7 @@ import Dashboard from "./pages/Dashboard";
 
 import Topbar from "./components/Topbar";
 import Sidebar from "./components/Sidebar";
+import ChangePassword from "./pages/ChangePassword";
 
 const AppContent = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -82,6 +83,10 @@ const AppContent = () => {
               element={<ForgotPassword />}
             />
 
+            <Route
+              path="/change-password"
+              element={<ChangePassword />}
+            />
             {/* Acces temporar fără autentificare */}
             <Route
               path="/dashboard"
