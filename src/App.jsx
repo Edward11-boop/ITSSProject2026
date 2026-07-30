@@ -13,6 +13,7 @@ import ForgotPassword from "./pages/ForgotPassword";
 import Register from "./pages/Register";
 import Home from "./pages/Home";
 import Dashboard from "./pages/Dashboard";
+import History from './pages/History';
 
 import Topbar from "./components/Topbar";
 import Sidebar from "./components/Sidebar";
@@ -91,6 +92,10 @@ const AppContent = () => {
             <Route
               path="/dashboard"
               element={<Dashboard />}
+            />
+            <Route
+              path="/history"
+              element={<History />}
             />
           </Routes>
         </main>
