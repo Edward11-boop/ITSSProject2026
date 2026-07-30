@@ -94,11 +94,11 @@ const AppContent = () => {
               element={<Dashboard />}
             />
             <Route
-              path="/dashboard"
+              path="/notifications"
               element={<Notifications />}
             />
             <Route
-              path="/dashboard"
+              path="/history"
               element={<History />}
             />
           </Routes>
