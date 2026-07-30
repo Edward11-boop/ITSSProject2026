@@ -1,8 +1,10 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import ForgotPassword from './ForgotPassword'
 
 const Login = () => {
+  const navigate = useNavigate()
+
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -26,11 +28,36 @@ const Login = () => {
     setError('')
     setLoading(true)
 
-    console.log(formData)
+    try {
+      const response = await fetch('http://localhost:8080/login', {
+        method: 'POST',
+        credentials: 'include', // trimite/primește cookie-ul de sesiune (JSESSIONID)
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      })
 
-    setTimeout(() => {
+      const message = await response.text()
+
+      if (!response.ok) {
+        // backend-ul trimite mesaje de eroare ca text simplu (400/401)
+        setError(message)
+        return
+      }
+
+      if (message === 'Password must be changed !') {
+        // userul e la prima logare, trebuie să-și schimbe parola întâi
+        navigate('/change-password')
+        return
+      }
+
+      // login reușit, mergem la dashboard
+      navigate('/home')
+    } catch (err) {
+      // eroare de rețea (backend oprit, CORS blocat, etc.)
+      setError('Nu am putut contacta serverul. Încearcă din nou.')
+    } finally {
       setLoading(false)
-    }, 1000)
+    }
   }
 
   const isInactive =
@@ -38,7 +65,7 @@ const Login = () => {
     !(
       formData.email.includes('@') &&
       (formData.email.includes('.com') ||
-      formData.email.includes('.eu'))
+        formData.email.includes('.eu'))
     ) || formData.password === ''
 
   return (
@@ -106,7 +133,7 @@ const Login = () => {
         </button>
 
         <p className="text-center text-20 text-[#6B7280]">
-          Don’t have an account?  
+          Don't have an account?{' '}
           <Link
             to="/signup"
             className="text-[#6D28D9]"
@@ -116,7 +143,7 @@ const Login = () => {
         </p>
 
         <p className="text-center text-20 text-[#6B7280]">
-          Forgot your password?  
+          Forgot your password?{' '}
           <Link
             to="/forgot-password"
             className="text-[#6D28D9]"

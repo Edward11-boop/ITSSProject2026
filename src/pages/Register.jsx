@@ -1,16 +1,19 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 const Register = () => {
+  const navigate = useNavigate()
+
   const [formData, setFormData] = useState({
+    name: '',
     email: '',
     password: '',
     repeatPassword: '',
+    role: 'DEV',
   })
 
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
-
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -21,10 +24,8 @@ const Register = () => {
     }))
   }
 
-
   const handleSubmit = async (e) => {
     e.preventDefault()
-
 
     if (formData.password !== formData.repeatPassword) {
       setError('Passwords do not match!')
@@ -34,17 +35,42 @@ const Register = () => {
     setError('')
     setLoading(true)
 
-    console.log("Datele trimise:", formData)
+    try {
+      // Creăm contul
+      const registerResponse = await fetch('http://localhost:8080/register', {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          password: formData.password,
+          role: formData.role,
+        }),
+      })
 
+      if (!registerResponse.ok) {
+        const message = await registerResponse.text()
+        setError(message)
+        return
+      }
 
-    setTimeout(() => {
+      // Contul e nou (firstLog: true) -> mergem obligatoriu la change-password.
+      // Trimitem emailul + parola temporară mai departe, ca userul să nu le retasteze.
+      // (nu facem login aici — backend-ul refuză intenționat login-ul cât timp
+      // parola nu a fost schimbată, exact cum ar trebui)
+      navigate('/change-password', {
+        state: { email: formData.email, oldPassword: formData.password },
+      })
+    } catch (err) {
+      setError('Nu am putut contacta serverul. Încearcă din nou.')
+    } finally {
       setLoading(false)
-
-    }, 1000)
+    }
   }
 
-
   const isInactive =
+    formData.name.trim() === '' ||
     formData.email.trim() === '' ||
     !(
       formData.email.includes('@') &&
@@ -53,7 +79,6 @@ const Register = () => {
     formData.password === '' ||
     formData.repeatPassword === ''
 
-  
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#F5F3FF]">
       <form
@@ -63,6 +88,19 @@ const Register = () => {
         <h1 className="mb-4 text-center text-[48px]">
           Register
         </h1>
+
+        <label htmlFor="name" className="text-24">
+          Name
+        </label>
+        <input
+          id="name"
+          name="name"
+          type="text"
+          value={formData.name}
+          onChange={handleChange}
+          required
+          className="w-full rounded-lg border-2 border-[#DDD6FE] px-4 py-2 focus:outline-none"
+        />
 
         <label htmlFor="email" className="text-24">
           Email
@@ -76,6 +114,23 @@ const Register = () => {
           required
           className="w-full rounded-lg border-2 border-[#DDD6FE] px-4 py-2 focus:outline-none"
         />
+
+        <label htmlFor="role" className="text-24">
+          Role
+        </label>
+        <select
+          id="role"
+          name="role"
+          value={formData.role}
+          onChange={handleChange}
+          required
+          className="w-full rounded-lg border-2 border-[#DDD6FE] px-4 py-2 focus:outline-none bg-white"
+        >
+          <option value="DEV">Developer</option>
+          <option value="PM">Project Manager</option>
+          <option value="MANAGER">Manager</option>
+          <option value="CEO">CEO</option>
+        </select>
 
         <label htmlFor="password" className="text-24">
           Password
@@ -103,7 +158,6 @@ const Register = () => {
           className="w-full rounded-lg border-2 border-[#DDD6FE] px-4 py-2 focus:outline-none"
         />
 
-        
         {error && (
           <p className="text-red-600">
             {error}
@@ -114,8 +168,8 @@ const Register = () => {
           type="submit"
           disabled={isInactive || loading}
           className={`mt-4 rounded-lg p-2 text-24 font-semibold transition-colors ${isInactive || loading
-              ? 'cursor-not-allowed bg-[#DDD6FE] text-[#6B7280]'
-              : 'bg-[#6D28D9] hover:bg-[#5B21B6] text-white'
+            ? 'cursor-not-allowed bg-[#DDD6FE] text-[#6B7280]'
+            : 'bg-[#6D28D9] hover:bg-[#5B21B6] text-white'
             }`}
         >
           {loading ? 'Submitting...' : 'Submit'}
