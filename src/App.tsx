@@ -35,7 +35,7 @@ export default function App() {
     "/legacy-home",
   ]
 
-  const showDashboardLayout = dashboardPages.includes(location.pathname)
+  const showDashboardLayout = dashboardPages.includes(location.pathname) 
   const showFeatureTopbar = showDashboardLayout || authPages.includes(location.pathname)
 
   return (
