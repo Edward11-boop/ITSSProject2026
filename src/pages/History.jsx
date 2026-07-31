@@ -92,7 +92,7 @@ const History = () => {
                                                 <>   
                                                    <button
                                                         onClick={() => handleDeleteClick(booking.id)}
-                                                        className="rounded-full border border-red-300 px-6 py-2 text-sm font-bold text-red-400 transition hover:bg-red-50"
+                                                        className="rounded-full bg-[#FEE2E2] border border-[#F87171] px-6 py-2 text-sm font-bold text-red-400 transition hover:bg-red-50"
                                                     >
                                                         Sterge
                                                     </button>
