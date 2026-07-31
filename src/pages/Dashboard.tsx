@@ -1,4 +1,4 @@
-const Dashboard = () => {
+const Dashboard = () => { 
     return (
 
         <div className="min-h-screen bg-[#F8F9FE] p-8">
