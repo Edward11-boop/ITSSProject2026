@@ -1,23 +1,22 @@
 import { useState } from "react"
 import { Routes, Route, useLocation } from "react-router-dom"
-import Navbar from "@/components/Navbar"
 import Topbar from "@/components/Topbar"
 import Sidebar from "@/components/Sidebar"
-import HomePage from "@/pages/HomePage"
+import Home from "@/pages/Home"
 import SeatsPage from "@/pages/SeatsPage"
 import Login from "@/pages/Login"
 import ForgotPassword from "@/pages/ForgotPassword"
 import Register from "@/pages/Register"
-import Home from "@/pages/Home"
 import Dashboard from "@/pages/Dashboard"
 import ChangePassword from "@/pages/ChangePassword"
 import Notifications from "@/pages/Notifications"
 import History from "@/pages/History"
 import UserDetails from "@/pages/UserDetails"
 import Seats from "@/pages/Seats"
+import Invite from "./pages/Invite"
 
 export default function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [, setIsLoggedIn] = useState(false)
   const location = useLocation()
 
   const dashboardPages = [
@@ -25,18 +24,10 @@ export default function App() {
     "/notifications",
     "/history",
     "/user-details",
-  ]
-
-  const authPages = [
-    "/login",
-    "/signup",
-    "/forgot-password",
-    "/change-password",
-    "/legacy-home",
+    "/invite",
   ]
 
   const showDashboardLayout = dashboardPages.includes(location.pathname) 
-  const showFeatureTopbar = showDashboardLayout || authPages.includes(location.pathname)
 
   return (
     <div
@@ -55,14 +46,14 @@ export default function App() {
             : "min-h-screen w-full"
         }
       >
-        {showFeatureTopbar ? <Topbar /> : <Navbar />}
+        <Topbar />
 
         <main className={showDashboardLayout ? "flex-1 overflow-y-auto" : ""}>
           <Routes>
-            <Route path="/" element={<HomePage />} />
+            <Route path="/" element={<Home />} />
             <Route path="/seats" element={<SeatsPage />} />
             <Route path="/book-now" element={<Seats />} />
-            <Route path="/legacy-home" element={isLoggedIn ? <Dashboard /> : <Home />} />
+            <Route path="/legacy-home" element={<Dashboard />} />
             <Route path="/login" element={<Login setIsLoggedIn={setIsLoggedIn} />} />
             <Route path="/signup" element={<Register />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
@@ -71,6 +62,7 @@ export default function App() {
             <Route path="/notifications" element={<Notifications />} />
             <Route path="/history" element={<History />} />
             <Route path="/user-details" element={<UserDetails />} />
+            <Route path="/invite" element={<Invite />} />
           </Routes>
         </main>
       </div>
