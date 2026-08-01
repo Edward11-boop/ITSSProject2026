@@ -1,6 +1,7 @@
 ﻿import DashboardCard from "@/components/dashboard/DashboardCard"
 import DashboardWelcome from "@/components/dashboard/DashboardWelcome"
 import PlaceholderPanel from "@/components/dashboard/PlaceholderPanel"
+import FloatingIcon from "@/components/FloatingIcon"
 
 const Dashboard = () => {
   return (
@@ -32,6 +33,7 @@ const Dashboard = () => {
           </div>
         </div>
       </div>
+      <FloatingIcon />
     </div>
   )
 }
