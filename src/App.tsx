@@ -14,6 +14,7 @@ import History from "@/pages/History"
 import UserDetails from "@/pages/UserDetails"
 import Seats from "@/pages/Seats"
 import Invite from "./pages/Invite"
+import TypeOfReservation from './pages/TypeOfReservation';
 
 export default function App() {
   const [, setIsLoggedIn] = useState(false)
@@ -25,9 +26,10 @@ export default function App() {
     "/history",
     "/user-details",
     "/invite",
+    "/type-of-reservation"
   ]
 
-  const showDashboardLayout = dashboardPages.includes(location.pathname) 
+  const showDashboardLayout = dashboardPages.includes(location.pathname)
 
   return (
     <div
@@ -63,6 +65,8 @@ export default function App() {
             <Route path="/history" element={<History />} />
             <Route path="/user-details" element={<UserDetails />} />
             <Route path="/invite" element={<Invite />} />
+            <Route path="/type-of-reservation" element={<TypeOfReservation />}
+            />
           </Routes>
         </main>
       </div>
