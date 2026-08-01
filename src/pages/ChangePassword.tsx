@@ -1,9 +1,10 @@
 import { useState } from "react"
-import { useLocation, useNavigate } from "react-router-dom"
+import { Link, useLocation, useNavigate } from "react-router-dom"
+
 import AuthLayout from "@/components/forms/AuthLayout"
-import AuthMessage from "@/components/forms/AuthMessage"
 import FormField from "@/components/forms/FormField"
 import SubmitButton from "@/components/forms/SubmitButton"
+import ErrorPopUp from "@/components/ErrorPopUp"
 
 const ChangePassword = () => {
   const navigate = useNavigate()
@@ -26,6 +27,13 @@ const ChangePassword = () => {
       ...previousData,
       [name]: value,
     }))
+
+    setError("")
+  }
+
+  const handleConfirmPasswordChange = (e) => {
+    setConfirmPassword(e.target.value)
+    setError("")
   }
 
   const handleSubmit = async (e) => {
@@ -33,40 +41,52 @@ const ChangePassword = () => {
     setError("")
 
     if (formData.newPassword !== confirmPassword) {
-      setError("Parolele nu coincid.")
+      setError("Parolele introduse nu coincid.")
       return
     }
 
     setLoading(true)
 
     try {
-      const response = await fetch("http://localhost:8080/change-password", {
-        method: "PUT",
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email: formData.email,
-          oldPassword: formData.oldPassword,
-          newPassword: formData.newPassword,
-        }),
-      })
+      const response = await fetch(
+        "http://localhost:8080/change-password",
+        {
+          method: "PUT",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: formData.email,
+            oldPassword: formData.oldPassword,
+            newPassword: formData.newPassword,
+          }),
+        },
+      )
 
       const message = await response.text()
 
       if (!response.ok) {
-        setError(message)
+        setError(
+          message || "Parola nu a putut fi modificată.",
+        )
         return
       }
 
-      const loginResponse = await fetch("http://localhost:8080/login", {
-        method: "POST",
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email: formData.email,
-          password: formData.newPassword,
-        }),
-      })
+      const loginResponse = await fetch(
+        "http://localhost:8080/login",
+        {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: formData.email,
+            password: formData.newPassword,
+          }),
+        },
+      )
 
       if (!loginResponse.ok) {
         navigate("/login")
@@ -74,8 +94,10 @@ const ChangePassword = () => {
       }
 
       navigate("/dashboard")
-    } catch (err) {
-      setError("Nu am putut contacta serverul. Incearca din nou.")
+    } catch {
+      setError(
+        "Nu am putut contacta serverul. Încearcă din nou.",
+      )
     } finally {
       setLoading(false)
     }
@@ -88,19 +110,90 @@ const ChangePassword = () => {
     confirmPassword === ""
 
   return (
-    <AuthLayout
-      title="Change password"
-      description="Trebuie sa-ti setezi o parola noua inainte de a continua."
-    >
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-        <FormField id="email" name="email" label="Email" type="email" placeholder="Enter your email" value={formData.email} onChange={handleChange} />
-        <FormField id="oldPassword" name="oldPassword" label="Current password" type="password" placeholder="Enter your current password" value={formData.oldPassword} onChange={handleChange} />
-        <FormField id="newPassword" name="newPassword" label="New password" type="password" placeholder="Enter your new password" value={formData.newPassword} onChange={handleChange} />
-        <FormField id="confirmPassword" name="confirmPassword" label="Confirm new password" type="password" placeholder="Confirm your new password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
-        <AuthMessage>{error}</AuthMessage>
-        <SubmitButton disabled={isInactive || loading} loading={loading} label="Change password" loadingLabel="Changing password..." />
-      </form>
-    </AuthLayout>
+    <>
+      <AuthLayout
+        title="Change password"
+        description="Trebuie să îți setezi o parolă nouă înainte de a continua."
+      >
+        <form
+          onSubmit={handleSubmit}
+          className="flex flex-col gap-4"
+        >
+          <FormField
+            id="email"
+            name="email"
+            label="Email"
+            type="email"
+            placeholder="Enter your email"
+            value={formData.email}
+            onChange={handleChange}
+          />
+
+          <FormField
+            id="oldPassword"
+            name="oldPassword"
+            label="Current password"
+            type="password"
+            placeholder="Enter your current password"
+            value={formData.oldPassword}
+            onChange={handleChange}
+          />
+
+          <FormField
+            id="newPassword"
+            name="newPassword"
+            label="New password"
+            type="password"
+            placeholder="Enter your new password"
+            value={formData.newPassword}
+            onChange={handleChange}
+          />
+
+          <FormField
+            id="confirmPassword"
+            name="confirmPassword"
+            label="Confirm new password"
+            type="password"
+            placeholder="Confirm your new password"
+            value={confirmPassword}
+            onChange={handleConfirmPasswordChange}
+          />
+
+          <SubmitButton
+            disabled={isInactive || loading}
+            loading={loading}
+            label="Change password"
+            loadingLabel="Changing password..."
+          />
+        </form>
+      </AuthLayout>
+
+      {error && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
+          <ErrorPopUp
+            title="Password change failed"
+            message={error}
+            sideMessage={
+              <>
+                Verificați dacă parola actuală este corectă și dacă
+                noua parolă a fost introdusă identic în ambele
+                câmpuri.
+                <br />
+                Puteți reveni inapoi in Dashboard.
+                <Link
+                  to="/dashboard"
+                  onClick={() => setError("")}
+                  className="font-semibold text-[#6D28D9] hover:underline"
+                >
+                  Dashboard
+                </Link>
+              </>
+            }
+            onClose={() => setError("")}
+          />
+        </div>
+      )}
+    </>
   )
 }
 

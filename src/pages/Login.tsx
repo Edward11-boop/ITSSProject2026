@@ -1,11 +1,12 @@
 ﻿import { useState, type Dispatch, type SetStateAction } from "react"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, Link } from "react-router-dom"
 import AuthFooterLink from "@/components/forms/AuthFooterLink"
 import AuthLayout from "@/components/forms/AuthLayout"
 import AuthMessage from "@/components/forms/AuthMessage"
 import FormField from "@/components/forms/FormField"
 import SelectField from "@/components/forms/SelectField"
 import SubmitButton from "@/components/forms/SubmitButton"
+import ErrorPopUp from "@/components/ErrorPopUp"
 
 type LoginProps = {
   setIsLoggedIn?: Dispatch<SetStateAction<boolean>>
@@ -44,11 +45,6 @@ const Login = (_props: LoginProps) => {
   const handleSubmit = async (e) => {
     e.preventDefault()
 
-    if (formData.password !== formData.repeatPassword) {
-      setError("Passwords do not match!")
-      return
-    }
-
     setError("")
     setLoading(true)
 
@@ -82,26 +78,78 @@ const Login = (_props: LoginProps) => {
   }
 
   const isInactive =
-    formData.name.trim() === "" ||
     formData.email.trim() === "" ||
     !(formData.email.includes("@") && (formData.email.includes(".com") || formData.email.includes(".eu"))) ||
-    formData.password === "" ||
-    formData.repeatPassword === ""
+    formData.password === ""
 
-  return (
-    <AuthLayout title="Register">
+return (
+  <>
+    <AuthLayout title="Log in">
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-        <FormField id="name" name="name" label="Name" value={formData.name} onChange={handleChange} />
-        <FormField id="email" name="email" label="Email" type="email" value={formData.email} onChange={handleChange} />
-        <SelectField id="role" name="role" label="Role" value={formData.role} onChange={handleChange} options={roleOptions} />
-        <FormField id="password" name="password" label="Password" type="password" value={formData.password} onChange={handleChange} />
-        <FormField id="repeatPassword" name="repeatPassword" label="Repeat password" type="password" value={formData.repeatPassword} onChange={handleChange} />
-        <AuthMessage>{error}</AuthMessage>
-        <SubmitButton disabled={isInactive || loading} loading={loading} label="Submit" loadingLabel="Submitting..." />
-        <AuthFooterLink text="Do you already have an account?" to="/login" linkLabel="Log in" />
+        <FormField
+          id="email"
+          name="email"
+          label="Email"
+          type="email"
+          value={formData.email}
+          onChange={handleChange}
+        />
+
+        <FormField
+          id="password"
+          name="password"
+          label="Password"
+          type="password"
+          value={formData.password}
+          onChange={handleChange}
+        />
+        <SubmitButton
+          disabled={isInactive || loading}
+          loading={loading}
+          label="Submit"
+          loadingLabel="Submitting..."
+        />
+
+        <AuthFooterLink
+          text="Don't you have an account?"
+          to="/login"
+          linkLabel="Log in"
+        />
+
+        <AuthFooterLink
+          text="Did you forget your password?"
+          to="/forgot-password"
+          linkLabel="Reset it"
+        />
       </form>
     </AuthLayout>
-  )
+
+    {error && (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
+        <ErrorPopUp
+          title="Log in failed"
+          message={"Logarea nu s-a putut efectua"}
+          sideMessage={
+            <>
+              Verificați dacă ați introdus corect datele. 
+              <br/>
+              Dacă nu aveți deja un
+              cont, vă puteți crea unul.{" "}
+              <Link
+                to="/register"
+                onClick={() => setError("")}
+                className="font-semibold text-[#6B72809] hover:underline"
+              >
+                Register
+              </Link>
+            </>
+          }
+          onClose={() => setError("")}
+        />
+      </div>
+    )}
+  </>
+)
 }
 
 export default Login
