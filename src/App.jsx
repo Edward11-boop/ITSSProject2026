@@ -16,7 +16,7 @@ import Dashboard from "./pages/Dashboard";
 import ChangePassword from "./pages/ChangePassword";
 import Notifications from "./pages/Notifications";
 import History from './pages/History';
-import UserDetails from "./pages/UserDetails";
+import UserDetails from './pages/UserDetails';
 
 import Topbar from "./components/Topbar";
 import Sidebar from "./components/Sidebar";
@@ -30,7 +30,7 @@ const AppContent = () => {
     "/dashboard",
     "/notifications",
     "/history",
-    "/user-details",
+    "/UserDetails",
   ];
 
   const showDashboardLayout =
@@ -105,7 +105,11 @@ const AppContent = () => {
               element={<History />}
             />
             <Route
-              path="/user-details"
+              path="/UserDetails"
+              element={<UserDetails />}
+            />
+            <Route
+              path="/profile"
               element={<UserDetails />}
             />
           </Routes>
