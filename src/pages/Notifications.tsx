@@ -1,6 +1,7 @@
 ﻿import { useState } from "react"
 import NotificationHeader from "@/components/notifications/NotificationHeader"
 import NotificationItem, { type Notification } from "@/components/notifications/NotificationItem"
+import FloatingIcon from "@/components/FloatingIcon"
 
 const initialNotifications: Notification[] = [
   {
@@ -121,6 +122,8 @@ const Notifications = () => {
           />
         ))}
       </div>
+
+      <FloatingIcon />
     </div>
   )
 }

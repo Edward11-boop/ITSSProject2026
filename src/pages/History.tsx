@@ -3,6 +3,7 @@ import BookingCard from "@/components/history/BookingCard"
 import BookingTabs from "@/components/history/BookingTabs"
 import ConfirmDeleteModal from "@/components/history/ConfirmDeleteModal"
 import type { Booking, BookingTab } from "@/components/history/types"
+import FloatingIcon from "@/components/FloatingIcon"
 
 const initialBookings: Booking[] = [
   { id: 1, title: "Rezervare 1", date: "28 Iulie 2026", seat: "Rand 3, C7", room: "Sala A", time: "09:00 - 17:00", status: "In asteptare", tab: "Viitoare" },
@@ -61,9 +62,7 @@ const History = () => {
           </div>
         </div>
 
-        <button className="fixed bottom-10 right-10 flex h-16 w-16 items-center justify-center rounded-full bg-[#8B5CF6] text-2xl text-white shadow-lg transition-transform hover:scale-105 hover:bg-[#7C3AED]">
-          +
-        </button>
+        <FloatingIcon />
       </div>
 
       {isModalOpen && (
