@@ -64,6 +64,19 @@ public class AuthService {
         return false;
     }
 
+    // method for getting the details that we need of the user
+    public UserDetails UserDet()
+    {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String email = auth.getName();
+        Optional<User> user = userRepository.findByEmail(email);
+        UserDetails userDetails = new UserDetails();
+        userDetails.setEmail(user.get().getEmail());
+        userDetails.setName(user.get().getName());
+        userDetails.setRole(user.get().getRole());
+        return userDetails;
+    }
+
 
     // --- PASSWORD MUST BE CHANGED ---
     public void changePassword(ChangePasswordRequest request){
