@@ -49,7 +49,6 @@ const Topbar = () => {
               <TextField
                 id="search"
                 variant="outlined"
-                fill="white"
                 fullWidth
                 placeholder="Search"
                 size="small"
@@ -81,7 +80,7 @@ const Topbar = () => {
             >
               <Bell className="h-8 w-8 text-white" />
             </Link>
-
+    
             <div className="group relative">
               <img
                 src={user}
@@ -92,24 +91,24 @@ const Topbar = () => {
                 <div className="flex w-48 flex-col divide-y divide-[#EDE9FE] *:overflow-hidden rounded-lg bg-[#EDE9FE] py-2 shadow-lg">
 
                   <div className="ml-3 flex items-center gap-4 text-[#1E1B4B] font-bold">
-
+                    
                     <img src={user}
-                      alt="Invite"
-                      className="h-6 w-6"
+                        alt="Invite"
+                        className="h-6 w-6"
                     />
 
                     <h3>Popescu Andrei</h3>
                   </div>
 
                   <Link
-                    to="/UserDetails"
+                    to="/user-details"
                     className="bg-[#E9D5FF] py-2 text-[#1E1B4B] hover:bg-[#EDE9FE]"
                   >
                     <div className="ml-3 flex items-center gap-4 text-[#1E1B4B] font-bold">
-
+                    
                       <img src={details}
-                        alt="Invite"
-                        className="h-6 w-6"
+                          alt="Invite"
+                          className="h-6 w-6"
                       />
 
                       <h3>User details</h3>
@@ -121,10 +120,10 @@ const Topbar = () => {
                     className="bg-[#E9D5FF] py-2 text-[#1E1B4B] hover:bg-[#EDE9FE]"
                   >
                     <div className="ml-3 flex items-center gap-4 text-[#1E1B4B] font-bold">
-
+                    
                       <img src={logout}
-                        alt="Invite"
-                        className="h-6 w-6"
+                          alt="Invite"
+                          className="h-6 w-6"
                       />
 
                       <h3>Log out</h3>
