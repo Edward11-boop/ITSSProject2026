@@ -17,9 +17,6 @@ import java.util.Map;
 @Service
 public class AiAssistantService {
 
-
-
-
     @Value("${openai.api.key}")
     private String apiKey ;
 
@@ -36,8 +33,6 @@ public class AiAssistantService {
 
     public String getRecommendation(double latOrigin, double longOrigin, LocalDateTime targetHour)
     {
-
-
         List<RoutesOption> routes = trafficService.getTrafficRoutes(latOrigin, longOrigin);
         WeatherInfo  weather = weatherService.getWeather(latOrigin, longOrigin , targetHour);
 
@@ -55,7 +50,7 @@ public class AiAssistantService {
                 + "vânt foarte puternic, ploaie torențială, căldură sau frig extrem), "
                 + "începe răspunsul cu '⚠️ ALERTĂ METEO:' și avertizează clar utilizatorul. "
                 + "Altfel, menționează vremea pe scurt, normal, fără alarmism. "
-                + "Răspunde în română, concis, într-un paragraf .";
+                + "Răspunde în română, concis, într-un paragraf . Specifica apoi toate rutele + km + timp ";
         HashMap<String , Object> message = new HashMap<>();
         message.put("role","user");
         message.put("content" , prompt);

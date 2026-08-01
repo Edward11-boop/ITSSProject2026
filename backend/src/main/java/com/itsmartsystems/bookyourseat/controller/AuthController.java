@@ -62,7 +62,8 @@ public class AuthController {
     public String resetPassword(@Valid @RequestBody ChangeNewPasswordRequest request){
         authService.forgotPassword(request);
         return "Successfully changing the password , next time note it ! :))" ;
-
     }
+
+
 
 }

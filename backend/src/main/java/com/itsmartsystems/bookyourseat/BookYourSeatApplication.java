@@ -13,5 +13,4 @@ public class BookYourSeatApplication {
     public static void main(String[] args) {
         SpringApplication.run(BookYourSeatApplication.class, args);
     }
-
 }

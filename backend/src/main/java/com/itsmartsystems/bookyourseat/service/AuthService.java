@@ -64,6 +64,7 @@ public class AuthService {
         return false;
     }
 
+
     // --- PASSWORD MUST BE CHANGED ---
     public void changePassword(ChangePasswordRequest request){
         Optional<User> u = userRepository.findByEmail(request.getEmail());
@@ -114,5 +115,6 @@ public class AuthService {
         // so that he cant reset the password 30 times in 15 minutes
         userRepository.save(user);
     }
+
 
 }
