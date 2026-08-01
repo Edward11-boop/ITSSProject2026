@@ -25,8 +25,6 @@ public class AuthController {
         return "User registered successfully !";
     }
 
-
-
     @PostMapping("/login")
     public String login(@Valid @RequestBody LoginRequest request)
     {
@@ -64,5 +62,10 @@ public class AuthController {
         return "Successfully changing the password , next time note it ! :))" ;
     }
 
+    @GetMapping("/me")
+    public UserDetails getMe()
+    {
+        return authService.UserDet();
+    }
 
 }
