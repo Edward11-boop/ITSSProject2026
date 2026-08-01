@@ -172,7 +172,7 @@ const InviteModal = () => {
               : "bg-[#6D28D9] hover:bg-[#5B21B6]"
           }`}
         >
-          Send invitation
+          Submit
         </button>
       </form>
     </div>
