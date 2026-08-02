@@ -1,13 +1,5 @@
-import React from 'react'
-import Sidebar from "../components/Sidebar";
-
-
-const Test = () => {
-  return (
-    <div>
-      
-    </div>
-  )
+﻿const Test = () => {
+  return <div />
 }
 
 export default Test

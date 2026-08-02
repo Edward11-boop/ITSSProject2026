@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 export default function SeatsPage() {
   return (
     <div className="p-8">
@@ -6,3 +7,14 @@ export default function SeatsPage() {
     </div>
   )
 }
+=======
+﻿import PageTitle from "@/components/common/PageTitle"
+
+export default function SeatsPage() {
+  return (
+    <div className="p-8">
+      <PageTitle title="Seat Map" description="Your seat map goes here." />
+    </div>
+  )
+}
+>>>>>>> ffd72e46e1143de213ba889e97c7cb6e4b3acb64
