@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 export default function SeatsPage() {
   return (
     <div className="p-8">
@@ -6,3 +7,6 @@ export default function SeatsPage() {
     </div>
   )
 }
+=======
+﻿export { default } from "./Seats"
+>>>>>>> ffd72e46e1143de213ba889e97c7cb6e4b3acb64

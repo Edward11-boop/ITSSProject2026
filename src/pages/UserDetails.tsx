@@ -1,4 +1,4 @@
-﻿﻿import FloatingIcon from '@/components/FloatingIcon';
+﻿import FloatingIcon from '@/components/FloatingIcon';
 import React, { useState } from 'react';
 
 const UserDetails = () => {
