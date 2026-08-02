@@ -18,14 +18,14 @@ const TypeOfReservation = () => {
 
                 <button
 
-                    className="rounded-[3rem] bg-[#F4F3FF] px-14 py-8 text-xl font-bold text-[#29255E] transition-all hover:scale-105 hover:bg-[#EBE9FE] hover:shadow-md"
+                    className="rounded-[3rem] bg-[#F4F3FF] border-b border-[#DDD6FE] px-14 py-8 text-xl font-bold text-[#29255E] transition-all hover:scale-105 hover:bg-[#EBE9FE] hover:shadow-md"
                 >
                     Rezervare recurenta
                 </button>
 
                 <button
 
-                    className="rounded-[3rem] bg-[#F4F3FF] px-14 py-8 text-xl font-bold text-[#29255E] transition-all hover:scale-105 hover:bg-[#EBE9FE] hover:shadow-md"
+                    className="rounded-[3rem] bg-[#F4F3FF] border-b border-[#DDD6FE] px-14 py-8 text-xl font-bold text-[#29255E] transition-all hover:scale-105 hover:bg-[#EBE9FE] hover:shadow-md"
                 >
                     Rezervare o singura zi
                 </button>
