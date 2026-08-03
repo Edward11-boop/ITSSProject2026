@@ -1,7 +1,8 @@
-﻿import FloatingIcon from '@/components/FloatingIcon';
+﻿import FloatingIcon from '@/components/AIAssistant/FloatingIcon';
 import React, { useState } from 'react';
 
 const UserDetails = () => {
+  const [isAssistantOpen, setIsAssistantOpen] = useState(false);
 
   // MOCK DATA - Date statice temporare
 
@@ -72,21 +73,21 @@ const UserDetails = () => {
               <h3 className="mb-4 font-bold text-[#29255E]">Date de contact</h3>
               <div className="flex flex-col gap-3">
                 <div className="flex items-center gap-4 rounded-xl bg-white p-3">
-                  <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#F4F3FF] text-[#8B5CF6]">📧</span>
+                  <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#F4F3FF] text-[#8B5CF6]">??</span>
                   <div>
                     <p className="text-[10px] text-gray-400">Email</p>
                     <p className="text-sm font-semibold text-[#29255E]">{userProfile.email}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-4 rounded-xl bg-white p-3">
-                  <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#F4F3FF] text-[#8B5CF6]">📞</span>
+                  <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#F4F3FF] text-[#8B5CF6]">??</span>
                   <div>
                     <p className="text-[10px] text-gray-400">Telefon</p>
                     <p className="text-sm font-semibold text-[#29255E]">{userProfile.phone}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-4 rounded-xl bg-white p-3">
-                  <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#F4F3FF] text-[#8B5CF6]">💼</span>
+                  <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#F4F3FF] text-[#8B5CF6]">??</span>
                   <div>
                     <p className="text-[10px] text-gray-400">Departament</p>
                     <p className="text-sm font-semibold text-[#29255E]">{userProfile.department}</p>
@@ -99,14 +100,14 @@ const UserDetails = () => {
               <h3 className="mb-4 font-bold text-[#29255E]">Preferinte rezervare</h3>
               <div className="flex flex-col gap-3">
                 <div className="flex items-center gap-4 rounded-xl bg-white p-3">
-                  <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#F4F3FF] text-[#8B5CF6]">💺</span>
+                  <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#F4F3FF] text-[#8B5CF6]">??</span>
                   <div>
                     <p className="text-[10px] text-gray-400">Scaun preferat</p>
                     <p className="text-sm font-semibold text-[#29255E]">{userProfile.preferredSeat}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-4 rounded-xl bg-white p-3">
-                  <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#F4F3FF] text-[#8B5CF6]">🕒</span>
+                  <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#F4F3FF] text-[#8B5CF6]">??</span>
                   <div>
                     <p className="text-[10px] text-gray-400">Interval orar</p>
                     <p className="text-sm font-semibold text-[#29255E]">{userProfile.preferredTime}</p>
@@ -167,9 +168,13 @@ const UserDetails = () => {
         </div>
       </div>
 
-      <FloatingIcon />
+      <FloatingIcon
+        isOpen={isAssistantOpen}
+        onClick={() => setIsAssistantOpen((isOpen) => !isOpen)}
+      />
     </div>
   );
 };
 
 export default UserDetails;
+

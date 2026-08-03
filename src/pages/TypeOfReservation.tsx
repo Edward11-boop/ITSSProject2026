@@ -1,7 +1,9 @@
-import React from 'react';
+﻿import FloatingIcon from '@/components/AIAssistant/FloatingIcon';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const TypeOfReservation = () => {
+    const [isAssistantOpen, setIsAssistantOpen] = useState(false);
     const navigate = useNavigate();
 
     return (
@@ -13,7 +15,7 @@ const TypeOfReservation = () => {
                 Tipul rezervarii
             </h1>
 
-            {/* Containerul pentru cele două butoane */}
+            {/* Containerul pentru cele douÄ butoane */}
             <div className="flex gap-8">
 
                 <button
@@ -32,6 +34,10 @@ const TypeOfReservation = () => {
 
             </div>
 
+            <FloatingIcon
+                isOpen={isAssistantOpen}
+                onClick={() => setIsAssistantOpen((isOpen) => !isOpen)}
+            />
         </div>
     );
 };
