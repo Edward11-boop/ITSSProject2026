@@ -1,4 +1,4 @@
-﻿import FloatingIcon from "@/components/AIAssistant/FloatingIcon";
+﻿import AIAssistant from "@/components/AIAssistant/AIAssistant";
 import { useState } from "react";
 import { Bell } from "lucide-react";
 
@@ -43,7 +43,6 @@ const initialNotifications = [
 ];
 
 const Notifications = () => {
-  const [isAssistantOpen, setIsAssistantOpen] = useState(false);
   const [notifications, setNotifications] =
     useState(initialNotifications);
 
@@ -174,14 +173,13 @@ const Notifications = () => {
           </div>
         ))}
       </div>
-      <FloatingIcon
-        isOpen={isAssistantOpen}
-        onClick={() => setIsAssistantOpen((isOpen) => !isOpen)}
-      />
+      <AIAssistant />
     </div>
   );
 };
 
 export default Notifications;
+
+
 
 

@@ -1,8 +1,6 @@
-﻿import FloatingIcon from "@/components/AIAssistant/FloatingIcon";
-import { useState } from "react"
+﻿import AIAssistant from "@/components/AIAssistant/AIAssistant";
 
 const Dashboard = () => {
-    const [isAssistantOpen, setIsAssistantOpen] = useState(false);
     return (
 
         <div className="min-h-screen bg-[#F8F9FE] p-8">
@@ -46,11 +44,7 @@ const Dashboard = () => {
 
                     </div>
                 </div>
-
-                <FloatingIcon
-                    isOpen={isAssistantOpen}
-                    onClick={() => setIsAssistantOpen((isOpen) => !isOpen)}
-                />
+                <AIAssistant />
 
             </div>
         </div>
@@ -58,4 +52,6 @@ const Dashboard = () => {
 }
 
 export default Dashboard
+
+
 

@@ -1,10 +1,6 @@
-﻿import FloatingIcon from '@/components/AIAssistant/FloatingIcon';
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+﻿import AIAssistant from "@/components/AIAssistant/AIAssistant";
 
 const TypeOfReservation = () => {
-    const [isAssistantOpen, setIsAssistantOpen] = useState(false);
-    const navigate = useNavigate();
 
     return (
 
@@ -33,13 +29,11 @@ const TypeOfReservation = () => {
                 </button>
 
             </div>
-
-            <FloatingIcon
-                isOpen={isAssistantOpen}
-                onClick={() => setIsAssistantOpen((isOpen) => !isOpen)}
-            />
+            <AIAssistant />
         </div>
     );
 };
 
 export default TypeOfReservation;
+
+

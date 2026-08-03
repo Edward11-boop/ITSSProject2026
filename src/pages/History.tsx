@@ -1,8 +1,7 @@
-﻿import FloatingIcon from '@/components/AIAssistant/FloatingIcon';
-import React, { useState } from 'react';
+﻿import AIAssistant from "@/components/AIAssistant/AIAssistant";
+import { useState } from 'react';
 
 const History = () => {
-    const [isAssistantOpen, setIsAssistantOpen] = useState(false);
     const [activeTab, setActiveTab] = useState('Viitoare');
 
 
@@ -123,11 +122,7 @@ const History = () => {
                         )}
                     </div>
                 </div>
-
-                <FloatingIcon
-                    isOpen={isAssistantOpen}
-                    onClick={() => setIsAssistantOpen((isOpen) => !isOpen)}
-                />
+                <AIAssistant />
             </div>
 
             {/* Aici este fundalul întunecat și POP-UP-UL de confirmare */}
@@ -172,5 +167,7 @@ const History = () => {
 };
 
 export default History;
+
+
 
 

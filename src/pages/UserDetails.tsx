@@ -1,8 +1,7 @@
-﻿import FloatingIcon from '@/components/AIAssistant/FloatingIcon';
-import React, { useState } from 'react';
+﻿import AIAssistant from "@/components/AIAssistant/AIAssistant";
+import { useState } from 'react';
 
 const UserDetails = () => {
-  const [isAssistantOpen, setIsAssistantOpen] = useState(false);
 
   // MOCK DATA - Date statice temporare
 
@@ -167,14 +166,12 @@ const UserDetails = () => {
           </div>
         </div>
       </div>
-
-      <FloatingIcon
-        isOpen={isAssistantOpen}
-        onClick={() => setIsAssistantOpen((isOpen) => !isOpen)}
-      />
+      <AIAssistant />
     </div>
   );
 };
 
 export default UserDetails;
+
+
 
