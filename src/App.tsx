@@ -16,7 +16,7 @@ import History from "@/pages/History"
 import UserDetails from "@/pages/UserDetails"
 import Seats from "@/pages/Seats"
 import TypeOfReservation from "./pages/TypeOfReservation"
-
+import Invite from "./pages/Invite"
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const location = useLocation()
@@ -26,7 +26,8 @@ export default function App() {
     "/notifications",
     "/history",
     "/user-details",
-    "/type-of-reservation"
+    "/type-of-reservation",
+    "/invite"
   ]
 
   const authPages = [
@@ -75,6 +76,7 @@ export default function App() {
             <Route path="/history" element={<History />} />
             <Route path="/user-details" element={<UserDetails />} />
             <Route path="/type-of-reservation" element={<TypeOfReservation/>} />
+            <Route path="/invite" element={<Invite/>} />
           </Routes>
         </main>
       </div>
