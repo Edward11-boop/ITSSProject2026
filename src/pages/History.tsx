@@ -1,7 +1,8 @@
-﻿import React, { useState } from 'react';
-import Sidebar from '../components/Sidebar';
+﻿import FloatingIcon from '@/components/AIAssistant/FloatingIcon';
+import React, { useState } from 'react';
 
 const History = () => {
+    const [isAssistantOpen, setIsAssistantOpen] = useState(false);
     const [activeTab, setActiveTab] = useState('Viitoare');
 
 
@@ -123,9 +124,10 @@ const History = () => {
                     </div>
                 </div>
 
-                <button className="fixed bottom-10 right-10 flex h-16 w-16 items-center justify-center rounded-full bg-[#8B5CF6] text-2xl text-white shadow-lg transition-transform hover:scale-105 hover:bg-[#7C3AED]">
-                    ✦
-                </button>
+                <FloatingIcon
+                    isOpen={isAssistantOpen}
+                    onClick={() => setIsAssistantOpen((isOpen) => !isOpen)}
+                />
             </div>
 
             {/* Aici este fundalul întunecat și POP-UP-UL de confirmare */}
@@ -170,3 +172,5 @@ const History = () => {
 };
 
 export default History;
+
+

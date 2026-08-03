@@ -35,6 +35,7 @@ export default function App() {
     "/forgot-password",
     "/change-password",
     "/legacy-home",
+    "/"
   ]
 
   const showDashboardLayout = dashboardPages.includes(location.pathname)
@@ -57,11 +58,11 @@ export default function App() {
             : "min-h-screen w-full"
         }
       >
-        {showFeatureTopbar ? <Topbar /> : <Navbar />}
+        {showFeatureTopbar && <Topbar />} 
 
         <main className={showDashboardLayout ? "flex-1 overflow-y-auto" : ""}>
           <Routes>
-            <Route path="/" element={<HomePage />} />
+            <Route path="/" element={<Home />} />
             <Route path="/seats" element={<SeatsPage />} />
             <Route path="/book-now" element={<Seats />} />
             <Route path="/legacy-home" element={isLoggedIn ? <Dashboard /> : <Home />} />
