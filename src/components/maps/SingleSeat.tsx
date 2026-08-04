@@ -18,7 +18,7 @@ const getSeatColor = (
 
     switch (status) {
         case 'available':
-            return type === 'room' ? 'bg-[#5EEAD4] text-[#134E4A]' : 'bg-[#A7F3D0] text-[#064E3B]';
+            return type === 'room' ? 'bg-[#85E2B7] text-[#1E1B4B] border border-[#61DEA5]' : 'bg-[#A7F3D0] border border-[#61DEA5] text-[#064E3B]';
         case 'occupied':
             return 'bg-[#FECACA] text-[#7F1D1D]';
         case 'unavailable':

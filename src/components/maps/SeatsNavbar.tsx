@@ -1,12 +1,15 @@
-﻿import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+
+export const seatTabs = ['Parter', 'T1,etaj 1', 'T1,etaj 2', 'T2,etaj 1', 'T2,etaj 2'] as const;
+
+type SeatTab = typeof seatTabs[number];
 
 type SeatsNavbarProps = {
-  activeTab: string;
-  setActiveTab: (tab: string) => void;
+  activeTab: SeatTab;
+  setActiveTab: (tab: SeatTab) => void;
 };
 
 const SeatsNavbar = ({ activeTab, setActiveTab }: SeatsNavbarProps) => {
-  const tabs = ['Parter', 'T1,etaj 1', 'T1,etaj 2', 'T2,etaj 1', 'T2,etaj 2'];
   const navigate = useNavigate();
 
   return (
@@ -22,7 +25,7 @@ const SeatsNavbar = ({ activeTab, setActiveTab }: SeatsNavbarProps) => {
           </button>
 
           <div className="flex gap-2">
-            {tabs.map((tab) => (
+            {seatTabs.map((tab) => (
               <button
                 type="button"
                 key={tab}
@@ -50,3 +53,4 @@ const SeatsNavbar = ({ activeTab, setActiveTab }: SeatsNavbarProps) => {
 };
 
 export default SeatsNavbar;
+

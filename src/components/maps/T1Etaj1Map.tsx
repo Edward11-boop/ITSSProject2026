@@ -21,7 +21,7 @@ const T1Etaj1Map = () => {
     };
 
     return (
-        <div className="relative mx-auto h-[700px] w-[870px] border border-gray-800 bg-white overflow-hidden shadow-sm">
+        <div className="relative mx-auto h-[700px] w-[870px] border border-gray-800 bg-[#F5F3FF] overflow-hidden shadow-sm">
 
             {/* ================= PEREȚII PRINCIPALI ================= */}
             <div className="absolute top-[400px] left-0 h-[1px] w-[680px] bg-gray-500"></div>
