@@ -10,7 +10,7 @@ const SeatsNavbar = ({ activeTab, setActiveTab }: SeatsNavbarProps) => {
   const navigate = useNavigate();
 
   return (
-    <div className="flex h-full flex-col bg-[#F8F9FA] p-8">
+    <div className="flex h-full flex-col bg-[#F5F3FF] p-8">
       <div className="mb-8 flex items-center justify-between">
         <div className="flex items-center gap-4">
           <button
