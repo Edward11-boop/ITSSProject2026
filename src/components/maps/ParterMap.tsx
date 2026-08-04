@@ -69,17 +69,17 @@ const ParterMap = () => {
                 <h3 className="text-sm font-semibold text-gray-800 leading-tight">Sala<br />sedinte<br />S0</h3>
 
                 {/* Masa L-Shape */}
-                <div className="absolute top-[50px] left-[70px] h-[45px] w-[200px] bg-[#C4C4C4]"></div>
-                <div className="absolute top-[95px] left-[225px] h-[75px] w-[45px] bg-[#C4C4C4]"></div>
+                <div className="absolute top-[80px] left-[70px] h-[45px] w-[200px] bg-[#C4C4C4]"></div>
+                <div className="absolute top-[115px] left-[225px] h-[75px] w-[45px] bg-[#C4C4C4]"></div>
 
                 {/* Scaune S0 (Selectare Integrala) */}
-                <SingleSeat selectedSeat={selectedSeat} onSelect={setSelectedSeat} id="P-S0" number="1" status="available" type="room" className="top-[15px] left-[80px]" />
-                <SingleSeat selectedSeat={selectedSeat} onSelect={setSelectedSeat} id="P-S0" number="2" status="available" type="room" className="top-[15px] left-[125px]" />
-                <SingleSeat selectedSeat={selectedSeat} onSelect={setSelectedSeat} id="P-S0" number="3" status="available" type="room" className="top-[15px] left-[170px]" />
+                <SingleSeat selectedSeat={selectedSeat} onSelect={setSelectedSeat} id="P-S0" number="1" status="available" type="room" className="top-[35px] left-[80px]" />
+                <SingleSeat selectedSeat={selectedSeat} onSelect={setSelectedSeat} id="P-S0" number="2" status="available" type="room" className="top-[35px] left-[125px]" />
+                <SingleSeat selectedSeat={selectedSeat} onSelect={setSelectedSeat} id="P-S0" number="3" status="available" type="room" className="top-[35px] left-[170px]" />
 
-                <SingleSeat selectedSeat={selectedSeat} onSelect={setSelectedSeat} id="P-S0" number="4" status="available" type="room" className="top-[45px] left-[280px]" />
-                <SingleSeat selectedSeat={selectedSeat} onSelect={setSelectedSeat} id="P-S0" number="5" status="available" type="room" className="top-[90px] left-[280px]" />
-                <SingleSeat selectedSeat={selectedSeat} onSelect={setSelectedSeat} id="P-S0" number="6" status="available" type="room" className="top-[135px] left-[280px]" />
+                <SingleSeat selectedSeat={selectedSeat} onSelect={setSelectedSeat} id="P-S0" number="4" status="available" type="room" className="top-[65px] left-[280px]" />
+                <SingleSeat selectedSeat={selectedSeat} onSelect={setSelectedSeat} id="P-S0" number="5" status="available" type="room" className="top-[110px] left-[280px]" />
+                <SingleSeat selectedSeat={selectedSeat} onSelect={setSelectedSeat} id="P-S0" number="6" status="available" type="room" className="top-[155px] left-[280px]" />
 
                 <SingleSeat selectedSeat={selectedSeat} onSelect={setSelectedSeat} id="P-S0" number="8" status="available" type="room" className="top-[140px] left-[110px]" />
                 <SingleSeat selectedSeat={selectedSeat} onSelect={setSelectedSeat} id="P-S0" number="7" status="available" type="room" className="top-[140px] left-[160px]" />
