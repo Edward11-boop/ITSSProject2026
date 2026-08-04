@@ -15,7 +15,7 @@ const T1Etaj2Map = () => {
 
 
     return (
-        <div className="relative mx-auto h-[700px] w-[870px] border border-gray-800 bg-white overflow-hidden shadow-sm">
+        <div className="relative mx-auto h-[700px] w-[870px] border border-gray-800 bg-[#F5F3FF] overflow-hidden shadow-sm">
             {/* ================= ZONA SALA GAMING G2 ================= */}
             <div className="absolute top-[40px] left-[60px] text-[15px] font-semibold text-gray-800 leading-tight">
                 Sala<br />Gaming<br />G2
