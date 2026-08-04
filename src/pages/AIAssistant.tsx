@@ -1,7 +1,7 @@
 ﻿import { useState } from "react"
-import AssistantWindow from "./AssistantWindow"
-import FloatingIcon from "./FloatingIcon"
-import type { AssistantStatus } from "./types"
+import AssistantWindow from "../components/AIAssistant/AssistantWindow"
+import FloatingIcon from "../components/AIAssistant/FloatingIcon"
+import type { AssistantStatus } from "../components/AIAssistant/types"
 
 const idleMessage =
   "Salut! Pot sa te ajut cu informatii despre vreme si trafic pentru drumul catre birou."

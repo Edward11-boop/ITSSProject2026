@@ -1,4 +1,4 @@
-﻿import AIAssistant from "@/components/AIAssistant/AIAssistant";
+﻿import AIAssistant from "@/pages/AIAssistant";
 
 const Dashboard = () => {
     return (
