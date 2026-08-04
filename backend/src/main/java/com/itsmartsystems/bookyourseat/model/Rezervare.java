@@ -5,7 +5,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
 
-@Document(collection = "rezervari")
+@Document(collection = "reservations")
 public class Rezervare {
 
     @Id
@@ -27,9 +27,19 @@ public class Rezervare {
     private LocalDateTime oraInceput;
     private LocalDateTime oraSfarsit;
 
-    private String stare;
-    private LocalDateTime dataCrearii;
+    public enum Stare{
+        IN_ASTEPTARE ,
+        APROBATA ,
+        RESPINSA,
+        ANULATA,
+        FINALIZATA
+    };
+    private Stare stare;
 
+    private LocalDateTime dataCrearii;
+    private String aprobatDe;
+    private LocalDateTime dataAprobarii ;
+    private String motivRespingere ;
 
     public Rezervare(String idSerie,
                      String idUtilizator,
@@ -37,7 +47,7 @@ public class Rezervare {
                      String idLoc,
                      LocalDateTime oraInceput,
                      LocalDateTime oraSfarsit,
-                     String stare,
+                     Stare stare,
                      LocalDateTime dataCrearii,
                      TipRezervare tipRezervare) {
 
@@ -117,11 +127,11 @@ public class Rezervare {
         this.oraSfarsit = oraSfarsit;
     }
 
-    public String getStare() {
+    public Stare getStare() {
         return stare;
     }
 
-    public void setStare(String stare) {
+    public void setStare(Stare stare) {
         this.stare = stare;
     }
 
@@ -131,5 +141,29 @@ public class Rezervare {
 
     public void setDataCrearii(LocalDateTime dataCrearii) {
         this.dataCrearii = dataCrearii;
+    }
+
+    public String getAprobatDe() {
+        return aprobatDe;
+    }
+
+    public void setAprobatDe(String aprobatDe) {
+        this.aprobatDe = aprobatDe;
+    }
+
+    public LocalDateTime getDataAprobarii() {
+        return dataAprobarii;
+    }
+
+    public void setDataAprobarii(LocalDateTime dataAprobarii) {
+        this.dataAprobarii = dataAprobarii;
+    }
+
+    public String getMotivRespingere() {
+        return motivRespingere;
+    }
+
+    public void setMotivRespingere(String motivRespingere) {
+        this.motivRespingere = motivRespingere;
     }
 }

@@ -13,11 +13,11 @@ public interface RezervareRepository extends MongoRepository<Rezervare, String> 
 
     List<Rezervare> findByIdUtilizator(String idUtilizator);
 
-    List<Rezervare> findByIdSpatiu(String idSpatiu);
+    List<Rezervare> findByIdSala(String idSala);
 
     List<Rezervare> findByIdLoc(String idLoc);
 
-    List<Rezervare> findByStare(String stare);
+    List<Rezervare> findByStare(Rezervare.Stare stare);
 
     List<Rezervare> findByTipRezervare(Rezervare.TipRezervare tipRezervare);
 
@@ -25,7 +25,7 @@ public interface RezervareRepository extends MongoRepository<Rezervare, String> 
 
     List<Rezervare> findByOraSfarsitBetween(LocalDateTime inceput, LocalDateTime sfarsit);
 
-    List<Rezervare> findByIdUtilizatorAndStare(String idUtilizator, String stare);
+    List<Rezervare> findByIdUtilizatorAndStare(String idUtilizator, Rezervare.Stare stare);
 
-    List<Rezervare> findByIdLocAndStare(String idLoc, String stare);
+    List<Rezervare> findByIdLocAndStare(String idLoc, Rezervare.Stare stare);
 }

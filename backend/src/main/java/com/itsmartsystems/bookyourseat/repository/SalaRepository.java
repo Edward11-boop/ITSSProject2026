@@ -9,8 +9,8 @@ import java.util.Optional;
 public interface SalaRepository extends MongoRepository<Sala , String> {
     Sala findByCod(String cod);
     Optional<List<Sala>> findByNivel(String nivel);
-    Optional<List<Sala>> finByTipSpatiu(String tipSpatiu);
-    Optional<List<Sala>> finByInchiriereToataSala(boolean inchiriereToataSala);
+    Optional<List<Sala>> findByTipSpatiu(String tipSpatiu);
+    Optional<List<Sala>> findByInchiriereToataSala(boolean inchiriereToataSala);
     Optional<List<Sala>> findByCapacitate(int capacitate);
     Optional<List<Sala>> findByStatus (String status);
 }

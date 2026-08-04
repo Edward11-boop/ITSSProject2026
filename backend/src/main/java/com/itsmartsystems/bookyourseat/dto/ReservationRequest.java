@@ -7,8 +7,6 @@ import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 public class ReservationRequest {
-
-
     @NotNull(message = "Must not be unchecked !")
     private Rezervare.TipRezervare bookingType;
 
