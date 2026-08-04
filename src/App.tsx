@@ -17,6 +17,7 @@ import UserDetails from "@/pages/UserDetails"
 import Seats from "@/pages/Seats"
 import TypeOfReservation from "./pages/TypeOfReservation"
 import Invite from "./pages/Invite"
+
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const location = useLocation()
