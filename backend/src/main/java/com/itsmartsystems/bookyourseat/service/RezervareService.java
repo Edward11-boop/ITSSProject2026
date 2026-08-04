@@ -87,4 +87,11 @@ public class RezervareService {
         rezervare.setTipRezervare(tipRezervare);
         return rezervareRepository.save(rezervare);
     }
+
+
+
+
+
+
+
 }
