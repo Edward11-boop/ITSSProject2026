@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface SalaRepository extends MongoRepository<Sala , String> {
-    Optional<Sala> findByCod(String cod);
+    Sala findByCod(String cod);
     Optional<List<Sala>> findByNivel(String nivel);
     Optional<List<Sala>> finByTipSpatiu(String tipSpatiu);
     Optional<List<Sala>> finByInchiriereToataSala(boolean inchiriereToataSala);

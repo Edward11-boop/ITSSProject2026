@@ -56,4 +56,10 @@ public class RezervareService {
         return rezervareRepository.save(r);
     }
 
+    public void stergereRezervare(String id)
+    {
+        Rezervare rezervare = rezervareRepository.findById(id).orElseThrow( () -> new IllegalArgumentException("Rezervare invalida !"));
+        rezervareRepository.delete(rezervare);
+    }
+
 }
