@@ -1,5 +1,4 @@
-﻿import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+﻿import { useState } from 'react';
 import ParterMap from '@/components/maps/ParterMap';
 import SeatsNavbar from '@/components/maps/SeatsNavbar';
 
