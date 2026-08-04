@@ -1,9 +1,11 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import ParterMap from '@/components/maps/ParterMap';
 import SeatsNavbar, { seatTabs } from '@/components/maps/SeatsNavbar';
 import T1Etaj1Map from '@/components/maps/T1Etaj1Map';
 import T2Etaj1Map from '@/components/maps/T2Etaj1Map';
 import T1Etaj2Map from '@/components/maps/T1Etaj2Map';
+import FloatingIcon from '@/components/AIAssistant/FloatingIcon';
+import AIAssistant from './AIAssistant';
 
 const mapByTab = {
   Parter: <ParterMap />,
@@ -26,6 +28,8 @@ const Seats = () => {
           Harta pentru {activeTab} este in lucru...
         </div>
       )}
+
+      <AIAssistant/>
     </div>
   );
 };
