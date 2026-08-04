@@ -62,4 +62,29 @@ public class RezervareService {
         rezervareRepository.delete(rezervare);
     }
 
+    public Rezervare modificareRezervare(String id , String idUtilizator, String codSala, String idLoc, LocalDateTime oraInceput, LocalDateTime oraSfarsit, Rezervare.TipRezervare tipRezervare)
+    {
+        Optional<Sala> sala = Optional.ofNullable(salaRepository.findByCod(codSala));
+        if(sala.isEmpty()) throw new IllegalArgumentException("Sala este goala !");
+
+        Optional<Loc> loc = locRepository.findById(idLoc);
+        if(loc.isEmpty()) throw new IllegalArgumentException("Locul este indisponibil !");
+
+        if(!loc.get().getSalaId().equals(sala.get().getId())) throw new IllegalArgumentException("Salile nu corespund !");
+
+        List<Rezervare> rezervariExistente = rezervareRepository.findByIdLocAndStare(loc.get().getId() , "ACTIVA");
+        for(Rezervare rezervare : rezervariExistente)
+        {
+            if (rezervare.getId().equals(id)) continue;
+            if(oraInceput.isBefore(rezervare.getOraSfarsit()) && oraSfarsit.isAfter(rezervare.getOraInceput())) throw new IllegalArgumentException("Loc rezervat in acest interval orar !");
+        }
+
+        Rezervare rezervare = rezervareRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Rezervare de modificat invalida !"));
+        rezervare.setIdSala(sala.get().getId());
+        rezervare.setIdLoc(idLoc);
+        rezervare.setOraInceput(oraInceput);
+        rezervare.setOraSfarsit(oraSfarsit);
+        rezervare.setTipRezervare(tipRezervare);
+        return rezervareRepository.save(rezervare);
+    }
 }
