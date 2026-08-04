@@ -27,9 +27,9 @@ const SeatsNavbar = ({ activeTab, setActiveTab }: SeatsNavbarProps) => {
                 type="button"
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                className={`rounded-full px-6 py-2 text-sm font-bold transition-all ${activeTab === tab
-                  ? 'bg-[#8B5CF6] text-white'
-                  : 'bg-[#E5E0FF] text-[#29255E] hover:bg-[#D4CBFF]'
+                className={`rounded-full px-6 py-2 border border-[#000000] text-sm font-semibold transition-all ${activeTab === tab
+                  ? 'bg-[#6D28D9] text-white'
+                  : 'bg-[#C4B5FD] text-[#1E1B4B] hover:bg-[#D4CBFF]'
                   }`}
               >
                 {tab}
@@ -41,7 +41,7 @@ const SeatsNavbar = ({ activeTab, setActiveTab }: SeatsNavbarProps) => {
           </div>
         </div>
 
-        <button type="button" className="rounded-full bg-[#8B5CF6] px-8 py-3 font-bold text-white transition-all hover:bg-[#7C3AED] hover:shadow-lg">
+        <button type="button" className="rounded-full bg-[#8B5CF6] px-8 py-3 font-semibold text-white transition-all hover:bg-[#7C3AED] hover:shadow-lg">
           Confirm your selection
         </button>
       </div>
