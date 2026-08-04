@@ -27,6 +27,7 @@ export default function App() {
     "/history",
     "/user-details",
     "/type-of-reservation",
+    "/book-now",
     "/invite"
   ]
 
@@ -64,7 +65,6 @@ export default function App() {
         <main className={showDashboardLayout ? "flex-1 overflow-y-auto" : ""}>
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/seats" element={<SeatsPage />} />
             <Route path="/book-now" element={<Seats />} />
             <Route path="/legacy-home" element={isLoggedIn ? <Dashboard /> : <Home />} />
             <Route path="/login" element={<Login setIsLoggedIn={setIsLoggedIn} />} />
