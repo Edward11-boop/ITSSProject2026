@@ -6,7 +6,7 @@ const Seats = () => {
   const [activeTab, setActiveTab] = useState('Parter');
 
   return (
-    <div>
+    <div className="bg-[#F5F3FF]">
       <SeatsNavbar activeTab={activeTab} setActiveTab={setActiveTab} />
 
       {activeTab === 'Parter' && <ParterMap />}

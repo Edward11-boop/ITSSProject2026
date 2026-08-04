@@ -7,7 +7,7 @@ const ParterMap = () => {
 
     return (
         // Containerul principal al hartii (Fixat proportional pentru a pastra design-ul)
-        <div className="relative mx-auto h-[650px] w-full max-w-[1000px] border border-gray-800 bg-white overflow-hidden shadow-sm">
+        <div className="relative mx-auto h-[650px] w-full max-w-[1000px] border border-gray-800 bg-[#F5F3FF] overflow-hidden shadow-sm">
 
             {/* ----------------- PERETII (Liniile despartitoare subtiri) ----------------- */}
 
