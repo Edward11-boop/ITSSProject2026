@@ -21,7 +21,7 @@ const T1Etaj1Map = () => {
     };
 
     return (
-        <div className="relative mx-auto h-[700px] w-[870px] border border-gray-800 bg-white overflow-hidden shadow-sm">
+        <div className="relative mx-auto h-[700px] w-[870px] border border-gray-800 bg-[#F5F3FF] overflow-hidden shadow-sm">
 
             {/* ================= PEREȚII PRINCIPALI ================= */}
             <div className="absolute top-[400px] left-0 h-[1px] w-[680px] bg-gray-500"></div>
@@ -37,15 +37,15 @@ const T1Etaj1Map = () => {
                 Zona Stand-<br />Up Desks ,<br />SD 1
             </div>
 
-            <div className="absolute top-[80px] left-[100px] h-[70px] w-[70px] rounded-full bg-[#C4C4C4]"></div>
+            <div className="absolute top-[80px] left-[100px] h-[70px] w-[70px] rounded-full border border-[#7C7777] bg-[#C1BDD2]"></div>
             <SingleSeat id="T1-SD1-01" type="room" number="1" status="available" selectedSeat={getSelectedState("T1-SD1-01")} onSelect={handleSeatClick} className="top-[60px] left-[170px]" />
             <SingleSeat id="T1-SD1-02" type="room" number="2" status="available" selectedSeat={getSelectedState("T1-SD1-02")} onSelect={handleSeatClick} className="top-[140px] left-[60px]" />
 
-            <div className="absolute top-[170px] left-[230px] h-[70px] w-[70px] rounded-full bg-[#C4C4C4]"></div>
+            <div className="absolute top-[170px] left-[230px] h-[70px] w-[70px] rounded-full border border-[#7C7777] bg-[#C1BDD2]"></div>
             <SingleSeat id="T1-SD1-03" type="room" number="3" status="available" selectedSeat={getSelectedState("T1-SD1-03")} onSelect={handleSeatClick} className="top-[120px] left-[290px]" />
             <SingleSeat id="T1-SD1-04" type="room" number="4" status="available" selectedSeat={getSelectedState("T1-SD1-04")} onSelect={handleSeatClick} className="top-[230px] left-[190px]" />
 
-            <div className="absolute top-[280px] left-[90px] h-[70px] w-[70px] rounded-full bg-[#C4C4C4]"></div>
+            <div className="absolute top-[280px] left-[90px] h-[70px] w-[70px] rounded-full border border-[#7C7777] bg-[#C1BDD2]"></div>
             <SingleSeat id="T1-SD1-05" type="room" number="5" status="available" selectedSeat={getSelectedState("T1-SD1-05")} onSelect={handleSeatClick} className="top-[270px] left-[170px]" />
             <SingleSeat id="T1-SD1-06" type="room" number="6" status="available" selectedSeat={getSelectedState("T1-SD1-06")} onSelect={handleSeatClick} className="top-[340px] left-[50px]" />
 
@@ -55,9 +55,9 @@ const T1Etaj1Map = () => {
                 Sala<br />Evenimente,<br />E1
             </div>
 
-            <div className="absolute top-[30px] left-[610px] h-[280px] w-[35px] bg-[#C4C4C4]"></div>
-            <div className="absolute top-[30px] left-[750px] h-[280px] w-[35px] bg-[#C4C4C4]"></div>
-            <div className="absolute top-[275px] left-[610px] h-[35px] w-[175px] bg-[#C4C4C4]"></div>
+            <div className="absolute top-[30px] left-[610px] h-[280px] w-[35px] border border-[#7C7777] bg-[#C1BDD2]"></div>
+            <div className="absolute top-[30px] left-[750px] h-[280px] w-[35px] border border-[#7C7777] bg-[#C1BDD2]"></div>
+            <div className="absolute top-[275px] left-[610px] h-[35px] w-[175px] border-x border-b border-[#7C7777] bg-[#C1BDD2]"></div>
 
             <SingleSeat id="T1-E1-07" type="room" number="7" status="available" selectedSeat={getSelectedState("T1-E1-07")} onSelect={handleSeatClick} className="top-[30px] left-[570px]" />
             <SingleSeat id="T1-E1-08" type="room" number="8" status="available" selectedSeat={getSelectedState("T1-E1-08")} onSelect={handleSeatClick} className="top-[65px] left-[570px]" />
@@ -83,7 +83,7 @@ const T1Etaj1Map = () => {
 
 
             {/* ================= ZONA DREAPTA-JOS (E1 - OPEN SPACE) ================= */}
-            <div className="absolute top-[485px] left-[750px] h-[160px] w-[50px] bg-[#C4C4C4]"></div>
+            <div className="absolute top-[485px] left-[750px] h-[160px] w-[50px] border border-[#7C7777] bg-[#C1BDD2]"></div>
 
             <SingleSeat id="T1-E1-26" type="room" number="26" status="available" selectedSeat={getSelectedState("T1-E1-26")} onSelect={handleSeatClick} className="top-[505px] left-[710px]" />
             <SingleSeat id="T1-E1-27" type="room" number="27" status="available" selectedSeat={getSelectedState("T1-E1-27")} onSelect={handleSeatClick} className="top-[595px] left-[710px]" />
@@ -96,7 +96,7 @@ const T1Etaj1Map = () => {
                 Sala<br />sedinte,<br />S1
             </div>
 
-            <div className="absolute top-[485px] left-[540px] h-[160px] w-[50px] bg-[#C4C4C4]"></div>
+            <div className="absolute top-[485px] left-[540px] h-[160px] w-[50px] border border-[#7C7777] bg-[#C1BDD2]"></div>
 
             <SingleSeat id="T1-S1-01" type="room" number="1" status="available" selectedSeat={getSelectedState("T1-S1-01")} onSelect={handleSeatClick} className="top-[445px] left-[550px]" />
 

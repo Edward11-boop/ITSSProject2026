@@ -18,13 +18,13 @@ const getSeatColor = (
 
     switch (status) {
         case 'available':
-            return type === 'room' ? 'bg-[#5EEAD4] text-[#134E4A]' : 'bg-[#A7F3D0] text-[#064E3B]';
+            return type === 'room' ? 'bg-[#85E2B7] text-[#1E1B4B] border border-[#61DEA5]' : 'bg-[#A7F3D0] border border-[#61DEA5] text-[#064E3B]';
         case 'occupied':
-            return 'bg-[#FECACA] text-[#7F1D1D]';
+            return 'bg-[#FECACA] text-[#1E1B4B] border border-[#F5A1A1]';
         case 'unavailable':
-            return 'bg-[#D1D5DB] text-gray-500 cursor-not-allowed';
+            return 'bg-[#C1BDD2] border border-[#7C7777] text-gray-500 cursor-not-allowed';
         default:
-            return 'bg-gray-200';
+            return 'bg-[#C1BDD2]';
     }
 };
 

@@ -1,20 +1,32 @@
-﻿import { useState } from 'react'
-import { Link } from 'react-router-dom'
+﻿import {
+  useState,
+  type ChangeEvent,
+  type FormEvent,
+  type Dispatch,
+  type SetStateAction,
+} from "react"
+import { Link, useNavigate } from "react-router-dom"
 
-const Register = () => {
+type RegisterProps = {
+  setIsLoggedIn?: Dispatch<SetStateAction<boolean>>
+}
+
+const Register = (_props: RegisterProps) => {
+  const navigate = useNavigate()
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
-    role: "DEV",
     password: "",
     repeatPassword: "",
+    role: "DEV",
   })
 
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
 
   const handleChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
     const { name, value } = e.target
 
@@ -26,138 +38,206 @@ const Register = () => {
     setError("")
   }
 
-  const handleSubmit = (
-    e: FormEvent<HTMLFormElement>
+  const handleSubmit = async (
+    e: FormEvent<HTMLFormElement>,
   ) => {
     e.preventDefault()
 
     if (formData.password !== formData.repeatPassword) {
-      setError("Parolele introduse nu coincid.")
+      setError("Passwords do not match!")
       return
     }
 
     setError("")
     setLoading(true)
 
-    const registerData = {
-      name: formData.name,
-      email: formData.email,
-      role: formData.role,
-      password: formData.password,
-    }
+    try {
+      const registerResponse = await fetch(
+        "http://localhost:8080/register",
+        {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            name: formData.name.trim(),
+            email: formData.email.trim(),
+            password: formData.password,
+            role: formData.role,
+          }),
+        },
+      )
 
-    console.log("Datele trimise:", registerData)
+      if (!registerResponse.ok) {
+        const message = await registerResponse.text()
 
-    // Simulare eroare până când este conectat backendul
-    window.setTimeout(() => {
+        setError(
+          message || "Registration could not be completed.",
+        )
+        return
+      }
+
+      navigate("/change-password", {
+        state: {
+          email: formData.email.trim(),
+          oldPassword: formData.password,
+        },
+      })
+    } catch {
+      setError(
+        "Nu am putut contacta serverul. Încearcă din nou.",
+      )
+    } finally {
       setLoading(false)
-      setError("Înregistrarea nu a putut fi efectuată.")
-    }, 1000)
+    }
   }
 
   const isValidEmail =
     /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(
-      formData.email.trim()
+      formData.email.trim(),
     )
 
   const isInactive =
     formData.name.trim() === "" ||
     !isValidEmail ||
-    formData.role === "" ||
     formData.password === "" ||
-    formData.repeatPassword === ""
+    formData.repeatPassword === "" ||
+    loading
 
   return (
-    <>
-      <AuthLayout title="Register">
-        <form
-          onSubmit={handleSubmit}
-          className="flex flex-col gap-4"
+    <div className="flex min-h-screen items-center justify-center bg-[#F5F3FF] px-4">
+      <form
+        onSubmit={handleSubmit}
+        className="flex w-full max-w-md flex-col gap-4 rounded-xl border-2 border-[#DDD6FE] bg-white p-8 text-[#1E1B4B]"
+      >
+        <h1 className="mb-4 text-center text-[48px]">
+          Register
+        </h1>
+
+        <label
+          htmlFor="name"
+          className="text-[24px]"
         >
-          <FormField
-            id="name"
-            name="name"
-            label="Name"
-            value={formData.name}
-            onChange={handleChange}
-          />
+          Name
+        </label>
 
-          <FormField
-            id="email"
-            name="email"
-            label="Email"
-            type="email"
-            value={formData.email}
-            onChange={handleChange}
-          />
+        <input
+          id="name"
+          name="name"
+          type="text"
+          placeholder="Enter your name"
+          value={formData.name}
+          onChange={handleChange}
+          required
+          className="w-full rounded-lg border-2 border-[#DDD6FE] px-4 py-2 focus:border-[#6D28D9] focus:outline-none"
+        />
 
-          <SelectField
-            id="role"
-            name="role"
-            label="Role"
-            value={formData.role}
-            onChange={handleChange}
-            options={roleOptions}
-          />
+        <label
+          htmlFor="email"
+          className="text-[24px]"
+        >
+          Email
+        </label>
 
-          <FormField
-            id="password"
-            name="password"
-            label="Password"
-            type="password"
-            value={formData.password}
-            onChange={handleChange}
-          />
+        <input
+          id="email"
+          name="email"
+          type="email"
+          placeholder="Enter your email"
+          value={formData.email}
+          onChange={handleChange}
+          required
+          className="w-full rounded-lg border-2 border-[#DDD6FE] px-4 py-2 focus:border-[#6D28D9] focus:outline-none"
+        />
 
-          <FormField
-            id="repeatPassword"
-            name="repeatPassword"
-            label="Repeat password"
-            type="password"
-            value={formData.repeatPassword}
-            onChange={handleChange}
-          />
+        <label
+          htmlFor="role"
+          className="text-[24px]"
+        >
+          Role
+        </label>
 
-          <SubmitButton
-            disabled={isInactive || loading}
-            loading={loading}
-            label="Register"
-            loadingLabel="Registering..."
-          />
+        <select
+          id="role"
+          name="role"
+          value={formData.role}
+          onChange={handleChange}
+          required
+          className="w-full rounded-lg border-2 border-[#DDD6FE] bg-white px-4 py-2 focus:border-[#6D28D9] focus:outline-none"
+        >
+          <option value="DEV">Developer</option>
+          <option value="PM">Project Manager</option>
+          <option value="MANAGER">Manager</option>
+          <option value="CEO">CEO</option>
+        </select>
 
-          <AuthFooterLink
-            text="Do you already have an account?"
+        <label
+          htmlFor="password"
+          className="text-[24px]"
+        >
+          Password
+        </label>
+
+        <input
+          id="password"
+          name="password"
+          type="password"
+          placeholder="Enter your password"
+          value={formData.password}
+          onChange={handleChange}
+          required
+          className="w-full rounded-lg border-2 border-[#DDD6FE] px-4 py-2 focus:border-[#6D28D9] focus:outline-none"
+        />
+
+        <label
+          htmlFor="repeatPassword"
+          className="text-[24px]"
+        >
+          Repeat password
+        </label>
+
+        <input
+          id="repeatPassword"
+          name="repeatPassword"
+          type="password"
+          placeholder="Repeat your password"
+          value={formData.repeatPassword}
+          onChange={handleChange}
+          required
+          className="w-full rounded-lg border-2 border-[#DDD6FE] px-4 py-2 focus:border-[#6D28D9] focus:outline-none"
+        />
+
+        {error && (
+          <p className="text-sm text-red-600">
+            {error}
+          </p>
+        )}
+
+        <button
+          type="submit"
+          disabled={isInactive}
+          className={`mt-4 rounded-lg p-2 text-[24px] font-semibold transition-colors ${
+            isInactive
+              ? "cursor-not-allowed bg-[#DDD6FE] text-[#6B7280]"
+              : "bg-[#6D28D9] text-white hover:bg-[#5B21B6]"
+          }`}
+        >
+          {loading ? "Submitting..." : "Register"}
+        </button>
+
+        <p className="mt-4 text-center text-[20px] text-[#6B7280]">
+          Do you already have an account?
+
+          <Link
             to="/login"
-            linkLabel="Log in"
-          />
-        </form>
-      </AuthLayout>
-
-      {error && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
-          <ErrorPopUp
-            title="Registration failed"
-            message={error}
-            sideMessage={
-              <>
-                Verificați dacă ați introdus corect datele.
-                <br/> 
-                Dacă aveți deja un
-                cont, vă puteți autentifica.{" "}
-                <Link
-                  to="/login"
-                  onClick={() => setError("")}
-                  className="font-semibold text-[#6B72809] hover:underline"
-                >
-                  Log in
-                </Link>
-              </>
-            }
-            onClose={() => setError("")}
-          />
-        </div>
-      )}
-    </>
+            className="ml-1 font-semibold text-[#6D28D9] hover:underline"
+          >
+            Log in
+          </Link>
+        </p>
+      </form>
+    </div>
   )
 }
 

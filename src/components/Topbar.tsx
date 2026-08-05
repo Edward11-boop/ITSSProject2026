@@ -107,7 +107,7 @@ const Topbar = () => {
                     <div className="ml-3 flex items-center gap-4 text-[#1E1B4B] font-bold">
                     
                       <img src={details}
-                          alt="Invite"
+                          alt="details"
                           className="h-6 w-6"
                       />
 
