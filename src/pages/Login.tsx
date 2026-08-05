@@ -1,12 +1,5 @@
-﻿import { useState, type Dispatch, type SetStateAction } from "react"
-import { useNavigate, Link } from "react-router-dom"
-import AuthFooterLink from "@/components/forms/AuthFooterLink"
-import AuthLayout from "@/components/forms/AuthLayout"
-import AuthMessage from "@/components/forms/AuthMessage"
-import FormField from "@/components/forms/FormField"
-import SelectField from "@/components/forms/SelectField"
-import SubmitButton from "@/components/forms/SubmitButton"
-import ErrorPopUp from "@/components/ErrorPopUp"
+﻿import { useState, type Dispatch, type SetStateAction } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 
 type LoginProps = {
   setIsLoggedIn?: Dispatch<SetStateAction<boolean>>

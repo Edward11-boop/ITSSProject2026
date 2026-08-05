@@ -1,7 +1,6 @@
-﻿import { useState } from "react"
-import NotificationHeader from "@/components/notifications/NotificationHeader"
-import NotificationItem, { type Notification } from "@/components/notifications/NotificationItem"
-import FloatingIcon from "@/components/FloatingIcon"
+﻿import AIAssistant from "@/pages/AIAssistant";
+import { useState } from "react";
+import { Bell } from "lucide-react";
 
 const initialNotifications: Notification[] = [
   {
@@ -122,10 +121,13 @@ const Notifications = () => {
           />
         ))}
       </div>
-
-      <FloatingIcon />
+      <AIAssistant />
     </div>
   )
 }
 
-export default Notifications
+export default Notifications;
+
+
+
+

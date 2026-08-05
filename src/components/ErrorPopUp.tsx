@@ -1,6 +1,13 @@
 import React from 'react'
 
-const ErrorPopUp = ({title, message, sideMessage, onClose}) => {
+type ErrorPopUpProps = {
+  title: string
+  message: string
+  sideMessage: string
+  onClose: () => void
+}
+
+const ErrorPopUp = ({title, message, sideMessage, onClose}: ErrorPopUpProps) => {
   return (
     <div className="w-full max-w-xl rounded-[48px] border border-[#C4B5FD] bg-[#FFFFFF] px-10 py-10 shadow-xl">
         <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-red-100 text-red-400">

@@ -1,23 +1,5 @@
-﻿import {
-  useState,
-  type ChangeEvent,
-  type FormEvent,
-} from "react"
-import { Link } from "react-router-dom"
-
-import AuthFooterLink from "@/components/forms/AuthFooterLink"
-import AuthLayout from "@/components/forms/AuthLayout"
-import FormField from "@/components/forms/FormField"
-import SelectField from "@/components/forms/SelectField"
-import SubmitButton from "@/components/forms/SubmitButton"
-import ErrorPopUp from "@/components/ErrorPopUp"
-
-const roleOptions = [
-  { value: "DEV", label: "Developer" },
-  { value: "PM", label: "Project Manager" },
-  { value: "MANAGER", label: "Manager" },
-  { value: "CEO", label: "CEO" },
-]
+﻿import { useState } from 'react'
+import { Link } from 'react-router-dom'
 
 const Register = () => {
   const [formData, setFormData] = useState({
