@@ -26,10 +26,11 @@ const T2Etaj1Map = () => {
         </h3>
 
         <div className="absolute left-[20px] top-0 h-full w-full">
-          <div className="absolute left-[48px] top-[130px] h-[180px] w-[75px] bg-[#C4C4C4]" />
+          <div className="absolute left-[48px] top-[130px] h-[180px] w-[75px] border border-[#7C7777] bg-[#C1BDD2]" />
 
           <SingleSeat
             id="T2-404-01"
+            type="room"
             number="1"
             status="available"
             selectedSeat={getSelectedState('T2-404-01')}
@@ -38,6 +39,7 @@ const T2Etaj1Map = () => {
           />
           <SingleSeat
             id="T2-404-02"
+            type="room"
             number="2"
             status="available"
             selectedSeat={getSelectedState('T2-404-02')}
@@ -46,6 +48,7 @@ const T2Etaj1Map = () => {
           />
           <SingleSeat
             id="T2-404-03"
+            type="room"
             number="3"
             status="available"
             selectedSeat={getSelectedState('T2-404-03')}
@@ -54,6 +57,7 @@ const T2Etaj1Map = () => {
           />
           <SingleSeat
             id="T2-404-04"
+            type="room"
             number="4"
             status="available"
             selectedSeat={getSelectedState('T2-404-04')}
@@ -62,6 +66,7 @@ const T2Etaj1Map = () => {
           />
           <SingleSeat
             id="T2-404-05"
+            type="room"
             number="5"
             status="available"
             selectedSeat={getSelectedState('T2-404-05')}
@@ -70,6 +75,7 @@ const T2Etaj1Map = () => {
           />
           <SingleSeat
             id="T2-404-06"
+            type="room"
             number="6"
             status="available"
             selectedSeat={getSelectedState('T2-404-06')}
@@ -78,6 +84,7 @@ const T2Etaj1Map = () => {
           />
           <SingleSeat
             id="T2-404-07"
+            type="room"
             number="7"
             status="available"
             selectedSeat={getSelectedState('T2-404-07')}
@@ -86,6 +93,7 @@ const T2Etaj1Map = () => {
           />
           <SingleSeat
             id="T2-404-08"
+            type="room"
             number="8"
             status="available"
             selectedSeat={getSelectedState('T2-404-08')}
@@ -94,6 +102,7 @@ const T2Etaj1Map = () => {
           />
           <SingleSeat
             id="T2-404-09"
+            type="room"
             number="9"
             status="available"
             selectedSeat={getSelectedState('T2-404-09')}
@@ -102,6 +111,7 @@ const T2Etaj1Map = () => {
           />
           <SingleSeat
             id="T2-404-10"
+            type="room"
             number="10"
             status="available"
             selectedSeat={getSelectedState('T2-404-10')}
@@ -121,19 +131,19 @@ const T2Etaj1Map = () => {
         B1
       </h3>
 
-        <div className="absolute left-[300px] top-[80px] h-[50px] w-[170px] bg-[#C4C4C4]" />
-        <div className="absolute left-[300px] top-[175px] h-[50px] w-[170px] bg-[#C4C4C4]" />
-        <div className="absolute left-[300px] top-[270px] h-[50px] w-[170px] bg-[#C4C4C4]" />
-        <div className="absolute left-[300px] top-[365px] h-[50px] w-[170px] bg-[#C4C4C4]" />
-        <div className="absolute left-[300px] top-[460px] h-[50px] w-[170px] bg-[#C4C4C4]" />
-        <div className="absolute left-[300px] top-[560px] h-[50px] w-[170px] bg-[#C4C4C4]" />
+        <div className="absolute left-[300px] top-[80px] h-[50px] w-[170px] border border-[#7C7777] bg-[#C1BDD2]" />
+        <div className="absolute left-[300px] top-[175px] h-[50px] w-[170px] border border-[#7C7777] bg-[#C1BDD2]" />
+        <div className="absolute left-[300px] top-[270px] h-[50px] w-[170px] border border-[#7C7777] bg-[#C1BDD2]" />
+        <div className="absolute left-[300px] top-[365px] h-[50px] w-[170px] border border-[#7C7777] bg-[#C1BDD2]" />
+        <div className="absolute left-[300px] top-[460px] h-[50px] w-[170px] border border-[#7C7777] bg-[#C1BDD2]" />
+        <div className="absolute left-[300px] top-[560px] h-[50px] w-[170px] border border-[#7C7777] bg-[#C1BDD2]" />
     
-        <div className="absolute left-[700px] top-[80px] h-[50px] w-[170px] bg-[#C4C4C4]" />
-        <div className="absolute left-[700px] top-[175px] h-[50px] w-[170px] bg-[#C4C4C4]" />
-        <div className="absolute left-[700px] top-[270px] h-[50px] w-[170px] bg-[#C4C4C4]" />
-        <div className="absolute left-[700px] top-[365px] h-[50px] w-[170px] bg-[#C4C4C4]" />
-        <div className="absolute left-[700px] top-[460px] h-[50px] w-[170px] bg-[#C4C4C4]" />
-        <div className="absolute left-[700px] top-[560px] h-[50px] w-[170px] bg-[#C4C4C4]" />
+        <div className="absolute left-[700px] top-[80px] h-[50px] w-[170px] border border-[#7C7777] bg-[#C1BDD2]" />
+        <div className="absolute left-[700px] top-[175px] h-[50px] w-[170px] border border-[#7C7777] bg-[#C1BDD2]" />
+        <div className="absolute left-[700px] top-[270px] h-[50px] w-[170px] border border-[#7C7777] bg-[#C1BDD2]" />
+        <div className="absolute left-[700px] top-[365px] h-[50px] w-[170px] border border-[#7C7777] bg-[#C1BDD2]" />
+        <div className="absolute left-[700px] top-[460px] h-[50px] w-[170px] border border-[#7C7777] bg-[#C1BDD2]" />
+        <div className="absolute left-[700px] top-[560px] h-[50px] w-[170px] border border-[#7C7777] bg-[#C1BDD2]" />
 
         <SingleSeat
         id="T2-B1-09"

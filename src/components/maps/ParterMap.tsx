@@ -1,4 +1,4 @@
-﻿import { useState } from 'react';
+import { useState } from 'react';
 import SingleSeat from '@/components/maps/SingleSeat';
 
 const ParterMap = () => {
@@ -41,14 +41,14 @@ const ParterMap = () => {
                 <h3 className="mb-4 text-sm font-semibold leading-tight text-gray-800">Zona Stand-Up<br />Desks , SD0</h3>
 
                 {/* Biroul 1 (Sus) */}
-                <div className="absolute top-[85px] left-[10px] h-[50px] w-[150px] bg-[#C4C4C4]"></div>
+                <div className="absolute top-[85px] left-[10px] h-[50px] w-[150px] border border-[#7C7777] bg-[#C1BDD2]"></div>
                 <SingleSeat selectedSeat={getSelectedState("P-SD0-01")} onSelect={handleSeatClick} id="P-SD0-01" number="1" status="available" className="top-[50px] left-[30px]" />
                 <SingleSeat selectedSeat={getSelectedState("P-SD0-02")} onSelect={handleSeatClick} id="P-SD0-02" number="2" status="available" className="top-[50px] left-[100px]" />
                 <SingleSeat selectedSeat={getSelectedState("P-SD0-03")} onSelect={handleSeatClick} id="P-SD0-03" number="3" status="available" className="top-[145px] left-[30px]" />
                 <SingleSeat selectedSeat={getSelectedState("P-SD0-04")} onSelect={handleSeatClick} id="P-SD0-04" number="4" status="occupied" className="top-[145px] left-[100px]" />
 
                 {/* Biroul 2 (Jos) */}
-                <div className="absolute top-[225px] left-[10px] h-[50px] w-[150px] bg-[#C4C4C4]"></div>
+                <div className="absolute top-[225px] left-[10px] h-[50px] w-[150px] border border-[#7C7777] bg-[#C1BDD2]"></div>
                 <SingleSeat selectedSeat={getSelectedState("P-SD0-05")} onSelect={handleSeatClick} id="P-SD0-05" number="5" status="occupied" className="top-[190px] left-[30px]" />
                 <SingleSeat selectedSeat={getSelectedState("P-SD0-06")} onSelect={handleSeatClick} id="P-SD0-06" number="6" status="available" className="top-[190px] left-[100px]" />
                 <SingleSeat selectedSeat={getSelectedState("P-SD0-07")} onSelect={handleSeatClick} id="P-SD0-07" number="7" status="occupied" className="top-[285px] left-[30px]" />
@@ -57,21 +57,21 @@ const ParterMap = () => {
 
 
             {/* ----------------- ZONA 2: DECORATIUNI CENTRU-SUS ----------------- */}
-            <div className="absolute top-0 left-[350px] h-[25px] w-[140px] bg-[#C4C4C4]"></div>
-            <div className="absolute top-0 left-[510px] h-[25px] w-[60px] bg-[#C4C4C4]"></div>
-            <div className="absolute top-[30px] left-[570px] h-[50px] w-[20px] bg-[#C4C4C4]"></div>
+            <div className="absolute top-0 left-[350px] h-[25px] w-[140px] border border-[#7C7777] bg-[#C1BDD2]"></div>
+            <div className="absolute top-0 left-[510px] h-[25px] w-[60px] border border-[#7C7777] bg-[#C1BDD2]"></div>
+            <div className="absolute top-[30px] left-[570px] h-[50px] w-[20px] border border-[#7C7777] bg-[#C1BDD2]"></div>
 
-            <div className="absolute top-[90px] left-[480px] h-[60px] w-[60px] rounded-full bg-[#C4C4C4]"></div>
-            <div className="absolute top-[105px] left-[420px] h-[30px] w-[30px] bg-[#C4C4C4]"></div>
-            <div className="absolute top-[165px] left-[450px] h-[30px] w-[30px] bg-[#C4C4C4]"></div>
-            <div className="absolute top-[165px] left-[540px] h-[30px] w-[30px] bg-[#C4C4C4]"></div>
-            <div className="absolute top-[105px] left-[570px] h-[25px] w-[20px] bg-[#C4C4C4]"></div>
+            <div className="absolute top-[90px] left-[480px] h-[60px] w-[60px] rounded-full border border-[#7C7777] bg-[#C1BDD2]"></div>
+            <div className="absolute top-[105px] left-[420px] h-[30px] w-[30px] border border-[#7C7777] bg-[#C1BDD2]"></div>
+            <div className="absolute top-[165px] left-[450px] h-[30px] w-[30px] border border-[#7C7777] bg-[#C1BDD2]"></div>
+            <div className="absolute top-[165px] left-[540px] h-[30px] w-[30px] border border-[#7C7777] bg-[#C1BDD2]"></div>
+            <div className="absolute top-[105px] left-[570px] h-[25px] w-[20px] border border-[#7C7777] bg-[#C1BDD2]"></div>
 
 
             {/* ----------------- ZONA 3: DECORATIUNI STANGA-JOS ----------------- */}
-            <div className="absolute top-[440px] left-[310px] h-[30px] w-[30px] bg-[#C4C4C4]"></div>
-            <div className="absolute top-[490px] left-[290px] h-[30px] w-[30px] bg-[#C4C4C4]"></div>
-            <div className="absolute top-[565px] left-[310px] h-[30px] w-[30px] bg-[#C4C4C4]"></div>
+            <div className="absolute top-[440px] left-[310px] h-[30px] w-[30px] border border-[#7C7777] bg-[#C1BDD2]"></div>
+            <div className="absolute top-[490px] left-[290px] h-[30px] w-[30px] border border-[#7C7777] bg-[#C1BDD2]"></div>
+            <div className="absolute top-[565px] left-[310px] h-[30px] w-[30px] border border-[#7C7777] bg-[#C1BDD2]"></div>
 
 
             {/* ----------------- ZONA 4: SALA SEDINTE (S0) ----------------- */}
@@ -79,8 +79,10 @@ const ParterMap = () => {
                 <h3 className="text-sm font-semibold text-gray-800 leading-tight">Sala<br />sedinte<br />S0</h3>
 
                 {/* Masa L-Shape */}
-                <div className="absolute top-[80px] left-[70px] h-[45px] w-[200px] bg-[#C4C4C4]"></div>
-                <div className="absolute top-[115px] left-[225px] h-[75px] w-[45px] bg-[#C4C4C4]"></div>
+                <div className="absolute top-[80px] left-[70px] h-[45px] w-[200px] border border-[#7C7777] bg-[#C1BDD2]"></div>
+                <div className="absolute top-[115px] left-[225px] h-[75px] w-[45px] border-x border-[#7C7777] bg-[#C1BDD2]">
+                    <div className="absolute bottom-0 right-0 h-px w-[34px] bg-[#7C7777]"></div>
+                </div>
 
 
                 <SingleSeat selectedSeat={getSelectedState("P-S0-01")} onSelect={handleSeatClick} id="P-S0-01" number="1" status="available" type="room" className="top-[35px] left-[80px]" />
@@ -102,7 +104,7 @@ const ParterMap = () => {
                 <h3 className="absolute top-[60px] right-[20px] text-sm font-semibold text-gray-800 leading-tight">Sala<br />birouri<br />B0</h3>
 
                 {/* Biroul Vertical 1 (Stanga) */}
-                <div className="absolute top-[20px] left-[60px] h-[240px] w-[35px] bg-[#C4C4C4]"></div>
+                <div className="absolute top-[20px] left-[60px] h-[240px] w-[35px] border border-[#7C7777] bg-[#C1BDD2]"></div>
                 <SingleSeat selectedSeat={getSelectedState("P-B0-01")} onSelect={handleSeatClick} id="P-B0-01" number="1" status="available" className="top-[25px] left-[20px]" />
                 <SingleSeat selectedSeat={getSelectedState("P-B0-02")} onSelect={handleSeatClick} id="P-B0-02" number="2" status="available" className="top-[60px] left-[20px]" />
                 <SingleSeat selectedSeat={getSelectedState("P-B0-03")} onSelect={handleSeatClick} id="P-B0-03" number="3" status="available" className="top-[95px] left-[20px]" />
@@ -111,7 +113,7 @@ const ParterMap = () => {
                 <SingleSeat selectedSeat={getSelectedState("P-B0-06")} onSelect={handleSeatClick} id="P-B0-06" number="6" status="occupied" className="top-[200px] left-[20px]" />
 
                 {/* Biroul Vertical 2 (Mijloc) */}
-                <div className="absolute top-[20px] left-[165px] h-[240px] w-[35px] bg-[#C4C4C4]"></div>
+                <div className="absolute top-[20px] left-[165px] h-[240px] w-[35px] border border-[#7C7777] bg-[#C1BDD2]"></div>
 
                 <SingleSeat selectedSeat={getSelectedState("P-B0-07")} onSelect={handleSeatClick} id="P-B0-07" number="7" status="available" className="top-[25px] left-[215px]" />
                 <SingleSeat selectedSeat={getSelectedState("P-B0-08")} onSelect={handleSeatClick} id="P-B0-08" number="8" status="occupied" className="top-[60px] left-[215px]" />
