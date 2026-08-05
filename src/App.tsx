@@ -1,4 +1,4 @@
-import { useState } from "react"
+﻿import { useState } from "react"
 import { Routes, Route, useLocation } from "react-router-dom"
 import Navbar from "@/components/Navbar"
 import Topbar from "@/components/Topbar"
@@ -62,7 +62,7 @@ export default function App() {
       >
         {showFeatureTopbar && <Topbar />} 
 
-        <main className={showDashboardLayout ? "flex-1 overflow-y-auto" : ""}>
+        <main className={showDashboardLayout ? "flex-1 overflow-x-hidden overflow-y-auto" : ""}>
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/book-now" element={<Seats />} />

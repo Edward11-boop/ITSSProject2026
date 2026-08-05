@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { Link } from "react-router-dom";
 import logo from "../assets/Logo_without_bg.svg";
 import collapsedArrow from "../assets/CollapseArrow.svg";
@@ -10,7 +10,7 @@ const Sidebar = () => {
   const [isExtended, setIsExtended] = useState(false);
   return (
     <aside className={`h-screen shrink-0 overflow-hidden bg-[#1E1B4B] transition-all duration-300 ${
-        isExtended ? "w-64" : "w-26"
+        isExtended ? "w-56 sm:w-64" : "w-16 sm:w-26"
       }`}
     >
       <nav className="flex h-full flex-col bg-[#1E1B4B]">
@@ -20,11 +20,11 @@ const Sidebar = () => {
             <img
               src={logo}
               alt="BookIT logo"
-              className="h-10 w-10 shrink-0"
+              className="h-8 w-8 shrink-0 sm:h-10 sm:w-10"
             />
 
             {isExtended && (
-              <h1 className="whitespace-nowrap text-[30px] font-semibold text-white">
+              <h1 className="whitespace-nowrap text-[24px] font-semibold text-white sm:text-[30px]">
                 BookIT
               </h1>
             )}
@@ -42,11 +42,11 @@ const Sidebar = () => {
               <img
                 src={home}
                 alt="Home"
-                className="h-10 w-10"
+                className="h-8 w-8 sm:h-10 sm:w-10"
               />
 
               {isExtended && (
-                <span className= "text-white text-[24px] whitespace-nowrap">
+                <span className= "text-white text-[20px] whitespace-nowrap sm:text-[24px]">
                   Home
                 </span>
               )}
@@ -62,11 +62,11 @@ const Sidebar = () => {
               <img
                 src={invite}
                 alt="Invite"
-                className="h-10 w-10"
+                className="h-8 w-8 sm:h-10 sm:w-10"
               />
 
               {isExtended && (
-                <span className="text-white  text-[24px] whitespace-nowrap">
+                <span className="text-white text-[20px] whitespace-nowrap sm:text-[24px]">
                   Invite
                 </span>
               )}
@@ -82,11 +82,11 @@ const Sidebar = () => {
               <img
                 src={history}
                 alt="History"
-                className="h-10 w-10"
+                className="h-8 w-8 sm:h-10 sm:w-10"
               />
 
               {isExtended && (
-                <span className="text-white  text-[24px] whitespace-nowrap">
+                <span className="text-white text-[20px] whitespace-nowrap sm:text-[24px]">
                   History
                 </span>
               )}
@@ -104,13 +104,13 @@ const Sidebar = () => {
             <img
               src={collapsedArrow}
               alt="Collapse sidebar"
-              className={`h-10 w-10 transition-transform duration-300  ${
+              className={`h-8 w-8 transition-transform duration-300 sm:h-10 sm:w-10  ${
                     isExtended ? "rotate-180" : ""
                   }`}
             />
 
             {isExtended && (
-                <span className="text-white  text-[24px] whitespace-nowrap">
+                <span className="text-white text-[20px] whitespace-nowrap sm:text-[24px]">
                   Extend
                 </span>             
             )}
