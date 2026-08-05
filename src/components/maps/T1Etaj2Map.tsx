@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import { useState } from 'react';
 import SingleSeat from './SingleSeat';
 
 const T1Etaj2Map = () => {
@@ -21,11 +21,11 @@ const T1Etaj2Map = () => {
                 Sala<br />Gaming<br />G2
             </div>
 
-            {/* Pătratele mici gri de pe peretele din stânga */}
+            {/* PÄtratele mici gri de pe peretele din stĂ˘nga */}
             <div className="absolute top-[160px] left-[20px] h-[25px] w-[25px] border border-[#7C7777] bg-[#C1BDD2]"></div>
             <div className="absolute top-[450px] left-[20px] h-[25px] w-[25px] border border-[#7C7777] bg-[#C1BDD2]"></div>
 
-            {/* --- Masa Gaming 1 (Stânga) --- */}
+            {/* --- Masa Gaming 1 (StĂ˘nga) --- */}
             <div className="absolute top-[240px] left-[170px] h-[45px] w-[140px] border border-[#7C7777] bg-[#C1BDD2]"></div>
 
             <SingleSeat id="T1-G2-01"  number="1" status="available" selectedSeat={getSelectedState("T1-G2-01")} onSelect={handleSeatClick} className="top-[170px] left-[190px]" />
@@ -57,8 +57,8 @@ const T1Etaj2Map = () => {
             </div>
 
 
-            {/* ================= ZONA MASA ROTUNDĂ (DREAPTA JOS) ================= */}
-            {/* Peretele despărțitor */}
+            {/* ================= ZONA MASA ROTUNDÄ‚ (DREAPTA JOS) ================= */}
+            {/* Peretele despÄrČ›itor */}
             <div className="absolute top-[540px] left-[680px] h-[160px] w-[1px] bg-gray-500"></div>
 
 

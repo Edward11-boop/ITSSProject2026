@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+﻿import { useState } from 'react'
 import SingleSeat from './SingleSeat'
 
 const T2Etaj2 = () => {
@@ -149,7 +149,7 @@ const T2Etaj2 = () => {
           className="left-[72px] top-[120px]"
         />
 
-        {/* Masa rotundă de jos */}
+        {/* Masa rotundÄ de jos */}
         <div className="absolute left-[110px] top-[250px] h-[60px] w-[60px] rounded-full border border-[#7C7777] bg-[#C1BDD2]" />
 
         <SingleSeat
@@ -178,10 +178,10 @@ const T2Etaj2 = () => {
           B2
         </h3>
 
-        {/* Masa verticală de sus */}
+        {/* Masa verticalÄ de sus */}
         <div className="absolute left-[150px] top-[90px] h-[145px] w-[60px] border border-[#7C7777] bg-[#C1BDD2]" />
 
-        {/* Scaunele din stânga primei mese */}
+        {/* Scaunele din stĂ˘nga primei mese */}
         <SingleSeat
           id="T2-B2-05"
           number="5"
@@ -237,10 +237,10 @@ const T2Etaj2 = () => {
           className="left-[225px] top-[195px]"
         />
 
-        {/* Masa verticală de jos */}
+        {/* Masa verticalÄ de jos */}
         <div className="absolute left-[150px] top-[240px] h-[145px] w-[60px] border border-[#7C7777] bg-[#C1BDD2]" />
 
-        {/* Scaunele din stânga celei de-a doua mese */}
+        {/* Scaunele din stĂ˘nga celei de-a doua mese */}
         <SingleSeat
           id="T2-B2-08"
           number="8"
