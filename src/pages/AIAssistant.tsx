@@ -1,6 +1,6 @@
 ﻿import { useState } from "react"
+import { Bot } from "lucide-react"
 import AssistantWindow from "../components/AIAssistant/AssistantWindow"
-import FloatingIcon from "../components/AIAssistant/FloatingIcon"
 import type { AssistantStatus } from "../components/AIAssistant/types"
 
 const idleMessage =
@@ -48,10 +48,14 @@ const AIAssistant = () => {
         />
       )}
 
-      <FloatingIcon
-        isOpen={isOpen}
+      <button
+        type="button"
         onClick={() => setIsOpen((currentIsOpen) => !currentIsOpen)}
-      />
+        className="fixed bottom-5 right-5 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-[#8B5CF6] text-2xl text-white shadow-lg transition-transform hover:scale-105 hover:bg-[#7C3AED] sm:bottom-10 sm:right-10 sm:h-16 sm:w-16"
+        aria-label={isOpen ? "Close assistant" : "Open assistant"}
+      >
+        <Bot className="h-7 w-7 sm:h-8 sm:w-8" />
+      </button>
     </>
   )
 }
