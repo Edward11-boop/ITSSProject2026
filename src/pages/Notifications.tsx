@@ -1,8 +1,8 @@
 ﻿import AIAssistant from "@/pages/AIAssistant";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Bell } from "lucide-react";
 
-const initialNotifications: Notification[] = [
+export const initialNotifications = [
   {
     id: 1,
     message: "Andrei invited you to book a seat together.",
@@ -41,31 +41,38 @@ const initialNotifications: Notification[] = [
   },
 ]
 
-const Notifications = () => {
-  const [notifications, setNotifications] = useState(initialNotifications)
-  const [reservations, setReservations] = useState<any[]>([])
+type NotificationsProps = {
+  onNotificationRemoved?: () => void;
+};
 
-  const removeNotification = (notificationId: number, delay = 1000) => {
+const Notifications = ({ onNotificationRemoved }: NotificationsProps) => {
+  const [notifications, setNotifications] =
+    useState(initialNotifications);
+
+  const scheduledRemovalIds = useRef<Set<number>>(new Set());
+
+  const removeNotification = (
+    notificationId,
+    delay = 1000
+  ) => {
+    if (scheduledRemovalIds.current.has(notificationId)) {
+      return;
+    }
+
+    scheduledRemovalIds.current.add(notificationId);
+
     setTimeout(() => {
       setNotifications((previousNotifications) =>
-        previousNotifications.filter((notification) => notificationId !== notification.id),
-      )
+        previousNotifications.filter(
+          (notification) => notificationId !== notification.id
+        )
+      );
+
+      onNotificationRemoved?.();
     }, delay)
   }
 
-  const handleAccept = (notification: Notification) => {
-    const newReservation = {
-      id: Date.now(),
-      date: notification.date,
-      startTime: notification.startTime,
-      endTime: notification.endTime,
-      notificationId: notification.id,
-    }
-
-    setReservations((previousReservations) => [
-      ...previousReservations,
-      newReservation,
-    ])
+  const handleAccept = (notification) => {
 
     setNotifications((previousNotifications) =>
       previousNotifications.map((item) =>
@@ -127,7 +134,7 @@ const Notifications = () => {
 
               <p className="mt-1 text-sm text-gray-600">
                 {formatDate(notification.date)},{" "}
-                {notification.startTime}–{notification.endTime}
+                {notification.startTime}-{notification.endTime}
               </p>
             </div>
 
@@ -171,7 +178,3 @@ const Notifications = () => {
 }
 
 export default Notifications;
-
-
-
-

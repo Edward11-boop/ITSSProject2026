@@ -8,7 +8,11 @@ import TextField from "@mui/material/TextField";
 
 
 
-const Topbar = () => {
+type TopbarProps = {
+  notificationCount?: number;
+};
+
+const Topbar = ({ notificationCount = 0 }: TopbarProps) => {
   const location = useLocation();
 
   const authPages = [
@@ -77,8 +81,16 @@ const Topbar = () => {
 
             <Link
               to="/notifications"
+              className="relative flex h-12 w-12 items-center justify-center"
+              aria-label={`Notifications: ${notificationCount}`}
             >
               <Bell className="h-7 w-7 text-white sm:h-8 sm:w-8" />
+
+              {notificationCount > 0 && (
+                <span className="absolute right-0 top-0 flex h-5 min-w-5 items-center justify-center rounded-full bg-[#FEE2E2] px-1 text-xs font-bold border border-[#F87171] text-[#F87171]">
+                  {notificationCount > 9 ? "9+" : notificationCount}
+                </span>
+              )}
             </Link>
     
             <div className="group relative">

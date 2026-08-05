@@ -6,7 +6,7 @@ const UserDetails = () => {
   // MOCK DATA - Date statice temporare
 
 
-  const [userProfile, setUserProfile] = useState({
+  const [userProfile] = useState({
     name: "Andrei Popescu",
     role: "Admin",
     email: "andrei.popescu@itsmartsystems.eu",
@@ -16,13 +16,13 @@ const UserDetails = () => {
     preferredTime: "09:00 - 17:00"
   });
 
-  const [bookingStats, setBookingStats] = useState({
+  const [bookingStats] = useState({
     confirmed: 4,
     pending: 1,
     canceled: 1
   });
 
-  const [bookingHistory, setBookingHistory] = useState([
+  const [bookingHistory] = useState([
     { id: 1, date: '24 Jul 2026', seat: 'R3 - C7', room: 'Sala A', status: 'Confirmat' },
     { id: 2, date: '22 Jul 2026', seat: 'R1 - C2', room: 'Sala B', status: 'Confirmat' },
     { id: 3, date: '18 Jul 2026', seat: 'R2 - C5', room: 'Sala A', status: 'In asteptare' },
