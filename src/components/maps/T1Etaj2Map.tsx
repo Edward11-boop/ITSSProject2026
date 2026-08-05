@@ -28,21 +28,21 @@ const T1Etaj2Map = () => {
             {/* --- Masa Gaming 1 (Stânga) --- */}
             <div className="absolute top-[240px] left-[170px] h-[45px] w-[140px] border border-[#7C7777] bg-[#C1BDD2]"></div>
 
-            <SingleSeat id="T1-G2-01" type="room" number="1" status="available" selectedSeat={getSelectedState("T1-G2-01")} onSelect={handleSeatClick} className="top-[170px] left-[190px]" />
-            <SingleSeat id="T1-G2-02" type="room" number="2" status="occupied" selectedSeat={getSelectedState("T1-G2-02")} onSelect={handleSeatClick} className="top-[170px] left-[250px]" />
+            <SingleSeat id="T1-G2-01"  number="1" status="available" selectedSeat={getSelectedState("T1-G2-01")} onSelect={handleSeatClick} className="top-[170px] left-[190px]" />
+            <SingleSeat id="T1-G2-02"  number="2" status="occupied" selectedSeat={getSelectedState("T1-G2-02")} onSelect={handleSeatClick} className="top-[170px] left-[250px]" />
 
-            <SingleSeat id="T1-G2-03" type="room" number="3" status="available" selectedSeat={getSelectedState("T1-G2-03")} onSelect={handleSeatClick} className="top-[305px] left-[190px]" />
-            <SingleSeat id="T1-G2-04" type="room" number="4" status="occupied" selectedSeat={getSelectedState("T1-G2-04")} onSelect={handleSeatClick} className="top-[305px] left-[250px]" />
+            <SingleSeat id="T1-G2-03"  number="3" status="available" selectedSeat={getSelectedState("T1-G2-03")} onSelect={handleSeatClick} className="top-[305px] left-[190px]" />
+            <SingleSeat id="T1-G2-04"  number="4" status="occupied" selectedSeat={getSelectedState("T1-G2-04")} onSelect={handleSeatClick} className="top-[305px] left-[250px]" />
 
 
             {/* --- Masa Gaming 2 (Dreapta) --- */}
             <div className="absolute top-[240px] left-[390px] h-[45px] w-[140px] border border-[#7C7777] bg-[#C1BDD2]"></div> 
 
-            <SingleSeat id="T1-G2-05" type="room" number="5" status="available" selectedSeat={getSelectedState("T1-G2-05")} onSelect={handleSeatClick} className="top-[170px] left-[410px]" />
-            <SingleSeat id="T1-G2-06" type="room" number="6" status="occupied" selectedSeat={getSelectedState("T1-G2-06")} onSelect={handleSeatClick} className="top-[170px] left-[470px]" />
+            <SingleSeat id="T1-G2-05"  number="5" status="available" selectedSeat={getSelectedState("T1-G2-05")} onSelect={handleSeatClick} className="top-[170px] left-[410px]" />
+            <SingleSeat id="T1-G2-06"  number="6" status="occupied" selectedSeat={getSelectedState("T1-G2-06")} onSelect={handleSeatClick} className="top-[170px] left-[470px]" />
 
-            <SingleSeat id="T1-G2-07" type="room" number="7" status="available" selectedSeat={getSelectedState("T1-G2-07")} onSelect={handleSeatClick} className="top-[305px] left-[410px]" />
-            <SingleSeat id="T1-G2-08" type="room" number="8" status="available" selectedSeat={getSelectedState("T1-G2-08")} onSelect={handleSeatClick} className="top-[305px] left-[470px]" />
+            <SingleSeat id="T1-G2-07"  number="7" status="available" selectedSeat={getSelectedState("T1-G2-07")} onSelect={handleSeatClick} className="top-[305px] left-[410px]" />
+            <SingleSeat id="T1-G2-08"  number="8" status="available" selectedSeat={getSelectedState("T1-G2-08")} onSelect={handleSeatClick} className="top-[305px] left-[470px]" />
 
 
             {/* ================= ZONA MASA PING-PONG ================= */}
