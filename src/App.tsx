@@ -14,6 +14,7 @@ import UserDetails from "@/pages/UserDetails"
 import Seats from "@/pages/Seats"
 import TypeOfReservation from "./pages/TypeOfReservation"
 import Invite from "./pages/Invite"
+
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [notificationCount, setNotificationCount] = useState(initialNotifications.length)
@@ -64,7 +65,7 @@ export default function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/book-now" element={<Seats />} />
-            <Route path="/legacy-home" element={isLoggedIn ? <Dashboard /> : <Home />} />
+            <Route path="/legacy-home" element={<Dashboard />} />
             <Route path="/login" element={<Login setIsLoggedIn={setIsLoggedIn} />} />
             <Route path="/signup" element={<Register />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
@@ -90,3 +91,4 @@ export default function App() {
     </div>
   )
 }
+
