@@ -91,18 +91,18 @@ const Login = ({ setIsLoggedIn }: LoginProps) => {
     loading
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[#F5F3FF]">
+    <div className="flex min-h-screen items-center justify-center bg-[#F5F3FF] p-4">
       <form
         onSubmit={handleSubmit}
-        className="flex w-full max-w-md flex-col gap-4 rounded-xl border-2 border-[#DDD6FE] bg-white p-8 text-[#1E1B4B]"
+        className="flex w-full max-w-md flex-col gap-4 rounded-xl border-2 border-[#DDD6FE] bg-white p-5 text-[#1E1B4B] sm:p-8"
       >
-        <h1 className="mb-4 text-center text-[48px]">
+        <h1 className="mb-4 text-center text-[36px] sm:text-[48px]">
           Log in
         </h1>
 
         <label
           htmlFor="email"
-          className="text-[24px]"
+          className="text-[20px] sm:text-[24px]"
         >
           Email
         </label>
@@ -121,7 +121,7 @@ const Login = ({ setIsLoggedIn }: LoginProps) => {
 
         <label
           htmlFor="password"
-          className="text-[24px]"
+          className="text-[20px] sm:text-[24px]"
         >
           Password
         </label>
@@ -147,7 +147,7 @@ const Login = ({ setIsLoggedIn }: LoginProps) => {
         <button
           type="submit"
           disabled={isInactive}
-          className={`mt-4 rounded-lg p-2 text-[24px] font-semibold transition-colors ${
+          className={`mt-4 rounded-lg p-2 text-[20px] font-semibold sm:text-[24px] transition-colors ${
             isInactive
               ? "cursor-not-allowed bg-[#DDD6FE] text-[#6B7280]"
               : "bg-[#6D28D9] text-white hover:bg-[#5B21B6]"
@@ -156,7 +156,7 @@ const Login = ({ setIsLoggedIn }: LoginProps) => {
           {loading ? "Logging in..." : "Log in"}
         </button>
 
-        <p className="mt-4 text-center text-[20px] text-[#6B7280]">
+        <p className="mt-4 text-center text-base text-[#6B7280] sm:text-[20px]">
           Don't have an account?
           <Link
             to="/signup"
@@ -166,7 +166,7 @@ const Login = ({ setIsLoggedIn }: LoginProps) => {
           </Link>
         </p>
 
-        <p className="mt-4 text-center text-[20px] text-[#6B7280]">
+        <p className="mt-4 text-center text-base text-[#6B7280] sm:text-[20px]">
           Did you forget your password?
           <Link
             to="/forgot-password"

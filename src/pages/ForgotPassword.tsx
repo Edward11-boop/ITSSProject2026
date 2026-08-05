@@ -55,9 +55,9 @@ const ForgotPassword = () => {
 
       setSuccessMessage(
         message ||
-          "Dacă există un cont asociat acestui email, vei primi instrucțiunile de resetare."
-      )
-    } catch {
+          "Dacă există un cont asociat acestui email, vei primi instruc?iunile de resetare."
+      );
+    } catch (err) {
       setError(
         "Nu am putut contacta serverul. Încearcă din nou."
       )
@@ -74,15 +74,23 @@ const ForgotPassword = () => {
   const isInactive = !isValidEmail || loading
 
   return (
-    <>
-      <AuthLayout
-        title="Forgot your password?"
-        description="Enter your email and we will send you password reset instructions."
-        compactTitle
+    <div className="flex min-h-screen items-center justify-center bg-[#F5F3FF] p-4">
+      <form
+        onSubmit={handleSubmit}
+        className="flex w-full max-w-md flex-col gap-4 rounded-xl border-2 border-[#DDD6FE] bg-white p-5 text-[#1E1B4B] sm:p-8"
       >
-        <form
-          onSubmit={handleSubmit}
-          className="flex flex-col gap-4"
+        <h1 className="mb-2 text-center text-[32px] font-semibold sm:text-[40px]">
+          Forgot your password?
+        </h1>
+
+        <p className="mb-4 text-center text-gray-500">
+          Enter your email and we will send you password reset
+          instructions.
+        </p>
+
+        <label
+          htmlFor="email"
+          className="text-[20px] font-medium sm:text-[24px]"
         >
           <FormField
             id="email"
@@ -104,7 +112,7 @@ const ForgotPassword = () => {
         <button
           type="submit"
           disabled={isInactive}
-          className={`mt-4 rounded-lg p-2 text-[24px] font-semibold ${
+          className={`mt-4 rounded-lg p-2 text-[20px] font-semibold sm:text-[24px] ${
             isInactive
               ? "cursor-not-allowed bg-[#DDD6FE] text-[#6B7280]"
               : "bg-[#6D28D9] text-white hover:bg-[#5B21B6]"
@@ -113,7 +121,7 @@ const ForgotPassword = () => {
           {loading ? "Sending..." : "Send reset link"}
         </button>
 
-        <p className="text-center text-20 text-[#6B7280] mt-4">
+        <p className="mt-4 text-center text-base text-[#6B7280] sm:text-[20px]">
           Do you already have an account?
           <Link to="/login" className="text-[#6D28D9] font-semibold ml-1">
             Back to log in
