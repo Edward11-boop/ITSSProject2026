@@ -5,30 +5,30 @@ import { Link } from "react-router-dom";
 const ForgotPassword = () => {
   const [formData, setFormData] = useState({
     email: "",
-  });
+  })
 
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState("")
+  const [successMessage, setSuccessMessage] = useState("")
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value } = e.target
 
     setFormData((previousData) => ({
       ...previousData,
       [name]: value,
-    }));
+    }))
 
-    setError("");
-    setSuccessMessage("");
-  };
+    setError("")
+    setSuccessMessage("")
+  }
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    e.preventDefault()
 
-    setError("");
-    setSuccessMessage("");
-    setLoading(true);
+    setError("")
+    setSuccessMessage("")
+    setLoading(true)
 
     try {
       const response = await fetch(
@@ -42,13 +42,16 @@ const ForgotPassword = () => {
             email: formData.email.trim(),
           }),
         }
-      );
+      )
 
-      const message = await response.text();
+      const message = await response.text()
 
       if (!response.ok) {
-        setError(message || "Nu am putut trimite cererea.");
-        return;
+        setError(
+          message ||
+            "Cererea de resetare a parolei nu a putut fi trimisă."
+        )
+        return
       }
 
       setSuccessMessage(
@@ -60,16 +63,16 @@ const ForgotPassword = () => {
         "Nu am putut contacta serverul. Incearca din nou."
       );
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   const isValidEmail =
     /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(
       formData.email.trim()
-    );
+    )
 
-  const isInactive = !isValidEmail || loading;
+  const isInactive = !isValidEmail || loading
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-[#F5F3FF] p-4">
