@@ -11,7 +11,7 @@ import Register from "@/pages/Register"
 import Home from "@/pages/Home"
 import Dashboard from "@/pages/Dashboard"
 import ChangePassword from "@/pages/ChangePassword"
-import Notifications from "@/pages/Notifications"
+import Notifications, { initialNotifications } from "@/pages/Notifications"
 import History from "@/pages/History"
 import UserDetails from "@/pages/UserDetails"
 import Seats from "@/pages/Seats"
@@ -19,6 +19,7 @@ import TypeOfReservation from "./pages/TypeOfReservation"
 import Invite from "./pages/Invite"
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [notificationCount, setNotificationCount] = useState(initialNotifications.length)
   const location = useLocation()
 
   const dashboardPages = [
@@ -60,7 +61,7 @@ export default function App() {
             : "min-h-screen w-full"
         }
       >
-        {showFeatureTopbar && <Topbar />} 
+        {showFeatureTopbar && <Topbar notificationCount={notificationCount} />}
 
         <main className={showDashboardLayout ? "flex-1 overflow-x-hidden overflow-y-auto" : ""}>
           <Routes>
@@ -72,7 +73,16 @@ export default function App() {
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/change-password" element={<ChangePassword />} />
             <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/notifications" element={<Notifications />} />
+            <Route
+              path="/notifications"
+              element={
+                <Notifications
+                  onNotificationRemoved={() =>
+                    setNotificationCount((currentCount) => Math.max(0, currentCount - 1))
+                  }
+                />
+              }
+            />
             <Route path="/history" element={<History />} />
             <Route path="/user-details" element={<UserDetails />} />
             <Route path="/type-of-reservation" element={<TypeOfReservation/>} />
