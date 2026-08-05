@@ -40,7 +40,7 @@ const History = () => {
     return (
         <div className="flex min-h-[calc(100vh-64px)] bg-white relative">
 
-            <div className="relative flex-1 p-8">
+            <div className="relative min-w-0 flex-1 p-4 sm:p-8">
                 <div className="mx-auto max-w-5xl">
 
                     <div className="mb-8 flex w-full rounded-full bg-[#F3F3F9] p-1">
@@ -48,7 +48,7 @@ const History = () => {
                             <button
                                 key={tab}
                                 onClick={() => setActiveTab(tab)}
-                                className={`flex-1 rounded-full py-3 text-sm font-semibold transition-all ${activeTab === tab ? 'bg-white text-black shadow-sm' : 'text-gray-500 hover:text-gray-700'
+                                className={`min-w-0 flex-1 rounded-full px-2 py-3 text-xs font-semibold transition-all sm:text-sm ${activeTab === tab ? 'bg-white text-black shadow-sm' : 'text-gray-500 hover:text-gray-700'
                                     }`}
                             >
                                 {tab}
@@ -63,11 +63,11 @@ const History = () => {
                             displayedBookings.map((booking) => (
                                 <div key={booking.id}>
                                     <h4 className="mb-2 text-sm font-bold text-gray-700">{booking.title}</h4>
-                                    <div className="flex items-center justify-between rounded-2xl bg-[#F8F8FC] p-4 shadow-sm">
+                                    <div className="flex flex-col gap-4 rounded-2xl bg-[#F8F8FC] p-4 shadow-sm md:flex-row md:items-center md:justify-between">
 
-                                        <div className="flex items-center gap-4">
+                                        <div className="flex min-w-0 items-center gap-4">
                                             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#EBE9FE]">
-                                                <span className="text-xl">💺</span>
+                                                <span className="text-xl">??</span>
                                             </div>
                                             <div>
                                                 <p className="text-xs text-gray-500">Data - Scaun - Sala</p>
@@ -86,7 +86,7 @@ const History = () => {
                                             </span>
                                         </div>
 
-                                        <div className="flex gap-3">
+                                        <div className="flex flex-wrap gap-3">
 
                                             {(booking.tab === "Viitoare" && booking.status === "In asteptare") &&
                                                 <>   
@@ -125,12 +125,12 @@ const History = () => {
                 <AIAssistant />
             </div>
 
-            {/* Aici este fundalul întunecat și POP-UP-UL de confirmare */}
+            {/* Aici este fundalul întunecat ?i POP-UP-UL de confirmare */}
             {isModalOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#29255E]/50 backdrop-blur-sm">
-                    <div className="w-[400px] rounded-3xl bg-white p-8 text-center shadow-xl">
+                    <div className="w-[min(400px,calc(100vw-32px))] rounded-3xl bg-white p-6 text-center shadow-xl sm:p-8">
 
-                        {/* Iconița de Warning */}
+                        {/* Iconi?a de Warning */}
                         <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-red-100 text-red-400">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="h-8 w-8">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
@@ -142,8 +142,8 @@ const History = () => {
                             Aceasta actiune va sterge definitiv rezervarea selectata.
                         </p>
 
-                        {/* Butoanele de acțiune */}
-                        <div className="flex gap-4">
+                        {/* Butoanele de ac?iune */}
+                        <div className="flex flex-col gap-3 sm:flex-row sm:gap-4">
                             <button
                                 onClick={confirmDelete}
                                 className="flex-1 rounded-full bg-[#FF6B6B] py-3 text-sm font-bold text-white transition hover:bg-red-500 shadow-sm"

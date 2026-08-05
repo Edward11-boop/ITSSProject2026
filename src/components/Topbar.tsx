@@ -1,4 +1,4 @@
-import { Link, useLocation } from "react-router-dom";
+﻿import { Link, useLocation } from "react-router-dom";
 import logo from "../assets/Logo.svg";
 import user from "../assets/User.svg";
 import details from "../assets/User_details.svg";
@@ -22,7 +22,7 @@ const Topbar = () => {
   const hiddenButtons = authPages.includes(location.pathname);
 
   return (
-    <nav className="flex w-full items-center justify-between border-b border-purple-100 bg-[#312E81] px-6 py-4 shadow-sm">
+    <nav className="flex w-full flex-wrap items-center justify-between gap-3 border-b border-purple-100 bg-[#312E81] px-3 py-3 shadow-sm sm:px-6 sm:py-4">
       {hiddenButtons ? (
         <Link to="/" className="flex items-center gap-3">
           <img src={logo} alt="Logo" className="h-10" />
@@ -38,14 +38,14 @@ const Topbar = () => {
           >
             <button
               type="button"
-              className="rounded-[60px] border border-white bg-[#6D28D9]  px-4 py-2 text-white font-bold hover:bg-[#5B21B6]"
+              className="rounded-[60px] border border-white bg-[#6D28D9] px-3 py-2 text-sm font-bold text-white hover:bg-[#5B21B6] sm:px-4 sm:text-base"
             >
               Book now
             </button>
           </Link>
 
-          <div className="flex items-center gap-4">
-            <div className="w-45">
+          <div className="flex min-w-0 items-center gap-2 sm:gap-4">
+            <div className="w-[min(44vw,180px)] sm:w-45">
               <TextField
                 id="search"
                 variant="outlined"
@@ -78,14 +78,14 @@ const Topbar = () => {
             <Link
               to="/notifications"
             >
-              <Bell className="h-8 w-8 text-white" />
+              <Bell className="h-7 w-7 text-white sm:h-8 sm:w-8" />
             </Link>
     
             <div className="group relative">
               <img
                 src={user}
                 alt="Invite"
-                className="h-10 w-10"
+                className="h-9 w-9 sm:h-10 sm:w-10"
               />
               <div className="absolute right-0 top-full z-50 hidden pt-2 group-hover:flex">
                 <div className="flex w-48 flex-col divide-y divide-[#EDE9FE] *:overflow-hidden rounded-lg bg-[#EDE9FE] py-2 shadow-lg">

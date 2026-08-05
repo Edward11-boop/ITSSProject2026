@@ -1,12 +1,12 @@
-import { useState } from 'react'
+﻿import { useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 
 const ChangePassword = () => {
   const navigate = useNavigate()
   const location = useLocation()
 
-  // emailul (și, dacă vine direct din Register, parola temporară) vin din
-  // pagina anterioară, dar rămân editabile, ca pagina să funcționeze și accesată direct
+  // emailul (si, daca vine direct din Register, parola temporara) vin din
+  // pagina anterioara, dar raman editabile, ca pagina sa functioneze si accesata direct
   const [formData, setFormData] = useState({
     email: location.state?.email || '',
     oldPassword: location.state?.oldPassword || '',
@@ -57,8 +57,8 @@ const ChangePassword = () => {
         return
       }
 
-      // parola schimbată cu succes -> acum ne logăm cu parola NOUĂ,
-      // ca să obținem sesiune, apoi mergem la dashboard
+      // parola schimbata cu succes -> acum ne logam cu parola NOUA,
+      // ca sa obtinem sesiune, apoi mergem la dashboard
       const loginResponse = await fetch('http://localhost:8080/login', {
         method: 'POST',
         credentials: 'include',
@@ -70,15 +70,15 @@ const ChangePassword = () => {
       })
 
       if (!loginResponse.ok) {
-        // parola s-a schimbat, dar login-ul automat a eșuat -> trimitem
-        // userul la login manual, în loc să-l blocăm
+        // parola s-a schimbat, dar login-ul automat a esuat -> trimitem
+        // userul la login manual, in loc sa-l blocam
         navigate('/login')
         return
       }
 
       navigate('/home')
     } catch (err) {
-      setError('Nu am putut contacta serverul. Încearcă din nou.')
+      setError('Nu am putut contacta serverul. Incearca din nou.')
     } finally {
       setLoading(false)
     }
@@ -91,22 +91,22 @@ const ChangePassword = () => {
     confirmPassword === ''
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#F5F3FF]">
+    <div className="flex min-h-screen items-center justify-center bg-[#F5F3FF] p-4">
       <form
         onSubmit={handleSubmit}
-        className="flex w-full max-w-md flex-col gap-4 rounded-xl border-2 border-[#DDD6FE] bg-white p-8 text-[#1E1B4B]"
+        className="flex w-full max-w-md flex-col gap-4 rounded-xl border-2 border-[#DDD6FE] bg-white p-5 text-[#1E1B4B] sm:p-8"
       >
-        <h1 className="mb-4 text-center text-[48px]">
+        <h1 className="mb-4 text-center text-[36px] sm:text-[48px]">
           Change password
         </h1>
 
-        <p className="text-center text-20 text-[#6B7280]">
-          Trebuie să-ți setezi o parolă nouă înainte de a continua.
+        <p className="text-center text-base text-[#6B7280] sm:text-[20px]">
+          Trebuie sa-ti setezi o parola noua inainte de a continua.
         </p>
 
         <label
           htmlFor="email"
-          className="text-24"
+          className="text-[20px] sm:text-[24px]"
         >
           Email
         </label>
@@ -124,7 +124,7 @@ const ChangePassword = () => {
 
         <label
           htmlFor="oldPassword"
-          className="text-24"
+          className="text-[20px] sm:text-[24px]"
         >
           Current password
         </label>
@@ -142,7 +142,7 @@ const ChangePassword = () => {
 
         <label
           htmlFor="newPassword"
-          className="text-24"
+          className="text-[20px] sm:text-[24px]"
         >
           New password
         </label>
@@ -160,7 +160,7 @@ const ChangePassword = () => {
 
         <label
           htmlFor="confirmPassword"
-          className="text-24"
+          className="text-[20px] sm:text-[24px]"
         >
           Confirm new password
         </label>
@@ -185,7 +185,7 @@ const ChangePassword = () => {
         <button
           type="submit"
           disabled={isInactive || loading}
-          className={`mt-4 rounded-lg p-2 text-24 font-semibold ${
+          className={`mt-4 rounded-lg p-2 text-[20px] font-semibold sm:text-[24px] ${
             isInactive || loading
               ? 'cursor-not-allowed bg-[#DDD6FE] text-[#6B7280]'
               : 'bg-[#6D28D9] hover:bg-[#5B21B6] text-white'
