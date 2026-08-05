@@ -2,8 +2,7 @@
 import { useState } from "react";
 import { Bell } from "lucide-react";
 
-
-const initialNotifications = [
+export const initialNotifications = [
   {
     id: 1,
     message: "Andrei invited you to book a seat together.",
@@ -42,7 +41,11 @@ const initialNotifications = [
   },
 ];
 
-const Notifications = () => {
+type NotificationsProps = {
+  onNotificationRemoved?: () => void;
+};
+
+const Notifications = ({ onNotificationRemoved }: NotificationsProps) => {
   const [notifications, setNotifications] =
     useState(initialNotifications);
 
@@ -53,11 +56,21 @@ const Notifications = () => {
     delay = 1000
   ) => {
     setTimeout(() => {
-        setNotifications((previousNotifications) => 
-            previousNotifications.filter(
-                (notification) => notificationId !== notification.id
-            )
+      let wasRemoved = false;
+
+      setNotifications((previousNotifications) => {
+        wasRemoved = previousNotifications.some(
+          (notification) => notificationId === notification.id
         );
+
+        return previousNotifications.filter(
+          (notification) => notificationId !== notification.id
+        );
+      });
+
+      if (wasRemoved) {
+        onNotificationRemoved?.();
+      }
     }, delay)
   };
 
@@ -135,7 +148,7 @@ const Notifications = () => {
 
               <p className="mt-1 text-sm text-gray-600">
                 {formatDate(notification.date)},{" "}
-                {notification.startTime}–{notification.endTime}
+                {notification.startTime}-{notification.endTime}
               </p>
             </div>
 
@@ -179,7 +192,3 @@ const Notifications = () => {
 };
 
 export default Notifications;
-
-
-
-
