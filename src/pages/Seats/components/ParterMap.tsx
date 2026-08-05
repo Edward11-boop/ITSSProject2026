@@ -1,21 +1,8 @@
-import { useState } from 'react';
-import SingleSeat from '@/components/maps/SingleSeat';
+import { useSeatSelection } from '@/hooks/useSeatSelection';
+import SingleSeat from './SingleSeat';
 
 const ParterMap = () => {
-    const [activeGroup, setActiveGroup] = useState<string | null>(null);
-
-    const handleSeatClick = (id: string) => {
-        if (id.includes('P-S0')) {
-            setActiveGroup('G-S0');
-        } else {
-            setActiveGroup(id);
-        }
-    };
-
-    const getSelectedState = (id: string) => {
-        if (activeGroup === 'G-S0' && id.includes('P-S0')) return id;
-        return activeGroup === id ? id : null;
-    };
+    const { handleSeatClick, getSelectedState } = useSeatSelection([{ groupId: 'G-S0', matches: (id: string) => id.includes('P-S0') }]);
 
     return (
         // Containerul principal al hartii (Fixat proportional pentru a pastra design-ul)

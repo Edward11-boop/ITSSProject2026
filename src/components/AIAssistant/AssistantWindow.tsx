@@ -1,4 +1,4 @@
-﻿import { Bot, LoaderCircle, MapPin, X } from "lucide-react"
+import { Bot, LoaderCircle, MapPin, X } from "lucide-react"
 import type { AssistantStatus } from "./types"
 
 type AssistantWindowProps = {
@@ -79,6 +79,7 @@ const AssistantWindow = ({
             className="flex w-full items-center justify-center gap-2 rounded-full bg-[#6D28D9] px-5 py-3 font-semibold text-white transition hover:bg-[#5B21B6] disabled:cursor-not-allowed disabled:bg-[#C4B5FD]"
           >
             <MapPin className="h-5 w-5" />
+            Permite locatia
           </button>
         </div>
       )}

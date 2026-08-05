@@ -1,5 +1,5 @@
-﻿import Dashboard from './Dashboard';
-import InviteModal from '@/components/invite/InviteModal';
+import Dashboard from '@/pages/Dashboard';
+import InviteModal from './components/InviteModal';
 
 const Invite = () => {
   return (

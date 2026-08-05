@@ -1,6 +1,6 @@
-﻿import AIAssistant from "@/pages/AIAssistant"
-import CityOverviewCard from "@/components/dashboard/CityOverviewCard"
-import OfficeActivityCard from "@/components/dashboard/OfficeActivityCard"
+import AIAssistant from "@/pages/AIAssistant"
+import CityOverviewCard from "./components/CityOverviewCard"
+import OfficeActivityCard from "./components/OfficeActivityCard"
 
 const Dashboard = () => {
   const mockUser = {

@@ -1,10 +1,17 @@
-﻿import { useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
+import SidebarNavItem from "@/components/SidebarNavItem";
 import logo from "../assets/Logo_without_bg.svg";
 import collapsedArrow from "../assets/CollapseArrow.svg";
 import home from "../assets/Home.svg";
 import invite from "../assets/Invite.svg";
 import history from "../assets/History.svg"
+
+const navItems = [
+  { to: "/dashboard", icon: home, label: "Home" },
+  { to: "/invite", icon: invite, label: "Invite" },
+  { to: "/history", icon: history, label: "History" },
+]
 
 const Sidebar = () => {
   const [isExtended, setIsExtended] = useState(false);
@@ -31,67 +38,16 @@ const Sidebar = () => {
           </div>
         </Link>
 
-        
         <div className="mt-10 flex flex-col gap-">
-          <Link to = "/dashboard"
-            className="mt-10 flex flex-col"
-          >
-            <button type="button" 
-                    className="mt-auto flex items-center justify-center rounded-lg px-1 py-1 gap-3  hover:bg-[#6D28D9]"
-            >
-              <img
-                src={home}
-                alt="Home"
-                className="h-8 w-8 sm:h-10 sm:w-10"
-              />
-
-              {isExtended && (
-                <span className= "text-white text-[20px] whitespace-nowrap sm:text-[24px]">
-                  Home
-                </span>
-              )}
-            </button>
-          </Link>
-
-          <Link to="/invite"
-            className="mt-10 flex flex-col"
-          >
-            <button type="button" 
-                    className="mt-auto flex items-center justify-center rounded-lg px-1 py-1 gap-3  hover:bg-[#6D28D9]"
-            >
-              <img
-                src={invite}
-                alt="Invite"
-                className="h-8 w-8 sm:h-10 sm:w-10"
-              />
-
-              {isExtended && (
-                <span className="text-white text-[20px] whitespace-nowrap sm:text-[24px]">
-                  Invite
-                </span>
-              )}
-            </button>
-          </Link>
-
-          <Link to="/history"
-                className="mt-10 flex flex-col"
-          >
-            <button type="button" 
-                    className="mt-auto flex items-center justify-center rounded-lg px-1 py-1 gap-3  hover:bg-[#6D28D9]"
-            >
-              <img
-                src={history}
-                alt="History"
-                className="h-8 w-8 sm:h-10 sm:w-10"
-              />
-
-              {isExtended && (
-                <span className="text-white text-[20px] whitespace-nowrap sm:text-[24px]">
-                  History
-                </span>
-              )}
-            </button>
-          </Link>
+          {navItems.map((item) => (
+            <SidebarNavItem
+              key={item.to}
+              to={item.to}
+              icon={item.icon}
+              label={item.label}
+              isExtended={isExtended}
+            />
+          ))}
         </div>
 
           <button type="button" 

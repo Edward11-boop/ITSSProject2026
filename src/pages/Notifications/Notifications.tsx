@@ -1,7 +1,7 @@
-﻿import AIAssistant from "@/pages/AIAssistant";
+import AIAssistant from "@/pages/AIAssistant";
 import { useRef, useState } from "react";
 import { Bell } from "lucide-react";
-import NotificationItem, { type Notification } from "@/components/notifications/NotificationItem";
+import NotificationItem, { type Notification } from "./components/NotificationItem";
 
 export const initialNotifications: Notification[] = [
   {

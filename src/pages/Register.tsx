@@ -1,9 +1,12 @@
-﻿import ErrorPopUp from "@/components/ErrorPopUp"
+import AuthFormField from "@/components/auth/AuthFormField"
+import AuthFormShell from "@/components/auth/AuthFormShell"
+import AuthSubmitButton from "@/components/auth/AuthSubmitButton"
+import { useEmailValidation } from "@/hooks/useEmailValidation"
+import { useFormData } from "@/hooks/useFormData"
 import {
   useState,
-  type ChangeEvent,
-  type FormEvent,
   type Dispatch,
+  type FormEvent,
   type SetStateAction,
 } from "react"
 import { Link, useNavigate } from "react-router-dom"
@@ -14,34 +17,20 @@ type RegisterProps = {
 
 const Register = (_props: RegisterProps) => {
   const navigate = useNavigate()
-
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    password: "",
-    repeatPassword: "",
-    role: "DEV",
-  })
-
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
+  const { formData, handleChange } = useFormData(
+    {
+      name: "",
+      email: "",
+      password: "",
+      repeatPassword: "",
+      role: "DEV",
+    },
+    () => setError(""),
+  )
 
-  const handleChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
-  ) => {
-    const { name, value } = e.target
-
-    setFormData((previousData) => ({
-      ...previousData,
-      [name]: value,
-    }))
-
-    setError("")
-  }
-
-  const handleSubmit = async (
-    e: FormEvent<HTMLFormElement>,
-  ) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
     if (formData.password !== formData.repeatPassword) {
@@ -94,10 +83,7 @@ const Register = (_props: RegisterProps) => {
     }
   }
 
-  const isValidEmail =
-    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(
-      formData.email.trim(),
-    )
+  const isValidEmail = useEmailValidation(formData.email)
 
   const isInactive =
     formData.name.trim() === "" ||
@@ -107,140 +93,78 @@ const Register = (_props: RegisterProps) => {
     loading
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[#F5F3FF] px-4">
-      {error && (
-        <ErrorPopUp
-          title="Something went wrong"
-          message={error}
-          sideMessage="Please check the details and try again."
-          onClose={() => setError("")}
-        />
-      )}
-      <form
-        onSubmit={handleSubmit}
-        className="flex w-full max-w-md flex-col gap-4 rounded-xl border-2 border-[#DDD6FE] bg-white p-5 text-[#1E1B4B] sm:p-8"
+    <AuthFormShell error={error} onClearError={() => setError("")} onSubmit={handleSubmit}>
+      <h1 className="mb-4 text-center text-[36px] sm:text-[48px]">
+        Register
+      </h1>
+
+      <AuthFormField
+        id="name"
+        name="name"
+        label="Name"
+        placeholder="Enter your name"
+        value={formData.name}
+        onChange={handleChange}
+      />
+
+      <AuthFormField
+        id="email"
+        name="email"
+        label="Email"
+        type="email"
+        placeholder="Enter your email"
+        value={formData.email}
+        onChange={handleChange}
+      />
+
+      <AuthFormField
+        id="role"
+        name="role"
+        label="Role"
+        value={formData.role}
+        onChange={handleChange}
       >
-        <h1 className="mb-4 text-center text-[36px] sm:text-[48px]">
-          Register
-        </h1>
+        <option value="DEV">Developer</option>
+        <option value="PM">Project Manager</option>
+        <option value="MANAGER">Manager</option>
+        <option value="CEO">CEO</option>
+      </AuthFormField>
 
-        <label
-          htmlFor="name"
-          className="text-[20px] sm:text-[24px]"
+      <AuthFormField
+        id="password"
+        name="password"
+        label="Password"
+        type="password"
+        placeholder="Enter your password"
+        value={formData.password}
+        onChange={handleChange}
+      />
+
+      <AuthFormField
+        id="repeatPassword"
+        name="repeatPassword"
+        label="Repeat password"
+        type="password"
+        placeholder="Repeat your password"
+        value={formData.repeatPassword}
+        onChange={handleChange}
+      />
+
+      <AuthSubmitButton disabled={isInactive}>
+        {loading ? "Submitting..." : "Register"}
+      </AuthSubmitButton>
+
+      <p className="mt-4 text-center text-base text-[#6B7280] sm:text-[20px]">
+        Do you already have an account?
+
+        <Link
+          to="/login"
+          className="ml-1 font-semibold text-[#6D28D9] hover:underline"
         >
-          Name
-        </label>
-
-        <input
-          id="name"
-          name="name"
-          type="text"
-          placeholder="Enter your name"
-          value={formData.name}
-          onChange={handleChange}
-          required
-          className="w-full rounded-lg border-2 border-[#DDD6FE] px-4 py-2 focus:border-[#6D28D9] focus:outline-none"
-        />
-
-        <label
-          htmlFor="email"
-          className="text-[20px] sm:text-[24px]"
-        >
-          Email
-        </label>
-
-        <input
-          id="email"
-          name="email"
-          type="email"
-          placeholder="Enter your email"
-          value={formData.email}
-          onChange={handleChange}
-          required
-          className="w-full rounded-lg border-2 border-[#DDD6FE] px-4 py-2 focus:border-[#6D28D9] focus:outline-none"
-        />
-
-        <label
-          htmlFor="role"
-          className="text-[20px] sm:text-[24px]"
-        >
-          Role
-        </label>
-
-        <select
-          id="role"
-          name="role"
-          value={formData.role}
-          onChange={handleChange}
-          required
-          className="w-full rounded-lg border-2 border-[#DDD6FE] bg-white px-4 py-2 focus:border-[#6D28D9] focus:outline-none"
-        >
-          <option value="DEV">Developer</option>
-          <option value="PM">Project Manager</option>
-          <option value="MANAGER">Manager</option>
-          <option value="CEO">CEO</option>
-        </select>
-
-        <label
-          htmlFor="password"
-          className="text-[20px] sm:text-[24px]"
-        >
-          Password
-        </label>
-
-        <input
-          id="password"
-          name="password"
-          type="password"
-          placeholder="Enter your password"
-          value={formData.password}
-          onChange={handleChange}
-          required
-          className="w-full rounded-lg border-2 border-[#DDD6FE] px-4 py-2 focus:border-[#6D28D9] focus:outline-none"
-        />
-
-        <label
-          htmlFor="repeatPassword"
-          className="text-[20px] sm:text-[24px]"
-        >
-          Repeat password
-        </label>
-
-        <input
-          id="repeatPassword"
-          name="repeatPassword"
-          type="password"
-          placeholder="Repeat your password"
-          value={formData.repeatPassword}
-          onChange={handleChange}
-          required
-          className="w-full rounded-lg border-2 border-[#DDD6FE] px-4 py-2 focus:border-[#6D28D9] focus:outline-none"
-        />
-
-        <button
-          type="submit"
-          disabled={isInactive}
-          className={`mt-4 rounded-lg p-2 text-[20px] font-semibold sm:text-[24px] transition-colors ${
-            isInactive
-              ? "cursor-not-allowed bg-[#DDD6FE] text-[#6B7280]"
-              : "bg-[#6D28D9] text-white hover:bg-[#5B21B6]"
-          }`}
-        >
-          {loading ? "Submitting..." : "Register"}
-        </button>
-
-        <p className="mt-4 text-center text-base text-[#6B7280] sm:text-[20px]">
-          Do you already have an account?
-
-          <Link
-            to="/login"
-            className="ml-1 font-semibold text-[#6D28D9] hover:underline"
-          >
-            Log in
-          </Link>
-        </p>
-      </form>
-    </div>
+          Log in
+        </Link>
+      </p>
+    </AuthFormShell>
   )
 }
 

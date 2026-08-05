@@ -1,8 +1,9 @@
-﻿import AIAssistant from "@/pages/AIAssistant";
+import AIAssistant from "@/pages/AIAssistant";
 import { useState } from "react";
-import BookingTabs from "@/components/history/BookingTabs";
-import ConfirmDeleteModal from "@/components/history/ConfirmDeleteModal";
-import type { Booking, BookingTab } from "@/components/history/types";
+import BookingTabs from "./components/BookingTabs";
+import ConfirmDeleteModal from "./components/ConfirmDeleteModal";
+import type { Booking, BookingTab } from "./types";
+import { getBookingStatusClassName } from "@/lib/bookingStatus";
 
 const initialBookings: Booking[] = [
   { id: 1, title: "Rezervare 1", date: "28 Iulie 2026", seat: "Rand 3, C7", room: "Sala A", time: "09:00 - 17:00", status: "In asteptare", tab: "Viitoare" },
@@ -12,21 +13,6 @@ const initialBookings: Booking[] = [
   { id: 5, title: "Rezervare 5 (Anulata)", date: "20 Iulie 2026", seat: "Rand 4, C12", room: "Sala C", time: "10:00 - 14:00", status: "Anulat", tab: "Anulate" },
 ];
 
-function getStatusClassName(status: string) {
-  if (status === "Confirmat") {
-    return "bg-green-100 text-green-600";
-  }
-
-  if (status === "Anulat") {
-    return "bg-red-100 text-red-600";
-  }
-
-  if (status === "Finalizat") {
-    return "bg-gray-200 text-gray-600";
-  }
-
-  return "bg-yellow-100 text-yellow-600";
-}
 const History = () => {
   const [activeTab, setActiveTab] = useState<BookingTab>("Viitoare");
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -85,7 +71,7 @@ const History = () => {
                         </div>
                       </div>
 
-                      <span className={`w-fit rounded-full px-3 py-1 text-xs font-bold ${getStatusClassName(booking.status)}`}>
+                      <span className={`w-fit rounded-full px-3 py-1 text-xs font-bold ${getBookingStatusClassName(booking.status)}`}>
                         {booking.status}
                       </span>
 

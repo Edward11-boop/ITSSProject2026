@@ -1,4 +1,7 @@
-﻿import ErrorPopUp from "@/components/ErrorPopUp"
+import AuthFormField from "@/components/auth/AuthFormField"
+import AuthFormShell from "@/components/auth/AuthFormShell"
+import AuthSubmitButton from "@/components/auth/AuthSubmitButton"
+import { useFormData } from "@/hooks/useFormData"
 import { useState, type ChangeEvent, type FormEvent } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 
@@ -12,22 +15,20 @@ const ChangePassword = () => {
   const location = useLocation()
   const state = location.state as ChangePasswordState | null
 
-  const [formData, setFormData] = useState({
-    email: state?.email || "",
-    oldPassword: state?.oldPassword || "",
-    newPassword: "",
-  })
   const [confirmPassword, setConfirmPassword] = useState("")
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
+  const { formData, handleChange } = useFormData(
+    {
+      email: state?.email || "",
+      oldPassword: state?.oldPassword || "",
+      newPassword: "",
+    },
+    () => setError(""),
+  )
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target
-
-    setFormData((previousData) => ({
-      ...previousData,
-      [name]: value,
-    }))
+  const handleConfirmPasswordChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setConfirmPassword(e.target.value)
     setError("")
   }
 
@@ -93,103 +94,59 @@ const ChangePassword = () => {
     confirmPassword === ""
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[#F5F3FF] p-4">
-      {error && (
-        <ErrorPopUp
-          title="Something went wrong"
-          message={error}
-          sideMessage="Please check the details and try again."
-          onClose={() => setError("")}
-        />
-      )}
+    <AuthFormShell error={error} onClearError={() => setError("")} onSubmit={handleSubmit}>
+      <h1 className="mb-4 text-center text-[36px] sm:text-[48px]">
+        Change password
+      </h1>
 
-      <form
-        onSubmit={handleSubmit}
-        className="flex w-full max-w-md flex-col gap-4 rounded-xl border-2 border-[#DDD6FE] bg-white p-5 text-[#1E1B4B] sm:p-8"
-      >
-        <h1 className="mb-4 text-center text-[36px] sm:text-[48px]">
-          Change password
-        </h1>
+      <p className="text-center text-base text-[#6B7280] sm:text-[20px]">
+        Trebuie sa-ti setezi o parola noua inainte de a continua.
+      </p>
 
-        <p className="text-center text-base text-[#6B7280] sm:text-[20px]">
-          Trebuie sa-ti setezi o parola noua inainte de a continua.
-        </p>
+      <AuthFormField
+        id="email"
+        name="email"
+        label="Email"
+        type="email"
+        placeholder="Enter your email"
+        value={formData.email}
+        onChange={handleChange}
+      />
 
-        <label htmlFor="email" className="text-[20px] sm:text-[24px]">
-          Email
-        </label>
-        <input
-          id="email"
-          name="email"
-          type="email"
-          placeholder="Enter your email"
-          value={formData.email}
-          onChange={handleChange}
-          required
-          className="w-full rounded-lg border-2 border-[#DDD6FE] px-4 py-2 focus:outline-none"
-        />
+      <AuthFormField
+        id="oldPassword"
+        name="oldPassword"
+        label="Current password"
+        type="password"
+        placeholder="Enter your current password"
+        value={formData.oldPassword}
+        onChange={handleChange}
+      />
 
-        <label htmlFor="oldPassword" className="text-[20px] sm:text-[24px]">
-          Current password
-        </label>
-        <input
-          id="oldPassword"
-          name="oldPassword"
-          type="password"
-          placeholder="Enter your current password"
-          value={formData.oldPassword}
-          onChange={handleChange}
-          required
-          className="w-full rounded-lg border-2 border-[#DDD6FE] px-4 py-2 focus:outline-none"
-        />
+      <AuthFormField
+        id="newPassword"
+        name="newPassword"
+        label="New password"
+        type="password"
+        placeholder="Enter your new password"
+        value={formData.newPassword}
+        onChange={handleChange}
+      />
 
-        <label htmlFor="newPassword" className="text-[20px] sm:text-[24px]">
-          New password
-        </label>
-        <input
-          id="newPassword"
-          name="newPassword"
-          type="password"
-          placeholder="Enter your new password"
-          value={formData.newPassword}
-          onChange={handleChange}
-          required
-          className="w-full rounded-lg border-2 border-[#DDD6FE] px-4 py-2 focus:outline-none"
-        />
+      <AuthFormField
+        id="confirmPassword"
+        name="confirmPassword"
+        label="Confirm new password"
+        type="password"
+        placeholder="Confirm your new password"
+        value={confirmPassword}
+        onChange={handleConfirmPasswordChange}
+      />
 
-        <label
-          htmlFor="confirmPassword"
-          className="text-[20px] sm:text-[24px]"
-        >
-          Confirm new password
-        </label>
-        <input
-          id="confirmPassword"
-          name="confirmPassword"
-          type="password"
-          placeholder="Confirm your new password"
-          value={confirmPassword}
-          onChange={(e) => {
-            setConfirmPassword(e.target.value)
-            setError("")
-          }}
-          required
-          className="w-full rounded-lg border-2 border-[#DDD6FE] px-4 py-2 focus:outline-none"
-        />
-
-        <button
-          type="submit"
-          disabled={isInactive || loading}
-          className={`mt-4 rounded-lg p-2 text-[20px] font-semibold sm:text-[24px] ${
-            isInactive || loading
-              ? "cursor-not-allowed bg-[#DDD6FE] text-[#6B7280]"
-              : "bg-[#6D28D9] text-white hover:bg-[#5B21B6]"
-          }`}
-        >
-          {loading ? "Changing password..." : "Change password"}
-        </button>
-      </form>
-    </div>
+      <AuthSubmitButton disabled={isInactive || loading}>
+        {loading ? "Changing password..." : "Change password"}
+      </AuthSubmitButton>
+    </AuthFormShell>
   )
 }
 

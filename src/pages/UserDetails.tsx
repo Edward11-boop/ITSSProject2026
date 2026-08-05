@@ -1,5 +1,6 @@
-﻿import AIAssistant from "@/pages/AIAssistant";
+import AIAssistant from "@/pages/AIAssistant";
 import { useState } from 'react';
+import { getBookingStatusClassName } from '@/lib/bookingStatus';
 
 const UserDetails = () => {
 
@@ -31,14 +32,6 @@ const UserDetails = () => {
     { id: 6, date: '28 Jun 2026', seat: 'R2 - C3', room: 'Sala B', status: 'Confirmat' },
   ]);
 
-  const getStatusColor = (status) => {
-    switch (status) {
-      case 'Confirmat': return 'bg-green-100 text-green-600';
-      case 'In asteptare': return 'bg-yellow-100 text-yellow-600';
-      case 'Anulat': return 'bg-red-100 text-red-400';
-      default: return 'bg-gray-100 text-gray-600';
-    }
-  };
 
   return (
     <div className="relative min-h-full bg-white p-4 sm:p-8">
@@ -154,7 +147,7 @@ const UserDetails = () => {
                     <span>{item.seat}</span>
                     <span>{item.room}</span>
                     <div>
-                      <span className={`inline-block rounded-full px-3 py-1 text-[10px] ${getStatusColor(item.status)}`}>
+                      <span className={`inline-block rounded-full px-3 py-1 text-[10px] ${getBookingStatusClassName(item.status)}`}>
                         {item.status}
                       </span>
                     </div>
