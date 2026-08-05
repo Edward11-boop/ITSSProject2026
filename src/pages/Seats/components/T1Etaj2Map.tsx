@@ -1,17 +1,8 @@
-﻿import { useState } from 'react';
+import { useSeatSelection } from '@/hooks/useSeatSelection';
 import SingleSeat from './SingleSeat';
 
 const T1Etaj2Map = () => {
-    const [activeGroup, setActiveGroup] = useState<string | null>(null);
-
-    const handleSeatClick = (id: string) => {
-        setActiveGroup(id);
-    };
-
-    const getSelectedState = (id: string) => {
-        return activeGroup === id ? id : null;
-    };
-
+    const { handleSeatClick, getSelectedState } = useSeatSelection();
 
 
     return (

@@ -1,6 +1,6 @@
-﻿import officeBg from '../assets/office-bg.jpeg'
+import officeBg from '@/assets/office-bg.jpeg'
 import { Link } from 'react-router-dom'
-import logo_noBG from "../assets/Logo_without_bg.svg";
+import logo_noBG from "@/assets/Logo_without_bg.svg";
 
 const Home = () => {
     return (

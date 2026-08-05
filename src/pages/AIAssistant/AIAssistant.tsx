@@ -1,7 +1,7 @@
-﻿import { useState } from "react"
+import { useState } from "react"
 import { Bot } from "lucide-react"
-import AssistantWindow from "../components/AIAssistant/AssistantWindow"
-import type { AssistantStatus } from "../components/AIAssistant/types"
+import AssistantWindow from "./components/AssistantWindow"
+import type { AssistantStatus } from "./types"
 
 const idleMessage =
   "Salut! Pot sa te ajut cu informatii despre vreme si trafic pentru drumul catre birou."

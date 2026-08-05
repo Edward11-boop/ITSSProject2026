@@ -1,5 +1,5 @@
 import { Bot, LoaderCircle, MapPin, X } from "lucide-react"
-import type { AssistantStatus } from "./types"
+import type { AssistantStatus } from "../types"
 
 type AssistantWindowProps = {
   status: AssistantStatus
