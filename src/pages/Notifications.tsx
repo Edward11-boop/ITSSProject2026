@@ -40,7 +40,7 @@ export const initialNotifications: Notification[] = [
     status: "pending",
     isRead: false,
   },
-];
+]
 
 type NotificationsProps = {
   onNotificationRemoved?: () => void;
@@ -69,7 +69,7 @@ const Notifications = ({ onNotificationRemoved }: NotificationsProps) => {
 
       onNotificationRemoved?.();
     }, delay)
-  };
+  }
 
   const handleAccept = (notification: Notification) => {
     setNotifications((previousNotifications) =>
@@ -80,12 +80,12 @@ const Notifications = ({ onNotificationRemoved }: NotificationsProps) => {
               status: "accepted",
               isRead: true,
             }
-          : item
-      )
-    );
+          : item,
+      ),
+    )
 
-    removeNotification(notification.id);
-  };
+    removeNotification(notification.id)
+  }
 
   const handleDecline = (notificationId: number) => {
     setNotifications((previousNotifications) =>
@@ -96,20 +96,20 @@ const Notifications = ({ onNotificationRemoved }: NotificationsProps) => {
               status: "declined",
               isRead: true,
             }
-          : item
-      )
-    );
+          : item,
+      ),
+    )
 
-    removeNotification(notificationId);
-  };
+    removeNotification(notificationId)
+  }
 
   const formatDate = (date: string) => {
     return new Intl.DateTimeFormat("ro-RO", {
       day: "2-digit",
       month: "long",
       year: "numeric",
-    }).format(new Date(`${date}T00:00:00`));
-  };
+    }).format(new Date(`${date}T00:00:00`))
+  }
 
   return (
     <div className="min-h-full gap-10 p-4 sm:p-6">
@@ -132,7 +132,7 @@ const Notifications = ({ onNotificationRemoved }: NotificationsProps) => {
 
       <AIAssistant />
     </div>
-  );
-};
+  )
+}
 
 export default Notifications;

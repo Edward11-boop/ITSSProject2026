@@ -1,49 +1,54 @@
 ﻿import ErrorPopUp from "@/components/ErrorPopUp"
-import { useState } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useState, type ChangeEvent, type FormEvent } from "react"
+import { useLocation, useNavigate } from "react-router-dom"
+
+type ChangePasswordState = {
+  email?: string
+  oldPassword?: string
+}
 
 const ChangePassword = () => {
   const navigate = useNavigate()
   const location = useLocation()
+  const state = location.state as ChangePasswordState | null
 
-  // emailul (si, daca vine direct din Register, parola temporara) vin din
-  // pagina anterioara, dar raman editabile, ca pagina sa functioneze si accesata direct
   const [formData, setFormData] = useState({
-    email: location.state?.email || '',
-    oldPassword: location.state?.oldPassword || '',
-    newPassword: '',
+    email: state?.email || "",
+    oldPassword: state?.oldPassword || "",
+    newPassword: "",
   })
-
-  const [confirmPassword, setConfirmPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState("")
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
+  const [error, setError] = useState("")
 
-  const handleChange = (e) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
 
     setFormData((previousData) => ({
       ...previousData,
       [name]: value,
     }))
+    setError("")
   }
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-
-    setError('')
+    setError("")
 
     if (formData.newPassword !== confirmPassword) {
-      setError('Parolele nu coincid.')
+      setError("Parolele introduse nu coincid.")
       return
     }
 
     setLoading(true)
 
     try {
-      const response = await fetch('http://localhost:8080/change-password', {
-        method: 'PUT',
-        credentials: 'include', // trimite cookie-ul de sesiune
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("http://localhost:8080/change-password", {
+        method: "PUT",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({
           email: formData.email,
           oldPassword: formData.oldPassword,
@@ -54,16 +59,14 @@ const ChangePassword = () => {
       const message = await response.text()
 
       if (!response.ok) {
-        setError(message)
+        setError(message || "Parola nu a putut fi modificata.")
         return
       }
 
-      // parola schimbata cu succes -> acum ne logam cu parola NOUA,
-      // ca sa obtinem sesiune, apoi mergem la dashboard
-      const loginResponse = await fetch('http://localhost:8080/login', {
-        method: 'POST',
-        credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
+      const loginResponse = await fetch("http://localhost:8080/login", {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           email: formData.email,
           password: formData.newPassword,
@@ -71,25 +74,23 @@ const ChangePassword = () => {
       })
 
       if (!loginResponse.ok) {
-        // parola s-a schimbat, dar login-ul automat a esuat -> trimitem
-        // userul la login manual, in loc sa-l blocam
-        navigate('/login')
+        navigate("/login")
         return
       }
 
-      navigate('/home')
+      navigate("/home")
     } catch {
-      setError('Nu am putut contacta serverul. Incearca din nou.')
+      setError("Nu am putut contacta serverul. Incearca din nou.")
     } finally {
       setLoading(false)
     }
   }
 
   const isInactive =
-    formData.email.trim() === '' ||
-    formData.oldPassword === '' ||
-    formData.newPassword === '' ||
-    confirmPassword === ''
+    formData.email.trim() === "" ||
+    formData.oldPassword === "" ||
+    formData.newPassword === "" ||
+    confirmPassword === ""
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-[#F5F3FF] p-4">
@@ -101,6 +102,7 @@ const ChangePassword = () => {
           onClose={() => setError("")}
         />
       )}
+
       <form
         onSubmit={handleSubmit}
         className="flex w-full max-w-md flex-col gap-4 rounded-xl border-2 border-[#DDD6FE] bg-white p-5 text-[#1E1B4B] sm:p-8"
@@ -113,13 +115,9 @@ const ChangePassword = () => {
           Trebuie sa-ti setezi o parola noua inainte de a continua.
         </p>
 
-        <label
-          htmlFor="email"
-          className="text-[20px] sm:text-[24px]"
-        >
+        <label htmlFor="email" className="text-[20px] sm:text-[24px]">
           Email
         </label>
-
         <input
           id="email"
           name="email"
@@ -131,13 +129,9 @@ const ChangePassword = () => {
           className="w-full rounded-lg border-2 border-[#DDD6FE] px-4 py-2 focus:outline-none"
         />
 
-        <label
-          htmlFor="oldPassword"
-          className="text-[20px] sm:text-[24px]"
-        >
+        <label htmlFor="oldPassword" className="text-[20px] sm:text-[24px]">
           Current password
         </label>
-
         <input
           id="oldPassword"
           name="oldPassword"
@@ -149,13 +143,9 @@ const ChangePassword = () => {
           className="w-full rounded-lg border-2 border-[#DDD6FE] px-4 py-2 focus:outline-none"
         />
 
-        <label
-          htmlFor="newPassword"
-          className="text-[20px] sm:text-[24px]"
-        >
+        <label htmlFor="newPassword" className="text-[20px] sm:text-[24px]">
           New password
         </label>
-
         <input
           id="newPassword"
           name="newPassword"
@@ -173,14 +163,16 @@ const ChangePassword = () => {
         >
           Confirm new password
         </label>
-
         <input
           id="confirmPassword"
           name="confirmPassword"
           type="password"
           placeholder="Confirm your new password"
           value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
+          onChange={(e) => {
+            setConfirmPassword(e.target.value)
+            setError("")
+          }}
           required
           className="w-full rounded-lg border-2 border-[#DDD6FE] px-4 py-2 focus:outline-none"
         />
@@ -190,11 +182,11 @@ const ChangePassword = () => {
           disabled={isInactive || loading}
           className={`mt-4 rounded-lg p-2 text-[20px] font-semibold sm:text-[24px] ${
             isInactive || loading
-              ? 'cursor-not-allowed bg-[#DDD6FE] text-[#6B7280]'
-              : 'bg-[#6D28D9] hover:bg-[#5B21B6] text-white'
+              ? "cursor-not-allowed bg-[#DDD6FE] text-[#6B7280]"
+              : "bg-[#6D28D9] text-white hover:bg-[#5B21B6]"
           }`}
         >
-          {loading ? 'Changing password...' : 'Change password'}
+          {loading ? "Changing password..." : "Change password"}
         </button>
       </form>
     </div>
