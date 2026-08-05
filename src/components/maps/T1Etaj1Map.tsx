@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import { useState } from 'react';
 import SingleSeat from './SingleSeat';
 
 const T1Etaj1Map = () => {
@@ -23,7 +23,7 @@ const T1Etaj1Map = () => {
     return (
         <div className="relative mx-auto h-[700px] w-[870px] border border-gray-800 bg-[#F5F3FF] overflow-hidden shadow-sm">
 
-            {/* ================= PEREȚII PRINCIPALI ================= */}
+            {/* ================= PEREČšII PRINCIPALI ================= */}
             <div className="absolute top-[400px] left-0 h-[1px] w-[680px] bg-gray-500"></div>
 
             {/* ================= PERETII SALII S1 ================= */}

@@ -52,11 +52,11 @@ const ForgotPassword = () => {
 
       setSuccessMessage(
         message ||
-          "Dacă există un cont asociat acestui email, vei primi instruc?iunile de resetare."
+          "Daca exista un cont asociat acestui email, vei primi instructiunile de resetare."
       );
-    } catch (err) {
+    } catch {
       setError(
-        "Nu am putut contacta serverul. Încearcă din nou."
+        "Nu am putut contacta serverul. Incearca din nou."
       );
     } finally {
       setLoading(false);

@@ -1,5 +1,4 @@
-import React from 'react'
-import Dashboard from './Dashboard';
+﻿import Dashboard from './Dashboard';
 import InviteModal from '@/components/invite/InviteModal';
 
 const Invite = () => {

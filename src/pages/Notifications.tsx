@@ -49,7 +49,6 @@ const Notifications = ({ onNotificationRemoved }: NotificationsProps) => {
   const [notifications, setNotifications] =
     useState(initialNotifications);
 
-  const [reservations, setReservations] = useState<any[]>([]);
   const scheduledRemovalIds = useRef<Set<number>>(new Set());
 
   const removeNotification = (
@@ -74,18 +73,6 @@ const Notifications = ({ onNotificationRemoved }: NotificationsProps) => {
   };
 
   const handleAccept = (notification) => {
-    const newReservation = {
-      id: Date.now(),
-      date: notification.date,
-      startTime: notification.startTime,
-      endTime: notification.endTime,
-      notificationId: notification.id,
-    };
-
-    setReservations((previousReservations) => [
-      ...previousReservations,
-      newReservation,
-    ]);
 
     setNotifications((previousNotifications) =>
       previousNotifications.map((item) =>
