@@ -3,19 +3,18 @@ import React, { useState } from "react";
 const DAYS = ["M", "T", "W", "T", "F", "S", "S"];
 const MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
 
-export default function Calendar() 
-{
+export default function Calendar() {
   const [date, setDate] = useState(new Date());
   const [selected, setSelected] = useState(new Date().getDate());
 
   const year = date.getFullYear();
   const month = date.getMonth();
-  const firstDay = (new Date(year, month, 1).getDay() + 6) % 7;
+  const firstDay = (new Date(year, month, 1).getDay() + 6) % 7; // luni = 0
   const totalDays = new Date(year, month + 1, 0).getDate();
 
   const days = [...Array(firstDay).fill(null), ...Array.from({ length: totalDays }, (_, i) => i + 1)];
 
-  const changeMonth = (offset) => setDate(new Date(year, month + offset, 1));
+  const changeMonth = (offset: number) => setDate(new Date(year, month + offset, 1));
 
   return (
     <div style={{ background: "#DDD6FE", borderRadius: 24, padding: 24, width: 300, fontFamily: "sans-serif", color: "#1E1B4B" }}>
