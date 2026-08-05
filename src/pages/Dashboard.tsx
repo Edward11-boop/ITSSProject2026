@@ -20,6 +20,11 @@ const Dashboard = () => {
             Ready to book your seat for today?
           </p>
         </div>
+      </div>
+      <FloatingIcon />
+    </div>
+  )
+}
 
         {/* Dashboard content */}
         <div className="grid grid-cols-1 gap-7 lg:grid-cols-[0.85fr_1.35fr]">
