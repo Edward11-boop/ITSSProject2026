@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const colleagues = [
@@ -58,13 +58,13 @@ const InviteModal = () => {
   };
 
   return (
-    <div className="w-full max-w-xl rounded-[48px] border border-[#C4B5FD] bg-[#EDE9FE] px-10 py-10 shadow-xl">
-      <h2 className="mb-10 text-center text-[30px] font-medium text-[#1E1950]">
+    <div className="w-full max-w-xl rounded-[32px] border border-[#C4B5FD] bg-[#EDE9FE] px-5 py-6 shadow-xl sm:rounded-[48px] sm:px-10 sm:py-10">
+      <h2 className="mb-8 text-center text-2xl font-medium text-[#1E1950] sm:mb-10 sm:text-[30px]">
         Choose your colleague and the date
       </h2>
 
       <form onSubmit={handleSubmit}>
-        <div className="grid grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6">
           {/* Colleague */}
           <div className="flex flex-col gap-2">
             <label
@@ -166,7 +166,7 @@ const InviteModal = () => {
         <button
           type="submit"
           disabled={isFormInvalid}
-          className={`mt-12 w-full rounded-full px-6 py-4 text-xl font-bold text-white ${
+          className={`mt-8 w-full rounded-full px-6 py-4 text-lg font-bold text-white sm:mt-12 sm:text-xl ${
             isFormInvalid
               ? "cursor-not-allowed bg-[#C4B5FD]"
               : "bg-[#6D28D9] hover:bg-[#5B21B6]"

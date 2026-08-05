@@ -41,15 +41,15 @@ const UserDetails = () => {
   };
 
   return (
-    <div className="bg-white p-8 min-h-full relative">
+    <div className="relative min-h-full bg-white p-4 sm:p-8">
       <div className="mx-auto max-w-6xl">
         <h1 className="mb-6 text-2xl font-bold text-[#29255E]">User Details</h1>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-12 lg:gap-8">
 
           <div className="lg:col-span-5 flex flex-col gap-6">
 
-            <div className="relative flex items-center gap-6 rounded-3xl bg-[#F4F3FF] p-6 shadow-sm">
+            <div className="relative flex flex-col items-start gap-4 rounded-3xl bg-[#F4F3FF] p-5 shadow-sm sm:flex-row sm:items-center sm:gap-6 sm:p-6">
               <div className="flex h-20 w-20 items-center justify-center rounded-full bg-[#E5E0FF] text-[#8B5CF6]">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10" viewBox="0 0 20 20" fill="currentColor">
                   <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
@@ -121,7 +121,7 @@ const UserDetails = () => {
 
             <div className="rounded-3xl bg-[#F4F3FF] p-6 shadow-sm">
               <h3 className="mb-4 font-bold text-[#29255E]">Status rezervari</h3>
-              <div className="grid grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-4">
                 <div className="flex flex-col items-center justify-center rounded-xl bg-[#D1FAE5] py-4 text-center">
                   <span className="text-3xl font-bold text-green-500">{bookingStats.confirmed}</span>
                   <span className="text-xs font-semibold text-green-600">Confirmate</span>
@@ -140,7 +140,7 @@ const UserDetails = () => {
             <div className="rounded-3xl bg-[#F4F3FF] p-6 shadow-sm flex-1">
               <h3 className="mb-4 font-bold text-[#29255E]">Istoric rezervari</h3>
 
-              <div className="mb-2 grid grid-cols-4 px-4 text-xs font-bold text-gray-400">
+              <div className="mb-2 hidden grid-cols-4 px-4 text-xs font-bold text-gray-400 sm:grid">
                 <span>DATA</span>
                 <span>SCAUN</span>
                 <span>SALA</span>
@@ -149,7 +149,7 @@ const UserDetails = () => {
 
               <div className="flex flex-col gap-2">
                 {bookingHistory.map((item) => (
-                  <div key={item.id} className="grid grid-cols-4 items-center rounded-xl bg-white p-4 text-sm font-bold text-[#29255E]">
+                  <div key={item.id} className="grid grid-cols-2 gap-2 rounded-xl bg-white p-4 text-sm font-bold text-[#29255E] sm:grid-cols-4 sm:items-center sm:gap-0">
                     <span>{item.date}</span>
                     <span>{item.seat}</span>
                     <span>{item.room}</span>
