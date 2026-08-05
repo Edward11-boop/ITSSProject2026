@@ -1,8 +1,9 @@
 ﻿import AIAssistant from "@/pages/AIAssistant";
 import { useRef, useState } from "react";
-import { Bell } from "lucide-react";
+import NotificationHeader from "@/components/notifications/NotificationHeader";
+import NotificationItem, { type Notification } from "@/components/notifications/NotificationItem";
 
-export const initialNotifications = [
+export const initialNotifications: Notification[] = [
   {
     id: 1,
     message: "Andrei invited you to book a seat together.",
@@ -46,13 +47,11 @@ type NotificationsProps = {
 };
 
 const Notifications = ({ onNotificationRemoved }: NotificationsProps) => {
-  const [notifications, setNotifications] =
-    useState(initialNotifications);
-
+  const [notifications, setNotifications] = useState(initialNotifications);
   const scheduledRemovalIds = useRef<Set<number>>(new Set());
 
   const removeNotification = (
-    notificationId,
+    notificationId: number,
     delay = 1000
   ) => {
     if (scheduledRemovalIds.current.has(notificationId)) {
@@ -72,8 +71,7 @@ const Notifications = ({ onNotificationRemoved }: NotificationsProps) => {
     }, delay)
   };
 
-  const handleAccept = (notification) => {
-
+  const handleAccept = (notification: Notification) => {
     setNotifications((previousNotifications) =>
       previousNotifications.map((item) =>
         item.id === notification.id
@@ -89,7 +87,7 @@ const Notifications = ({ onNotificationRemoved }: NotificationsProps) => {
     removeNotification(notification.id);
   };
 
-  const handleDecline = (notificationId) => {
+  const handleDecline = (notificationId: number) => {
     setNotifications((previousNotifications) =>
       previousNotifications.map((item) =>
         item.id === notificationId
@@ -105,7 +103,7 @@ const Notifications = ({ onNotificationRemoved }: NotificationsProps) => {
     removeNotification(notificationId);
   };
 
-  const formatDate = (date) => {
+  const formatDate = (date: string) => {
     return new Intl.DateTimeFormat("ro-RO", {
       day: "2-digit",
       month: "long",
@@ -115,63 +113,20 @@ const Notifications = ({ onNotificationRemoved }: NotificationsProps) => {
 
   return (
     <div className="min-h-full gap-10 p-4 sm:p-6">
-        <div
-            className="flex w-fit items-center gap-3 rounded-[60px] border border-[#DDD6FE] bg-[#EDE9FE] px-6 py-3 shadow-sm"
-        >
-            <h4 className="text-base font-bold text-[#29255E] sm:text-xl">Notifications</h4>
-            <Bell />
-        </div>
+      <NotificationHeader />
+
       <div className="mt-10 flex flex-col gap-4">
         {notifications.map((notification) => (
-          <div
+          <NotificationItem
             key={notification.id}
-            className="flex w-full flex-col gap-4 rounded-[32px] border border-[#DDD6FE] bg-[#EDE9FE] px-5 py-4 shadow-sm md:flex-row md:items-center md:rounded-[60px] md:px-10 md:py-3"
-          >
-            <div>
-              <h2 className="text-base font-bold text-[#29255E] sm:text-xl">
-                {notification.message}
-              </h2>
-
-              <p className="mt-1 text-sm text-gray-600">
-                {formatDate(notification.date)},{" "}
-                {notification.startTime}-{notification.endTime}
-              </p>
-            </div>
-
-            {notification.status === "pending" && (
-              <div className="flex w-full flex-wrap items-center gap-3 md:ml-auto md:w-auto md:gap-4">
-                <button
-                  type="button"
-                  onClick={() => handleAccept(notification)}
-                  className="rounded-[60px] bg-[#6D28D9] px-5 py-2 font-bold text-white hover:bg-[#5B21B6] sm:px-8"
-                >
-                  Accept
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => handleDecline(notification.id)}
-                  className="rounded-[60px] border border-[#6D28D9] bg-white px-5 py-2 font-bold text-[#6D28D9] hover:bg-[#F5F3FF] sm:px-8"
-                >
-                  Decline
-                </button>
-              </div>
-            )}
-
-            {notification.status === "accepted" && (
-              <span className="font-bold text-green-600 md:ml-auto">
-                Reserved
-              </span>
-            )}
-
-            {notification.status === "declined" && (
-              <span className="font-bold text-[#F87171] md:ml-auto">
-                Declined
-              </span>
-            )}
-          </div>
+            notification={notification}
+            formattedDate={formatDate(notification.date)}
+            onAccept={handleAccept}
+            onDecline={handleDecline}
+          />
         ))}
       </div>
+
       <AIAssistant />
     </div>
   );

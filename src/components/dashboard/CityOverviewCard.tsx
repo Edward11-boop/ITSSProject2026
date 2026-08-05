@@ -1,3 +1,4 @@
+﻿import DashboardCard from "./DashboardCard"
 import {
   CloudRain,
   Droplets,
@@ -11,11 +12,11 @@ import {
 
 const CityOverviewCard = () => {
   return (
-    <div className="flex flex-col gap-6 rounded-2xl bg-white p-4 shadow-sm sm:p-6">
+    <DashboardCard title="City Overview" className="flex flex-col gap-6">
       {/* Weather */}
       <section className="rounded-xl bg-[#F5F3FF] p-5">
         <h3 className="font-bold text-[#29255E]">
-          Weather — {weatherMock.city}
+          Weather - {weatherMock.city}
         </h3>
 
         <p className="mt-1 text-xs text-gray-400">
@@ -63,7 +64,7 @@ const CityOverviewCard = () => {
       <section className="min-h-[280px] flex-1 rounded-xl bg-[#F5F3FF] p-5">
         <div className="flex items-center gap-4">
           <h3 className="font-bold text-[#29255E]">
-            Traffic — Bucharest
+            Traffic - Bucharest
           </h3>
 
           <span className="rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-600">
@@ -92,14 +93,14 @@ const CityOverviewCard = () => {
                 {trafficItem.level}
 
                 {trafficItem.interval && (
-                  <> · {trafficItem.interval}</>
+                  <> - {trafficItem.interval}</>
                 )}
               </span>
             </div>
           ))}
         </div>
       </section>
-    </div>
+    </DashboardCard>
   )
 }
 
