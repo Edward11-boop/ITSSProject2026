@@ -1,3 +1,4 @@
+﻿import DashboardCard from "./DashboardCard"
 import {
   officeActivity,
   preferredZones,
@@ -22,11 +23,7 @@ const OfficeActivityCard = () => {
     .join(", ")
 
   return (
-    <div className="rounded-2xl bg-white p-5 shadow-sm sm:p-6">
-      <h3 className="text-lg font-bold text-[#29255E]">
-        Your Office Activity
-      </h3>
-
+    <DashboardCard title="Your Office Activity">
       <p className="mt-1 text-xs text-gray-400">
         Weekly days in office
       </p>
@@ -116,7 +113,7 @@ const OfficeActivityCard = () => {
           </div>
         </div>
       </div>
-    </div>
+    </DashboardCard>
   )
 }
 

@@ -27,12 +27,12 @@ export default function BookingCard({ booking, onDelete }: BookingCardProps) {
   return (
     <div>
       <h4 className="mb-2 text-sm font-bold text-gray-700">{booking.title}</h4>
-      <div className="flex items-center justify-between rounded-2xl bg-[#F8F8FC] p-4 shadow-sm">
-        <div className="flex items-center gap-4">
-          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#EBE9FE]">
+      <div className="flex flex-col gap-4 rounded-2xl bg-[#F8F8FC] p-4 shadow-sm md:flex-row md:items-center md:justify-between">
+        <div className="flex min-w-0 items-center gap-4">
+          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[#EBE9FE]">
             <span className="text-xl">S</span>
           </div>
-          <div>
+          <div className="min-w-0">
             <p className="text-xs text-gray-500">Data - Scaun - Sala</p>
             <p className="font-bold text-[#29255E]">
               {booking.date} - {booking.seat} - {booking.room}
@@ -41,11 +41,11 @@ export default function BookingCard({ booking, onDelete }: BookingCardProps) {
           </div>
         </div>
 
-        <span className={`rounded-full px-3 py-1 text-xs font-bold ${getStatusClassName(booking.status)}`}>
+        <span className={`w-fit rounded-full px-3 py-1 text-xs font-bold ${getStatusClassName(booking.status)}`}>
           {booking.status}
         </span>
 
-        <div className="flex gap-3">
+        <div className="flex flex-wrap gap-3">
           <button
             type="button"
             onClick={canEdit ? () => onDelete(booking.id) : undefined}
