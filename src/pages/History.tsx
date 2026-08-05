@@ -1,6 +1,5 @@
 ﻿import AIAssistant from "@/pages/AIAssistant";
 import { useState } from "react";
-import BookingCard from "@/components/history/BookingCard";
 import BookingTabs from "@/components/history/BookingTabs";
 import ConfirmDeleteModal from "@/components/history/ConfirmDeleteModal";
 import type { Booking, BookingTab } from "@/components/history/types";
@@ -13,6 +12,21 @@ const initialBookings: Booking[] = [
   { id: 5, title: "Rezervare 5 (Anulata)", date: "20 Iulie 2026", seat: "Rand 4, C12", room: "Sala C", time: "10:00 - 14:00", status: "Anulat", tab: "Anulate" },
 ];
 
+function getStatusClassName(status: string) {
+  if (status === "Confirmat") {
+    return "bg-green-100 text-green-600";
+  }
+
+  if (status === "Anulat") {
+    return "bg-red-100 text-red-600";
+  }
+
+  if (status === "Finalizat") {
+    return "bg-gray-200 text-gray-600";
+  }
+
+  return "bg-yellow-100 text-yellow-600";
+}
 const History = () => {
   const [activeTab, setActiveTab] = useState<BookingTab>("Viitoare");
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -51,13 +65,57 @@ const History = () => {
                 Nu exista rezervari in aceasta categorie.
               </p>
             ) : (
-              displayedBookings.map((booking) => (
-                <BookingCard
-                  key={booking.id}
-                  booking={booking}
-                  onDelete={handleDeleteClick}
-                />
-              ))
+              displayedBookings.map((booking) => {
+                const canEdit = booking.tab === "Viitoare" && booking.status === "In asteptare";
+
+                return (
+                  <div key={booking.id}>
+                    <h4 className="mb-2 text-sm font-bold text-gray-700">{booking.title}</h4>
+                    <div className="flex flex-col gap-4 rounded-2xl bg-[#F8F8FC] p-4 shadow-sm md:flex-row md:items-center md:justify-between">
+                      <div className="flex min-w-0 items-center gap-4">
+                        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[#EBE9FE]">
+                          <span className="text-xl">S</span>
+                        </div>
+                        <div className="min-w-0">
+                          <p className="text-xs text-gray-500">Data - Scaun - Sala</p>
+                          <p className="font-bold text-[#29255E]">
+                            {booking.date} - {booking.seat} - {booking.room}
+                          </p>
+                          <p className="font-bold text-[#29255E]">{booking.time}</p>
+                        </div>
+                      </div>
+
+                      <span className={`w-fit rounded-full px-3 py-1 text-xs font-bold ${getStatusClassName(booking.status)}`}>
+                        {booking.status}
+                      </span>
+
+                      <div className="flex flex-wrap gap-3">
+                        <button
+                          type="button"
+                          onClick={canEdit ? () => handleDeleteClick(booking.id) : undefined}
+                          className={
+                            canEdit
+                              ? "rounded-full border border-[#F87171] bg-[#FEE2E2] px-6 py-2 text-sm font-bold text-red-400 transition hover:bg-red-50"
+                              : "rounded-full border border-[#6B7280] px-6 py-2 text-sm font-bold text-[#6B7280] transition"
+                          }
+                        >
+                          Sterge
+                        </button>
+                        <button
+                          type="button"
+                          className={
+                            canEdit
+                              ? "rounded-full border border-[#6D28D9] px-6 py-2 text-sm font-bold text-[#6D28D9] transition hover:bg-purple-50"
+                              : "rounded-full border border-[#6B7280] px-6 py-2 text-sm font-bold text-[#6B7280] transition"
+                          }
+                        >
+                          Modifica
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })
             )}
           </div>
         </div>

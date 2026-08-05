@@ -1,37 +1,40 @@
-import { useNavigate } from "react-router-dom"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
+﻿import { useNavigate } from "react-router-dom"
 
 export default function HomePage() {
   const navigate = useNavigate()
 
   return (
-    <div className="p-8 max-w-2xl mx-auto">
-      <h1 className="text-3xl font-bold text-slate-800 mb-2">
+    <div className="mx-auto max-w-2xl p-8">
+      <h1 className="mb-2 text-3xl font-bold text-slate-800">
         Office Seat Booking
       </h1>
-      <p className="text-slate-500 mb-8">
+      <p className="mb-8 text-slate-500">
         Reserve your spot in the office for the day.
       </p>
 
-      {/* shadcn/ui example: Card + Button + Badge */}
-      <Card>
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <CardTitle>Today's availability</CardTitle>
-            <Badge variant="secondary">12 / 20 free</Badge>
-          </div>
-        </CardHeader>
-        <CardContent className="flex flex-col gap-3">
+      <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="flex items-center justify-between gap-4">
+          <h2 className="text-xl font-semibold text-slate-800">
+            Today's availability
+          </h2>
+          <span className="rounded-full bg-slate-100 px-3 py-1 text-sm font-medium text-slate-600">
+            12 / 20 free
+          </span>
+        </div>
+
+        <div className="mt-4 flex flex-col gap-3">
           <p className="text-sm text-slate-500">
             Pick a seat from the map and book it with your name.
           </p>
-          <Button onClick={() => navigate("/seats")}>
+          <button
+            type="button"
+            onClick={() => navigate("/seats")}
+            className="w-fit rounded-md bg-slate-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-700"
+          >
             View seat map
-          </Button>
-        </CardContent>
-      </Card>
+          </button>
+        </div>
+      </div>
     </div>
   )
 }

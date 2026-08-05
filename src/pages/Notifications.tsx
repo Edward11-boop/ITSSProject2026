@@ -1,6 +1,6 @@
 ﻿import AIAssistant from "@/pages/AIAssistant";
 import { useRef, useState } from "react";
-import NotificationHeader from "@/components/notifications/NotificationHeader";
+import { Bell } from "lucide-react";
 import NotificationItem, { type Notification } from "@/components/notifications/NotificationItem";
 
 export const initialNotifications: Notification[] = [
@@ -113,7 +113,10 @@ const Notifications = ({ onNotificationRemoved }: NotificationsProps) => {
 
   return (
     <div className="min-h-full gap-10 p-4 sm:p-6">
-      <NotificationHeader />
+      <div className="flex w-fit items-center gap-3 rounded-[60px] border border-[#DDD6FE] bg-[#EDE9FE] px-6 py-3 shadow-sm">
+        <h4 className="text-base font-bold text-[#29255E] sm:text-xl">Notifications</h4>
+        <Bell />
+      </div>
 
       <div className="mt-10 flex flex-col gap-4">
         {notifications.map((notification) => (
