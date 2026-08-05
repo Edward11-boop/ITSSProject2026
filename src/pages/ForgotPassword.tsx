@@ -1,12 +1,5 @@
-﻿import { useState } from "react"
-import { Link } from "react-router-dom"
-
-import AuthFooterLink from "@/components/forms/AuthFooterLink"
-import AuthLayout from "@/components/forms/AuthLayout"
-import AuthMessage from "@/components/forms/AuthMessage"
-import FormField from "@/components/forms/FormField"
-import SubmitButton from "@/components/forms/SubmitButton"
-import ErrorPopUp from "@/components/ErrorPopUp"
+﻿import { useState } from "react";
+import { Link } from "react-router-dom";
 
 const ForgotPassword = () => {
   const [formData, setFormData] = useState({
@@ -105,48 +98,30 @@ const ForgotPassword = () => {
 
           <AuthMessage tone="success">
             {successMessage}
-          </AuthMessage>
+          </p>
+        )}
 
-          <SubmitButton
-            disabled={isInactive}
-            loading={loading}
-            label="Send reset link"
-            loadingLabel="Sending..."
-          />
+        <button
+          type="submit"
+          disabled={isInactive}
+          className={`mt-4 rounded-lg p-2 text-[24px] font-semibold ${
+            isInactive
+              ? "cursor-not-allowed bg-[#DDD6FE] text-[#6B7280]"
+              : "bg-[#6D28D9] text-white hover:bg-[#5B21B6]"
+          }`}
+        >
+          {loading ? "Sending..." : "Send reset link"}
+        </button>
 
-          <AuthFooterLink
-            text="Do you already have an account?"
-            to="/login"
-            linkLabel="Back to log in"
-          />
-        </form>
-      </AuthLayout>
+        <p className="text-center text-20 text-[#6B7280] mt-4">
+          Do you already have an account?
+          <Link to="/login" className="text-[#6D28D9] font-semibold ml-1">
+            Back to log in
+          </Link>
+        </p>
+      </form>
+    </div>
+  );
+};
 
-      {error && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
-          <ErrorPopUp
-            title="Password reset failed"
-            message={error}
-            sideMessage={
-              <>
-                Verificați dacă ați introdus corect adresa de email.
-                <br />
-                Dacă vă amintiți parola, vă puteți autentifica.{" "}
-                <Link
-                  to="/login"
-                  onClick={() => setError("")}
-                  className="font-semibold text-[#6D28D9] hover:underline"
-                >
-                  Log in
-                </Link>
-              </>
-            }
-            onClose={() => setError("")}
-          />
-        </div>
-      )}
-    </>
-  )
-}
-
-export default ForgotPassword
+export default ForgotPassword;

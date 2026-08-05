@@ -13,6 +13,7 @@ import Notifications from "@/pages/Notifications"
 import History from "@/pages/History"
 import UserDetails from "@/pages/UserDetails"
 import Seats from "@/pages/Seats"
+import TypeOfReservation from "./pages/TypeOfReservation"
 import Invite from "./pages/Invite"
 
 export default function App() {
@@ -24,10 +25,22 @@ export default function App() {
     "/notifications",
     "/history",
     "/user-details",
-    "/invite",
+    "/type-of-reservation",
+    "/book-now",
+    "/invite"
   ]
 
-  const showDashboardLayout = dashboardPages.includes(location.pathname) 
+  const authPages = [
+    "/login",
+    "/signup",
+    "/forgot-password",
+    "/change-password",
+    "/legacy-home",
+    "/"
+  ]
+
+  const showDashboardLayout = dashboardPages.includes(location.pathname)
+  const showFeatureTopbar = showDashboardLayout || authPages.includes(location.pathname)
 
   return (
     <div
@@ -46,12 +59,11 @@ export default function App() {
             : "min-h-screen w-full"
         }
       >
-        <Topbar />
+        {showFeatureTopbar && <Topbar />} 
 
         <main className={showDashboardLayout ? "flex-1 overflow-y-auto" : ""}>
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/seats" element={<SeatsPage />} />
             <Route path="/book-now" element={<Seats />} />
             <Route path="/legacy-home" element={<Dashboard />} />
             <Route path="/login" element={<Login setIsLoggedIn={setIsLoggedIn} />} />
@@ -62,7 +74,8 @@ export default function App() {
             <Route path="/notifications" element={<Notifications />} />
             <Route path="/history" element={<History />} />
             <Route path="/user-details" element={<UserDetails />} />
-            <Route path="/invite" element={<Invite />} />
+            <Route path="/type-of-reservation" element={<TypeOfReservation/>} />
+            <Route path="/invite" element={<Invite/>} />
           </Routes>
         </main>
       </div>
