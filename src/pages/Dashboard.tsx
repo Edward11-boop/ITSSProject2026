@@ -48,7 +48,10 @@ const Dashboard = () => {
 
             </div>
         </div>
-    )
+      </div>
+      <FloatingIcon />
+    </div>
+  )
 }
 
 export default Dashboard
