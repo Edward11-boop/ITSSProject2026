@@ -119,6 +119,7 @@ const Login = ({ setIsLoggedIn }: LoginProps) => {
         <input
           id="email"
           name="email"
+          label="Email"
           type="email"
           placeholder="Enter your email"
           value={formData.email}
@@ -137,6 +138,7 @@ const Login = ({ setIsLoggedIn }: LoginProps) => {
         <input
           id="password"
           name="password"
+          label="Password"
           type="password"
           placeholder="Enter your password"
           value={formData.password}
@@ -177,8 +179,34 @@ const Login = ({ setIsLoggedIn }: LoginProps) => {
           </Link>
         </p>
       </form>
-    </div>
-  )
+    </AuthLayout>
+
+    {error && (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
+        <ErrorPopUp
+          title="Log in failed"
+          message={"Logarea nu s-a putut efectua"}
+          sideMessage={
+            <>
+              Verificați dacă ați introdus corect datele. 
+              <br/>
+              Dacă nu aveți deja un
+              cont, vă puteți crea unul.{" "}
+              <Link
+                to="/register"
+                onClick={() => setError("")}
+                className="font-semibold text-[#6B72809] hover:underline"
+              >
+                Register
+              </Link>
+            </>
+          }
+          onClose={() => setError("")}
+        />
+      </div>
+    )}
+  </>
+)
 }
 
 export default Login
