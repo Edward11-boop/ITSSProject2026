@@ -1,5 +1,5 @@
 ﻿import AIAssistant from "@/pages/AIAssistant";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Bell } from "lucide-react";
 
 export const initialNotifications = [
@@ -50,27 +50,26 @@ const Notifications = ({ onNotificationRemoved }: NotificationsProps) => {
     useState(initialNotifications);
 
   const [reservations, setReservations] = useState<any[]>([]);
+  const scheduledRemovalIds = useRef<Set<number>>(new Set());
 
   const removeNotification = (
     notificationId,
     delay = 1000
   ) => {
+    if (scheduledRemovalIds.current.has(notificationId)) {
+      return;
+    }
+
+    scheduledRemovalIds.current.add(notificationId);
+
     setTimeout(() => {
-      let wasRemoved = false;
-
-      setNotifications((previousNotifications) => {
-        wasRemoved = previousNotifications.some(
-          (notification) => notificationId === notification.id
-        );
-
-        return previousNotifications.filter(
+      setNotifications((previousNotifications) =>
+        previousNotifications.filter(
           (notification) => notificationId !== notification.id
-        );
-      });
+        )
+      );
 
-      if (wasRemoved) {
-        onNotificationRemoved?.();
-      }
+      onNotificationRemoved?.();
     }, delay)
   };
 
