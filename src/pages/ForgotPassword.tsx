@@ -1,29 +1,26 @@
-﻿import ErrorPopUp from "@/components/ErrorPopUp"
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import AuthFormField from "@/components/auth/AuthFormField"
+import AuthFormShell from "@/components/auth/AuthFormShell"
+import AuthSubmitButton from "@/components/auth/AuthSubmitButton"
+import { useEmailValidation } from "@/hooks/useEmailValidation"
+import { useFormData } from "@/hooks/useFormData"
+import { useState, type FormEvent } from "react"
+import { Link } from "react-router-dom"
 
 const ForgotPassword = () => {
-  const [formData, setFormData] = useState({
-    email: "",
-  })
-
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
   const [successMessage, setSuccessMessage] = useState("")
+  const { formData, handleChange } = useFormData(
+    {
+      email: "",
+    },
+    () => {
+      setError("")
+      setSuccessMessage("")
+    },
+  )
 
-  const handleChange = (e) => {
-    const { name, value } = e.target
-
-    setFormData((previousData) => ({
-      ...previousData,
-      [name]: value,
-    }))
-
-    setError("")
-    setSuccessMessage("")
-  }
-
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
     setError("")
@@ -67,80 +64,47 @@ const ForgotPassword = () => {
     }
   }
 
-  const isValidEmail =
-    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(
-      formData.email.trim()
-    )
-
+  const isValidEmail = useEmailValidation(formData.email)
   const isInactive = !isValidEmail || loading
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[#F5F3FF] p-4">
-      {error && (
-        <ErrorPopUp
-          title="Something went wrong"
-          message={error}
-          sideMessage="Please check the details and try again."
-          onClose={() => setError("")}
-        />
+    <AuthFormShell error={error} onClearError={() => setError("")} onSubmit={handleSubmit}>
+      <h1 className="mb-2 text-center text-[32px] font-semibold sm:text-[40px]">
+        Forgot your password?
+      </h1>
+
+      <p className="mb-4 text-center text-gray-500">
+        Enter your email and we will send you password reset
+        instructions.
+      </p>
+
+      <AuthFormField
+        id="email"
+        name="email"
+        label="Email"
+        type="email"
+        placeholder="Enter your email"
+        value={formData.email}
+        onChange={handleChange}
+      />
+
+      {successMessage && (
+        <p className="text-sm text-green-700">
+          {successMessage}
+        </p>
       )}
-      <form
-        onSubmit={handleSubmit}
-        className="flex w-full max-w-md flex-col gap-4 rounded-xl border-2 border-[#DDD6FE] bg-white p-5 text-[#1E1B4B] sm:p-8"
-      >
-        <h1 className="mb-2 text-center text-[32px] font-semibold sm:text-[40px]">
-          Forgot your password?
-        </h1>
 
-        <p className="mb-4 text-center text-gray-500">
-          Enter your email and we will send you password reset
-          instructions.
-        </p>
+      <AuthSubmitButton disabled={isInactive}>
+        {loading ? "Sending..." : "Send reset link"}
+      </AuthSubmitButton>
 
-        <label
-          htmlFor="email"
-          className="text-[20px] font-medium sm:text-[24px]"
-        >
-          Email
-        </label>
-
-        <input
-          id="email"
-          name="email"
-          type="email"
-          placeholder="Enter your email"
-          value={formData.email}
-          onChange={handleChange}
-          required
-          className="w-full rounded-lg border-2 border-[#DDD6FE] px-4 py-2 focus:border-[#6D28D9] focus:outline-none"
-        />
-
-        {successMessage && (
-          <p className="text-sm text-green-700">
-            {successMessage}
-          </p>
-        )}
-
-        <button
-          type="submit"
-          disabled={isInactive}
-          className={`mt-4 rounded-lg p-2 text-[20px] font-semibold sm:text-[24px] ${
-            isInactive
-              ? "cursor-not-allowed bg-[#DDD6FE] text-[#6B7280]"
-              : "bg-[#6D28D9] text-white hover:bg-[#5B21B6]"
-          }`}
-        >
-          {loading ? "Sending..." : "Send reset link"}
-        </button>
-
-        <p className="mt-4 text-center text-base text-[#6B7280] sm:text-[20px]">
-          Do you already have an account?
-          <Link to="/login" className="text-[#6D28D9] font-semibold ml-1">
-            Back to log in
-          </Link>
-        </p>
-      </form>
-    </div>
+      <p className="mt-4 text-center text-base text-[#6B7280] sm:text-[20px]">
+        Do you already have an account?
+        <Link to="/login" className="text-[#6D28D9] font-semibold ml-1">
+          Back to log in
+        </Link>
+      </p>
+    </AuthFormShell>
   );
 };
 

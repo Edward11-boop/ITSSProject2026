@@ -1,11 +1,12 @@
 import { useNavigate } from 'react-router-dom';
+import singleSeatAvailable from '@/assets/singleSeatAvailable.svg';
+import selected from '@/assets/selected.svg';
+import occupied from '@/assets/occupied.svg';
+import indisponibil from '@/assets/indisponibil.svg';
+import roomAvailable from '@/assets/roomAvailable.svg';
 
 export const seatTabs = ['Parter', 'T1,etaj 1', 'T1,etaj 2', 'T2,etaj 1', 'T2,etaj 2'] as const;
-import singleSeatAvailable from "@/assets/singleSeatAvailable.svg"
-import selected from "@/assets/selected.svg"
-import occupied from "@/assets/occupied.svg"
-import indisponibil from "@/assets/indisponibil.svg"
-import roomAvailable from "@/assets/roomAvailable.svg"
+
 type SeatTab = typeof seatTabs[number];
 
 type SeatsNavbarProps = {
@@ -50,64 +51,41 @@ const SeatsNavbar = ({ activeTab, setActiveTab }: SeatsNavbarProps) => {
 
               <div className="absolute right-0 top-full z-50 hidden pt-2 group-hover:flex">
                 <div className="flex w-48 flex-col gap-3 rounded-lg border border-[#C4B5FD] bg-[#EDE9FE] p-3 shadow-lg">
-                  <div className="flex items-center gap-3 text-sm text-[#1E1B4B] font-semibold">
-                    
-                    <img src={singleSeatAvailable}
-                          alt="single seat available"
-                          className="h-6 w-6"
-                    />
-
-                      <p>Disponibil (loc individual)</p>
+                  <div className="flex items-center gap-3 text-sm font-semibold text-[#1E1B4B]">
+                    <img src={singleSeatAvailable} alt="single seat available" className="h-6 w-6" />
+                    <p>Disponibil (loc individual)</p>
                   </div>
 
-                  <div className="flex items-center gap-3 text-sm text-[#1E1B4B] font-semibold">
-                    
-                    <img src={occupied}
-                          alt="occupied"
-                          className="h-6 w-6"
-                    />
-
-                      <p>Ocupat</p>
+                  <div className="flex items-center gap-3 text-sm font-semibold text-[#1E1B4B]">
+                    <img src={occupied} alt="occupied" className="h-6 w-6" />
+                    <p>Ocupat</p>
                   </div>
 
-                  <div className="flex items-center gap-3 text-sm text-[#1E1B4B] font-semibold">
-                    
-                    <img src={selected}
-                          alt="selected"
-                          className="h-6 w-6"
-                    />
-
-                      <p>Indisponibil</p>
+                  <div className="flex items-center gap-3 text-sm font-semibold text-[#1E1B4B]">
+                    <img src={selected} alt="selected" className="h-6 w-6" />
+                    <p>Selectat</p>
                   </div>
 
-
-                  <div className="flex items-center gap-3 text-sm text-[#1E1B4B] font-semibold">
-                    
-                    <img src={indisponibil}
-                          alt="indisponibil"
-                          className="h-6 w-6"
-                    />
-
-                      <p>Indisponibil</p>
+                  <div className="flex items-center gap-3 text-sm font-semibold text-[#1E1B4B]">
+                    <img src={indisponibil} alt="indisponibil" className="h-6 w-6" />
+                    <p>Indisponibil</p>
                   </div>
 
-                  <div className="flex items-center gap-3 text-sm text-[#1E1B4B] font-semibold">
-                    
-                    <img src={roomAvailable}
-                          alt="room available"
-                          className="h-6 w-6"
-                    />
-
-                      <p>Disponibil (doar daca se rezerva toata sala)</p>
+                  <div className="flex items-center gap-3 text-sm font-semibold text-[#1E1B4B]">
+                    <img src={roomAvailable} alt="room available" className="h-6 w-6" />
+                    <p>Disponibil (doar daca se rezerva toata sala)</p>
                   </div>
-                  
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        <button type="button" className="rounded-full bg-[#8B5CF6] px-5 py-3 font-semibold text-white transition-all hover:bg-[#7C3AED] hover:shadow-lg sm:px-8">
+        <button
+          type="button"
+          onClick={() => navigate('/type-of-reservation')}
+          className="rounded-full bg-[#8B5CF6] px-5 py-3 font-semibold text-white transition-all hover:bg-[#7C3AED] hover:shadow-lg sm:px-8"
+        >
           Confirm your selection
         </button>
       </div>
@@ -116,4 +94,3 @@ const SeatsNavbar = ({ activeTab, setActiveTab }: SeatsNavbarProps) => {
 };
 
 export default SeatsNavbar;
-

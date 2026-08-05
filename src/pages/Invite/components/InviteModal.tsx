@@ -1,4 +1,5 @@
-﻿import { useState } from "react";
+import { useState } from "react";
+import type { ChangeEvent, FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 
 const colleagues = [
@@ -17,7 +18,7 @@ const InviteModal = () => {
     endTime: "",
   });
 
-  const handleChange = (event) => {
+  const handleChange = (event: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = event.target;
 
     setFormData((previousData) => ({
@@ -38,7 +39,7 @@ const InviteModal = () => {
     formData.endTime === "" ||
     isTimeInvalid;
 
-  const handleSubmit = (event) => {
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     if (isFormInvalid) {

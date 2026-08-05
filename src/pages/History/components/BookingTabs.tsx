@@ -1,4 +1,4 @@
-﻿import { bookingTabs, type BookingTab } from "./types"
+import { bookingTabs, type BookingTab } from "../types"
 
 type BookingTabsProps = {
   activeTab: BookingTab

@@ -1,12 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
-import ParterMap from '@/components/maps/ParterMap';
-import SeatsNavbar, { seatTabs } from '@/components/maps/SeatsNavbar';
-import T1Etaj1Map from '@/components/maps/T1Etaj1Map';
-import T2Etaj1Map from '@/components/maps/T2Etaj1Map';
-import T1Etaj2Map from '@/components/maps/T1Etaj2Map';
-import AIAssistant from './AIAssistant';
-import T2Etaj2Map from '@/components/maps/T2Etaj2Map';
+import ParterMap from './components/ParterMap';
+import SeatsNavbar, { seatTabs } from './components/SeatsNavbar';
+import T1Etaj1Map from './components/T1Etaj1Map';
+import T2Etaj1Map from './components/T2Etaj1Map';
+import T1Etaj2Map from './components/T1Etaj2Map';
+import AIAssistant from '@/pages/AIAssistant';
+import T2Etaj2Map from './components/T2Etaj2Map';
 
 type MapConfig = {
   element: ReactNode;

@@ -1,21 +1,8 @@
-import { useState } from 'react'
+import { useSeatSelection } from '@/hooks/useSeatSelection';
 import SingleSeat from './SingleSeat'
 
 const T2Etaj1Map = () => {
-  const [activeGroup, setActiveGroup] = useState<string | null>(null)
-
-  const handleSeatClick = (id: string) => {
-    if (id.includes('T2-404')){
-      setActiveGroup('G-404')
-    } else {
-      setActiveGroup(id)
-    }
-  }
-
-  const getSelectedState = (id: string) => {
-    if (activeGroup === 'G-404' && (id.includes('T2-404'))) return id
-    return activeGroup === id ? id : null
-  }
+    const { handleSeatClick, getSelectedState } = useSeatSelection([{ groupId: 'G-404', matches: (id: string) => id.includes('T2-404') }]);
 
   return (
     <div className="relative mx-auto h-[650px] w-full max-w-[1000px] border border-gray-800 bg-[#F5F3FF] overflow-hidden shadow-sm">
