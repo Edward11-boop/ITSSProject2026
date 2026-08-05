@@ -1,4 +1,5 @@
-﻿import { useState } from "react";
+﻿import ErrorPopUp from "@/components/ErrorPopUp"
+import { useState } from "react";
 import { Link } from "react-router-dom";
 
 const ForgotPassword = () => {
@@ -72,6 +73,14 @@ const ForgotPassword = () => {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-[#F5F3FF] p-4">
+      {error && (
+        <ErrorPopUp
+          title="Something went wrong"
+          message={error}
+          sideMessage="Please check the details and try again."
+          onClose={() => setError("")}
+        />
+      )}
       <form
         onSubmit={handleSubmit}
         className="flex w-full max-w-md flex-col gap-4 rounded-xl border-2 border-[#DDD6FE] bg-white p-5 text-[#1E1B4B] sm:p-8"
@@ -102,12 +111,6 @@ const ForgotPassword = () => {
           required
           className="w-full rounded-lg border-2 border-[#DDD6FE] px-4 py-2 focus:border-[#6D28D9] focus:outline-none"
         />
-
-        {error && (
-          <p className="text-sm text-red-600">
-            {error}
-          </p>
-        )}
 
         {successMessage && (
           <p className="text-sm text-green-700">
