@@ -161,10 +161,8 @@ const History = () => {
                     </div>
                 </div>
             )}
-
+          </div>
         </div>
-    );
-};
 
 export default History;
 
