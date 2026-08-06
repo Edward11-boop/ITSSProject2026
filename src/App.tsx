@@ -51,7 +51,8 @@ export default function App() {
 
   const showDashboardLayout = dashboardPages.includes(location.pathname)
   const showFeatureTopbar = showDashboardLayout || authPages.includes(location.pathname)
-
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] =
+    useState(false)
   return (
     <div
       className={
@@ -60,7 +61,11 @@ export default function App() {
           : "min-h-screen bg-slate-50"
       }
     >
-      {showDashboardLayout && <Sidebar />}
+      {showDashboardLayout && <Sidebar
+          isMobileOpen={isMobileSidebarOpen}
+          onMobileClose={() => setIsMobileSidebarOpen(false)}
+        />
+      }
 
       <div
         className={
@@ -69,7 +74,13 @@ export default function App() {
             : "min-h-screen w-full"
         }
       >
-        {showFeatureTopbar && <Topbar notificationCount={notificationCount} />}
+        {showFeatureTopbar && <Topbar
+            notificationCount={notificationCount}
+            onOpenMobileMenu={() =>
+              setIsMobileSidebarOpen(true)
+            }
+          />
+        }
 
         <main className={showDashboardLayout ? "flex-1 overflow-x-hidden overflow-y-auto" : ""}>
           <Routes>

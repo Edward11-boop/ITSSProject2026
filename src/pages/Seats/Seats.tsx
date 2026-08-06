@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, cloneElement } from 'react';
+﻿import { useEffect, useRef, useState, cloneElement } from 'react';
 import type { ReactElement, ReactNode } from 'react';
 import ParterMap from './components/ParterMap';
 import SeatsNavbar, { seatTabs } from './components/SeatsNavbar';
@@ -82,4 +82,6 @@ const Seats = () => {
 };
 
 export default Seats;
+
+
 

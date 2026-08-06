@@ -1,21 +1,24 @@
-import AIAssistant from "@/pages/AIAssistant";
+﻿import AIAssistant from "@/pages/AIAssistant";
+import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { useState } from 'react';
 import { getBookingStatusClassName } from '@/lib/bookingStatus';
 
 const UserDetails = () => {
+  const { user: currentUser, isLoading } = useCurrentUser();
+
 
   // MOCK DATA - Date statice temporare
 
 
-  const [userProfile] = useState({
-    name: "Andrei Popescu",
-    role: "Admin",
-    email: "andrei.popescu@itsmartsystems.eu",
+  const userProfile = {
+    name: currentUser.name,
+    role: currentUser.role,
+    email: isLoading ? "Se incarca..." : currentUser.email || "Email indisponibil",
     phone: "+40 721 234 567",
-    department: "Inginerie Software · Etaj 3",
-    preferredSeat: "Rand 3, Mijloc · Sala A",
+    department: "Inginerie Software - Etaj 3",
+    preferredSeat: "Rand 3, Mijloc - Sala A",
     preferredTime: "09:00 - 17:00"
-  });
+  };
 
   const [bookingStats] = useState({
     confirmed: 4,
@@ -165,6 +168,9 @@ const UserDetails = () => {
 };
 
 export default UserDetails;
+
+
+
 
 
 

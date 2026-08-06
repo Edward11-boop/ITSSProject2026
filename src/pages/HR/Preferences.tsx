@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import BackButton from "@/components/BackButton";
 import TextField from "@mui/material/TextField";
-
+import AIAssistant from '../AIAssistant';
 const Preferences = () => {
     const [searchQuery, setSearchQuery] = useState('');
 
@@ -49,6 +49,7 @@ const Preferences = () => {
                         <p className="text-xs text-gray-400 mt-2 ml-4">
                             Caută o persoană pentru a-i vedea preferințele din ultima lună.
                         </p>
+
                     </div>
                 </div>
 
@@ -79,6 +80,9 @@ const Preferences = () => {
                             </div>
                         )}
                     </div>
+                    
+                    <AIAssistant/>
+
                 </div>
             </div>
         </div>
