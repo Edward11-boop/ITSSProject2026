@@ -79,7 +79,7 @@ const ChangePassword = () => {
         return
       }
 
-      navigate("/home")
+      navigate("/dashboard")
     } catch {
       setError("Nu am putut contacta serverul. Incearca din nou.")
     } finally {

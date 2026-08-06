@@ -15,6 +15,7 @@ import Seats from "@/pages/Seats"
 import TypeOfReservation from "./pages/TypeOfReservation"
 import Invite from "./pages/Invite"
 import SelectDateTime from "./pages/SelectDateTime"
+import HRReports from "./pages/HRReports"
 
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
@@ -25,6 +26,7 @@ export default function App() {
     "/dashboard",
     "/notifications",
     "/history",
+    "/hr-reports",
     "/user-details",
     "/type-of-reservation",
     "/book-now",
@@ -86,6 +88,7 @@ export default function App() {
               }
             />
             <Route path="/history" element={<History />} />
+            <Route path="/hr-reports" element={<HRReports />} />
             <Route path="/user-details" element={<UserDetails />} />
             <Route path="/type-of-reservation" element={<TypeOfReservation/>} />
             <Route path="/invite" element={<Invite/>} />

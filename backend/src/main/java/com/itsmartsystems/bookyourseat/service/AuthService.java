@@ -58,6 +58,7 @@ public class AuthService {
     // --- LOGIN ---
     public boolean login(LoginRequest request){
         Optional<User> u = userRepository.findByEmail(request.getEmail());
+        if (u.isEmpty()) throw new IllegalArgumentException("Email isnt registered !");
         Authentication auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
         if (u.get().isFirstLog()) throw new IllegalArgumentException("Password must be changed before login !");
         SecurityContextHolder.getContext().setAuthentication(auth);
@@ -115,4 +116,16 @@ public class AuthService {
         userRepository.save(user);
     }
 
+    public UserDetails UserDet() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new IllegalArgumentException("User is not authenticated !");
+        }
+
+        String email = authentication.getName();
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("User doesnt exist !"));
+
+        return new UserDetails(user.getId(), user.getName(), user.getEmail(), user.getRole());
+    }
 }
