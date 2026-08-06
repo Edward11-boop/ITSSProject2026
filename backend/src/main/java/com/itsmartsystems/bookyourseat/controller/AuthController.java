@@ -65,4 +65,8 @@ public class AuthController {
 
     }
 
+    @GetMapping("/me")
+    public UserDetails getMe() {
+        return authService.UserDet();
+    }
 }
