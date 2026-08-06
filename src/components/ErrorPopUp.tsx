@@ -5,6 +5,7 @@ type ErrorPopUpProps = {
   title: string
   message: string
   sideMessage?: string
+  buttonText?: string
   onClose: () => void
 }
 
