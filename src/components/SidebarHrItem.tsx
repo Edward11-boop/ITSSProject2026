@@ -12,9 +12,8 @@ const SidebarHrItem = ({ isExtended }: SidebarHrItemProps) => {
     <div className="group relative mt-10 flex justify-center">
       <Link
         to="/hr-reports"
-        className={`flex items-center justify-center gap-3 rounded-[18px] bg-[#6D28D9] px-3 py-3 transition-all hover:bg-[#7C3AED] ${
-          isExtended ? "w-[calc(100%-24px)]" : ""
-        }`}
+        className={`flex items-center justify-center gap-3 rounded-[18px] bg-[#6D28D9] px-3 py-3 transition-all hover:bg-[#7C3AED] ${isExtended ? "w-[calc(100%-24px)]" : ""
+          }`}
       >
         <img src={hrReports} alt="HR reports" className="h-8 w-8 sm:h-10 sm:w-10" />
 
@@ -34,13 +33,13 @@ const SidebarHrItem = ({ isExtended }: SidebarHrItemProps) => {
           Istoric
         </button>
 
-        <button
-          type="button"
+        <Link
+          to="/preferences"
           className="flex items-center gap-4 bg-[#E9D5FF] px-5 py-4 text-left text-lg font-bold text-[#111827] hover:bg-[#D8B4FE]"
         >
           <img src={preferencesIcon} alt="" className="h-7 w-7" />
           Preferinte
-        </button>
+        </Link>
       </div>
     </div>
   );
