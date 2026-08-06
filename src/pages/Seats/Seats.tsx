@@ -64,6 +64,7 @@ const Seats = () => {
     <div className="min-h-screen bg-[#F5F3FF]">
       <SeatsNavbar activeTab={activeTab} setActiveTab={setActiveTab} />
 
+
       {activeMap ? (
         <ResponsiveMap {...activeMap} />
       ) : (
@@ -78,3 +79,4 @@ const Seats = () => {
 };
 
 export default Seats;
+

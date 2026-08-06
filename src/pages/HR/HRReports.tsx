@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import BackButton from "@/components/BackButton";
 
 const HRReports = () => {
 
@@ -34,6 +35,10 @@ const HRReports = () => {
 
     return (
         <div className="min-h-screen bg-[#F5F3FF] p-8">
+            <div className="max-w-7xl mx-auto">
+                <BackButton className="mb-6" fallbackTo="/dashboard" />
+            </div>
+
 
             <div className="mb-8 text-center">
                 <h1 className="text-2xl font-bold text-[#2D2A4A]">Rapoarte și Analiză HR</h1>

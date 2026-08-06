@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
+import BackButton from "@/components/BackButton"
 import Calendar from "@/components/Calendar"
 
 type TipRezervare = "RECURENTA" | "O_ZI"
@@ -56,7 +57,12 @@ const SelectDateTime = () => {
   }
 
   return (
-    <div className="flex min-h-[calc(100vh-80px)] flex-col items-center justify-center gap-8 bg-white p-4">
+    <div className="flex min-h-[calc(100vh-80px)] flex-col bg-white p-4">
+      <div className="mx-auto w-full max-w-7xl">
+        <BackButton fallbackTo="/book-now" />
+      </div>
+
+      <div className="flex flex-1 flex-col items-center justify-center gap-8">
       <h1 className="text-3xl font-bold text-[#29255E]">Alege data si intervalul orar</h1>
 
       <div className="flex flex-col items-center gap-4">
@@ -107,6 +113,7 @@ const SelectDateTime = () => {
       >
         Continua
       </button>
+      </div>
     </div>
   )
 }
