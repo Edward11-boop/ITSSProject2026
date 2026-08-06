@@ -3,6 +3,7 @@ import AIAssistant from "@/pages/AIAssistant";
 import { useState } from "react";
 import BookingTabs from "./components/BookingTabs";
 import ConfirmDeleteModal from "./components/ConfirmDeleteModal";
+import SuccessPopUp from "@/components/SuccessPopUp";
 import type { Booking, BookingTab } from "./types";
 import { getBookingStatusClassName } from "@/lib/bookingStatus";
 
@@ -16,25 +17,29 @@ const initialBookings: Booking[] = [
 
 const History = () => {
   const [activeTab, setActiveTab] = useState<BookingTab>("Viitoare");
-  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  // Am schimbat isModalOpen într-un state care știe exact ce pop-up să arate
+  const [popupState, setPopupState] = useState<'none' | 'confirm' | 'success'>('none');
+
   const [bookingToDelete, setBookingToDelete] = useState<number | null>(null);
   const [bookings, setBookings] = useState(initialBookings);
 
   const handleDeleteClick = (id: number) => {
     setBookingToDelete(id);
-    setIsModalOpen(true);
+    setPopupState('confirm');
   };
 
   const confirmDelete = () => {
     setBookings((currentBookings) =>
       currentBookings.filter((booking) => booking.id !== bookingToDelete)
     );
-    setIsModalOpen(false);
+
+    setPopupState('success');
     setBookingToDelete(null);
   };
 
   const cancelDelete = () => {
-    setIsModalOpen(false);
+    setPopupState('none');
     setBookingToDelete(null);
   };
 
@@ -112,15 +117,25 @@ const History = () => {
         <AIAssistant />
       </div>
 
-      {isModalOpen && (
+
+      {popupState === 'confirm' && (
         <ConfirmDeleteModal
           onConfirm={confirmDelete}
           onCancel={cancelDelete}
         />
       )}
+
+      {popupState === 'success' && (
+        <SuccessPopUp
+          title="Rezervare stearsa"
+          sideMessage="Rezervarea ta a fost stearsa"
+          highlightedText="CU SUCCES"
+          onClose={() => setPopupState('none')} // La OK, închidem tot
+        />
+      )}
+
     </div>
   );
 };
 
 export default History;
-

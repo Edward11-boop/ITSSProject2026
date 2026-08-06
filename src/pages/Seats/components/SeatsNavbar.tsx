@@ -16,28 +16,32 @@ type SeatTab = typeof seatTabs[number];
 type SeatsNavbarProps = {
   activeTab: SeatTab;
   setActiveTab: (tab: SeatTab) => void;
-  isRoomSelected: boolean; // Am adăugat proprietatea aici ca să o primească din Seats.tsx
+  isRoomSelected: boolean;
 };
 
 const SeatsNavbar = ({ activeTab, setActiveTab, isRoomSelected }: SeatsNavbarProps) => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const [popupState, setPopupState] = useState<'none' | 'success-admin' | 'success-direct' | 'error-taken'>('none');
+  const [popupState, setPopupState] = useState<'none' | 'success-admin' | 'success-direct' | 'error-taken' | 'error-admin-fail' | 'error-unavailable'>('none');
 
   const handleConfirmSelection = () => {
-    // 1. Citim "rucsacul" primit de la SelectDateTime
     const bookingType = location.state?.bookingType;
-
-    // 2. Citim ce se întâmplă acum pe hartă, în timp real
     const esteSala = isRoomSelected;
 
-    // Aici Antonia va lega backend-ul în caz că se ocupă locul 
-    const eroareServerLocOcupat = false;
 
-    // 3. Logica finală (100% automată)
+    const eroareServerLocOcupat = false;
+    const eroareServerAdminFail = false;
+    const eroareLocIndisponibil = false;
+
     if (eroareServerLocOcupat) {
       setPopupState('error-taken');
+    }
+    else if (eroareServerAdminFail) {
+      setPopupState('error-admin-fail');
+    }
+    else if (eroareLocIndisponibil) {
+      setPopupState('error-unavailable');
     }
     else if (bookingType === 'RECURENTA' || esteSala) {
       setPopupState('success-admin');
@@ -46,7 +50,6 @@ const SeatsNavbar = ({ activeTab, setActiveTab, isRoomSelected }: SeatsNavbarPro
       setPopupState('success-direct');
     }
     else {
-      // Dacă cineva intră direct pe /seats fără pașii anteriori
       navigate('/type-of-reservation');
     }
   };
@@ -126,8 +129,6 @@ const SeatsNavbar = ({ activeTab, setActiveTab, isRoomSelected }: SeatsNavbarPro
         </div>
       </div>
 
-      {/* RENDERIZAREA POP-UP-URILOR DE CONFIRMARE */}
-
       {popupState === 'success-admin' && (
         <SuccessPopUp
           title="Cererea a fost trimisă către administrator. Se așteaptă răspunsul..."
@@ -151,7 +152,27 @@ const SeatsNavbar = ({ activeTab, setActiveTab, isRoomSelected }: SeatsNavbarPro
           title="Acest loc este deja rezervat."
           message="Vă rugăm să alegeți alt loc."
           sideMessage="Loc ocupat"
-          buttonText="Inapoi la harta intercativa"
+          buttonText="Inapoi la harta interactiva"
+          onClose={() => setPopupState('none')}
+        />
+      )}
+
+      {popupState === 'error-admin-fail' && (
+        <ErrorPopUp
+          title="Cererea nu s-a putut trimite catre administrator."
+          message="Te rugam sa incerci din nou mai tarziu."
+          sideMessage="Eroare trimitere cerere"
+          buttonText="OK, am inteles"
+          onClose={() => setPopupState('none')}
+        />
+      )}
+
+      {popupState === 'error-unavailable' && (
+        <ErrorPopUp
+          title="Ai ales un loc indisponibil. Te rugam sa selectezi alt loc."
+          message="Acest loc nu poate fi rezervat in acest moment."
+          sideMessage="Loc indisponibil"
+          buttonText="OK, am inteles"
           onClose={() => setPopupState('none')}
         />
       )}
