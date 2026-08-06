@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import BackButton from "@/components/BackButton";
+import AIAssistant from '../AIAssistant';
 
 const HRReports = () => {
 
@@ -145,6 +146,8 @@ const HRReports = () => {
                 </div>
 
             </div>
+
+            <AIAssistant/>
         </div>
     );
 };
