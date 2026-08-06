@@ -1,6 +1,7 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import type { ChangeEvent, FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
+import { getSeatRoomsForFloor, seatFloors, seatOptions } from "@/data/seatIds";
 
 const colleagues = [
   { id: 1, name: "Andrei Popescu" },
@@ -13,6 +14,9 @@ const InviteModal = () => {
 
   const [formData, setFormData] = useState({
     colleagueId: "",
+    seatFloor: "",
+    seatRoom: "",
+    seatId: "",
     date: "",
     startTime: "",
     endTime: "",
@@ -27,6 +31,15 @@ const InviteModal = () => {
     }));
   };
 
+
+  const availableRooms = getSeatRoomsForFloor(formData.seatFloor);
+
+  const filteredSeatIds = seatOptions.filter((seat) => {
+    const matchesFloor = formData.seatFloor === "" || seat.floor === formData.seatFloor;
+    const matchesRoom = formData.seatRoom === "" || seat.room === formData.seatRoom;
+
+    return matchesFloor && matchesRoom;
+  });
   const isTimeInvalid =
     formData.startTime !== "" &&
     formData.endTime !== "" &&
@@ -34,6 +47,9 @@ const InviteModal = () => {
 
   const isFormInvalid =
     formData.colleagueId === "" ||
+    formData.seatFloor === "" ||
+    formData.seatRoom === "" ||
+    formData.seatId === "" ||
     formData.date === "" ||
     formData.startTime === "" ||
     formData.endTime === "" ||
@@ -48,6 +64,9 @@ const InviteModal = () => {
 
     const invitationData = {
       colleagueId: Number(formData.colleagueId),
+      seatFloor: formData.seatFloor,
+      seatRoom: formData.seatRoom,
+      seatId: formData.seatId,
       date: formData.date,
       startTime: formData.startTime,
       endTime: formData.endTime,
@@ -93,6 +112,88 @@ const InviteModal = () => {
             </select>
           </div>
 
+          {/* Floor */}
+          <div className="flex flex-col gap-2">
+            <label
+              htmlFor="seatFloor"
+              className="font-medium text-[#29255E]"
+            >
+              Etaj / zona
+            </label>
+
+            <select
+              id="seatFloor"
+              name="seatFloor"
+              value={formData.seatFloor}
+              onChange={handleChange}
+              required
+              className="w-full rounded-full border-2 border-[#C4B5FD] bg-white px-5 py-3 focus:border-[#6D28D9] focus:outline-none"
+            >
+              <option value="">Selecteaza etajul</option>
+
+              {seatFloors.map((floor) => (
+                <option key={floor} value={floor}>
+                  {floor}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Room */}
+          <div className="flex flex-col gap-2 sm:col-span-2 sm:mx-auto sm:w-1/2">
+            <label
+              htmlFor="seatRoom"
+              className="font-medium text-[#29255E]"
+            >
+              Camera
+            </label>
+
+            <select
+              id="seatRoom"
+              name="seatRoom"
+              value={formData.seatRoom}
+              onChange={handleChange}
+              required
+              disabled={formData.seatFloor === ""}
+              className="w-full rounded-full border-2 border-[#C4B5FD] bg-white px-5 py-3 focus:border-[#6D28D9] focus:outline-none disabled:cursor-not-allowed disabled:bg-[#F5F3FF] disabled:text-gray-400"
+            >
+              <option value="">Selecteaza camera</option>
+
+              {availableRooms.map((room) => (
+                <option key={room} value={room}>
+                  {room}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Seat ID */}
+          <div className="flex flex-col gap-2 sm:col-span-2">
+            <label
+              htmlFor="seatId"
+              className="font-medium text-[#29255E]"
+            >
+              Seat ID
+            </label>
+
+            <select
+              id="seatId"
+              name="seatId"
+              value={formData.seatId}
+              onChange={handleChange}
+              required
+              disabled={formData.seatRoom === ""}
+              className="w-full rounded-full border-2 border-[#C4B5FD] bg-white px-5 py-3 focus:border-[#6D28D9] focus:outline-none disabled:cursor-not-allowed disabled:bg-[#F5F3FF] disabled:text-gray-400"
+            >
+              <option value="">Selecteaza scaunul</option>
+
+              {filteredSeatIds.map((seat) => (
+                <option key={seat.id} value={seat.id}>
+                  {seat.id}
+                </option>
+              ))}
+            </select>
+          </div>
           {/* Date */}
           <div className="flex flex-col gap-2">
             <label
@@ -136,7 +237,7 @@ const InviteModal = () => {
           </div>
 
           {/* End time */}
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-2 sm:col-span-2 sm:mx-auto sm:w-full sm:max-w-[calc((100%-1.5rem)/2)]">
             <label
               htmlFor="endTime"
               className="font-medium text-[#29255E]"
@@ -181,3 +282,9 @@ const InviteModal = () => {
 };
 
 export default InviteModal;
+
+
+
+
+
+

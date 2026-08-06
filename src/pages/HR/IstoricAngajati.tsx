@@ -9,6 +9,7 @@ import {
 
 import BackButton from "@/components/BackButton"
 import { employeeAttendanceMock } from "@/data/employeeAttendanceMock"
+import AIAssistant from "../AIAssistant"
 
 const departments = [
   "All departments",
@@ -264,6 +265,8 @@ const IstoricAngajati = () => {
           </div>
         )}
       </div>
+
+      <AIAssistant/>
     </div>
   )
 }
