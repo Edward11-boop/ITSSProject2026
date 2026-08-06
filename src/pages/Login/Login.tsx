@@ -33,6 +33,25 @@ const Login = ({ setIsLoggedIn }: LoginProps) => {
     setLoading(true)
 
     try {
+      if (import.meta.env.VITE_MOCK_AUTH === "true") {
+        const email = formData.email.trim()
+        const role = email.toLowerCase() === "hr@mock.test" ? "MANAGER" : "DEV"
+
+        localStorage.setItem(
+          "mockUser",
+          JSON.stringify({
+            id: "mock-user",
+            name: role === "MANAGER" ? "Mock HR" : "Mock User",
+            email,
+            role,
+          }),
+        )
+
+        setIsLoggedIn?.(true)
+        navigate("/dashboard")
+        return
+      }
+
       const loginResponse = await fetch("http://localhost:8080/login", {
         method: "POST",
         credentials: "include",
@@ -47,6 +66,16 @@ const Login = ({ setIsLoggedIn }: LoginProps) => {
 
       if (!loginResponse.ok) {
         const message = await loginResponse.text()
+
+        if (message.includes("Password must be changed")) {
+          navigate("/change-password", {
+            state: {
+              email: formData.email.trim(),
+              oldPassword: formData.password,
+            },
+          })
+          return
+        }
 
         setError(message || "Emailul sau parola introduse nu sunt corecte.")
         return
