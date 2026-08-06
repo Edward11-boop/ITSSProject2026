@@ -1,4 +1,4 @@
-﻿import { useState } from "react"
+import { useState } from "react"
 import { Routes, Route, useLocation } from "react-router-dom"
 import Topbar from "@/components/Topbar"
 import Sidebar from "@/components/Sidebar"
@@ -14,6 +14,7 @@ import UserDetails from "@/pages/UserDetails"
 import Seats from "@/pages/Seats"
 import TypeOfReservation from "./pages/TypeOfReservation"
 import Invite from "./pages/Invite"
+import SelectDateTime from "./pages/SelectDateTime"
 
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
@@ -27,7 +28,9 @@ export default function App() {
     "/user-details",
     "/type-of-reservation",
     "/book-now",
-    "/invite"
+    "/seats",
+    "/invite",
+    "/select-date"
   ]
 
   const authPages = [
@@ -64,7 +67,8 @@ export default function App() {
         <main className={showDashboardLayout ? "flex-1 overflow-x-hidden overflow-y-auto" : ""}>
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/book-now" element={<Seats />} />
+            <Route path="/book-now" element={<TypeOfReservation />} />
+            <Route path="/seats" element={<Seats />} />
             <Route path="/legacy-home" element={<Dashboard />} />
             <Route path="/login" element={<Login setIsLoggedIn={setIsLoggedIn} />} />
             <Route path="/signup" element={<Register />} />
@@ -85,10 +89,10 @@ export default function App() {
             <Route path="/user-details" element={<UserDetails />} />
             <Route path="/type-of-reservation" element={<TypeOfReservation/>} />
             <Route path="/invite" element={<Invite/>} />
+            <Route path="/select-date" element={<SelectDateTime />} />
           </Routes>
         </main>
       </div>
     </div>
   )
 }
-

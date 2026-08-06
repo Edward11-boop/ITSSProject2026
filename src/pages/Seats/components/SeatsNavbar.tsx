@@ -86,7 +86,7 @@ const SeatsNavbar = ({ activeTab, setActiveTab }: SeatsNavbarProps) => {
           onClick={() => navigate('/type-of-reservation')}
           className="rounded-full bg-[#8B5CF6] px-5 py-3 font-semibold text-white transition-all hover:bg-[#7C3AED] hover:shadow-lg sm:px-8"
         >
-          Confirm your selection
+          Confirm new selection
         </button>
       </div>
     </div>
