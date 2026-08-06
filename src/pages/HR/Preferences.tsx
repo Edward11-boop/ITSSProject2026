@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import BackButton from "@/components/BackButton";
 import TextField from "@mui/material/TextField";
 
 const Preferences = () => {
@@ -22,6 +23,8 @@ const Preferences = () => {
     return (
         <div className="min-h-screen bg-[#F5F3FF] p-8">
             <div className="max-w-5xl mx-auto space-y-12">
+                <BackButton fallbackTo="/dashboard" />
+
                 <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
                     <div className="w-full">
                         <TextField
@@ -61,7 +64,7 @@ const Preferences = () => {
                                     {colleague.name}
                                 </h3>
 
-                                <div className="bg-[#F3E8FF] rounded-full px-8 py-6 text-lg font-bold text-[#1E1B4B] shadow-sm w-full text-left">
+                                <div className="bg-[#EDE9FE] border border-[#DDD6FE] rounded-full px-8 py-6 text-lg font-bold text-[#1E1B4B] shadow-sm w-full text-left">
                                     {colleague.name.split(' ')[0]} a venit {colleague.percentage}% la birou în ultima lună (prezent fizic {colleague.days} zile).
                                     <span className="text-[#6D28D9] ml-2">
                                         (Preferință: {colleague.room}, {colleague.seat})
@@ -83,3 +86,4 @@ const Preferences = () => {
 };
 
 export default Preferences;
+

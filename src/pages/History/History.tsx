@@ -1,3 +1,4 @@
+import BackButton from "@/components/BackButton";
 import AIAssistant from "@/pages/AIAssistant";
 import { useState } from "react";
 import BookingTabs from "./components/BookingTabs";
@@ -43,6 +44,8 @@ const History = () => {
     <div className="relative flex min-h-[calc(100vh-64px)] bg-white">
       <div className="relative min-w-0 flex-1 p-4 sm:p-8">
         <div className="mx-auto max-w-5xl">
+          <BackButton className="mb-6" fallbackTo="/dashboard" />
+
           <BookingTabs activeTab={activeTab} onChange={setActiveTab} />
 
           <div className="flex flex-col gap-6">
@@ -120,3 +123,4 @@ const History = () => {
 };
 
 export default History;
+

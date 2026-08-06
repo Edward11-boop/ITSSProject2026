@@ -1,3 +1,4 @@
+import BackButton from "@/components/BackButton";
 import AIAssistant from "@/pages/AIAssistant";
 import { useRef, useState } from "react";
 import { Bell } from "lucide-react";
@@ -113,6 +114,8 @@ const Notifications = ({ onNotificationRemoved }: NotificationsProps) => {
 
   return (
     <div className="min-h-full gap-10 p-4 sm:p-6">
+      <BackButton className="mb-6" fallbackTo="/dashboard" />
+
       <div className="flex w-fit items-center gap-3 rounded-[60px] border border-[#DDD6FE] bg-[#EDE9FE] px-6 py-3 shadow-sm">
         <h4 className="text-base font-bold text-[#29255E] sm:text-xl">Notifications</h4>
         <Bell />
@@ -136,3 +139,4 @@ const Notifications = ({ onNotificationRemoved }: NotificationsProps) => {
 }
 
 export default Notifications;
+

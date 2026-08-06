@@ -1,4 +1,4 @@
-import { useState } from "react"
+﻿import { useState } from "react"
 import { Routes, Route, useLocation } from "react-router-dom"
 import Topbar from "@/components/Topbar"
 import Sidebar from "@/components/Sidebar"
@@ -17,6 +17,7 @@ import Invite from "./pages/Invite"
 import HRReports from './pages/HR/HRReports';
 import SelectDateTime from "./pages/SelectDateTime"
 import Preferences from './pages/HR/Preferences';
+import IstoricAngajati from "./pages/HR/IstoricAngajati"
 
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
@@ -35,7 +36,8 @@ export default function App() {
     "/invite",
     "/select-date",
     "/preferences",
-    "/preferinte"
+    "/preferinte",
+    "/istoric"
   ]
 
   const authPages = [
@@ -95,11 +97,12 @@ export default function App() {
             <Route path="/type-of-reservation" element={<TypeOfReservation />} />
             <Route path="/invite" element={<Invite />} />
 
-            {/* Rutele adĂ„Âugate de voi douĂ„Â */}
+            {/* Rutele adaugate de voi douĂ„Â */}
             <Route path="/hr-reports" element={<HRReports />} />
             <Route path="/select-date" element={<SelectDateTime />} />
             <Route path="/preferences" element={<Preferences />} />
             <Route path="/preferinte" element={<Preferences />} />
+            <Route path="/istoric" element={<IstoricAngajati />} />
           </Routes>
         </main>
       </div>
