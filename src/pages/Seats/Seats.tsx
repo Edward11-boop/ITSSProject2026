@@ -67,6 +67,7 @@ const Seats = () => {
     <div className="min-h-screen bg-[#F5F3FF]">
       <SeatsNavbar activeTab={activeTab} setActiveTab={setActiveTab} isRoomSelected={isRoomSelected} />
 
+
       {activeMap ? (
         <ResponsiveMap {...activeMap} onRoomSelect={setIsRoomSelected} />
       ) : (
@@ -81,3 +82,4 @@ const Seats = () => {
 };
 
 export default Seats;
+

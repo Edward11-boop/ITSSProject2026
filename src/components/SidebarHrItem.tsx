@@ -26,17 +26,17 @@ const SidebarHrItem = ({ isExtended }: SidebarHrItemProps) => {
       </Link>
 
       <div className="absolute left-full top-0 z-50 hidden w-64 flex-col overflow-hidden rounded-sm bg-[#EDE9FE] shadow-lg group-hover:flex">
-        <button
-          type="button"
-          className="flex items-center gap-4 px-5 py-4 text-left text-lg font-bold text-[#111827] hover:bg-[#DDD6FE]"
+        <Link
+          to="/istoric"
+          className="flex items-center gap-4 bg-[#EDE9FE] px-5 py-4 text-left text-lg font-bold text-[#111827] hover:bg-[#E9D5FF]"
         >
           <img src={historyIcon} alt="" className="h-7 w-7" />
-          Istoric
-        </button>
+          Istoric angajati
+        </Link>
 
         <Link
           to="/preferences"
-          className="flex items-center gap-4 bg-[#E9D5FF] px-5 py-4 text-left text-lg font-bold text-[#111827] hover:bg-[#D8B4FE]"
+          className="flex items-center gap-4 bg-[#EDE9FE] px-5 py-4 text-left text-lg font-bold text-[#111827] hover:bg-[#E9D5FF]"
         >
           <img src={preferencesIcon} alt="" className="h-7 w-7" />
           Preferinte
