@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import BackButton from "@/components/BackButton"
 import AIAssistant from "@/pages/AIAssistant";
 
 const reservationTypes = [
@@ -23,7 +24,12 @@ const TypeOfReservation = () => {
   }
 
   return (
-    <div className="flex min-h-[calc(100vh-80px)] flex-col items-center justify-center bg-white p-4">
+    <div className="flex min-h-[calc(100vh-80px)] flex-col bg-white p-4">
+      <div className="mx-auto w-full max-w-7xl">
+        <BackButton fallbackTo="/dashboard" />
+      </div>
+
+      <div className="flex flex-1 flex-col items-center justify-center">
       <h1 className="mb-10 text-center text-3xl font-bold text-[#29255E] sm:mb-16 sm:text-4xl">
         Tipul rezervarii
       </h1>
@@ -63,6 +69,8 @@ const TypeOfReservation = () => {
           <option value="4" className="bg-[#EDE9FE] text-[#29255E]">4 saptamani</option>
         </select>
       )}
+
+      </div>
 
       <AIAssistant />
     </div>

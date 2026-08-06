@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import { Link } from "react-router-dom"
 import AIAssistant from "@/pages/AIAssistant"
 import CityOverviewCard from "./components/CityOverviewCard"
 import OfficeActivityCard from "./components/OfficeActivityCard"
@@ -66,19 +67,19 @@ const Dashboard = () => {
 
             {isHr && (
               <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
-                <button
-                  type="button"
+                <Link 
+                  to="/istoric"
                   className="rounded-full bg-[#6D28D9] px-6 py-3 text-center font-semibold text-white transition-all hover:bg-[#5B21B6]"
                 >
-                  Istoric
-                </button>
+                  Istoric angajati
+                </Link>
 
-                <button
-                  type="button"
+                <Link 
+                  to="/preferinte"
                   className="rounded-full border-2 border-[#6D28D9] bg-white px-6 py-3 text-center font-semibold text-[#6D28D9] transition-all hover:bg-[#EDE9FE]"
                 >
                   Preferinte
-                </button>
+                </Link>
               </div>
             )}
           </div>
