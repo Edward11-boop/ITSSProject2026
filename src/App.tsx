@@ -14,6 +14,7 @@ import UserDetails from "@/pages/UserDetails"
 import Seats from "@/pages/Seats"
 import TypeOfReservation from "./pages/TypeOfReservation"
 import Invite from "./pages/Invite"
+import HRReports from './pages/HR/HRReports';
 
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
@@ -83,8 +84,9 @@ export default function App() {
             />
             <Route path="/history" element={<History />} />
             <Route path="/user-details" element={<UserDetails />} />
-            <Route path="/type-of-reservation" element={<TypeOfReservation/>} />
-            <Route path="/invite" element={<Invite/>} />
+            <Route path="/type-of-reservation" element={<TypeOfReservation />} />
+            <Route path="/invite" element={<Invite />} />
+            <Route path="/hr-reports" element={<HRReports />} />
           </Routes>
         </main>
       </div>
