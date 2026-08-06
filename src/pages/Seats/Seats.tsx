@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from 'react';
-import type { ReactNode } from 'react';
+import { useEffect, useRef, useState, cloneElement } from 'react';
+import type { ReactElement, ReactNode } from 'react';
 import ParterMap from './components/ParterMap';
 import SeatsNavbar, { seatTabs } from './components/SeatsNavbar';
 import T1Etaj1Map from './components/T1Etaj1Map';
@@ -24,7 +24,7 @@ const mapByTab = {
 
 type SeatTab = typeof seatTabs[number];
 
-const ResponsiveMap = ({ element, width, height }: MapConfig) => {
+const ResponsiveMap = ({ element, width, height, onRoomSelect }: MapConfig & { onRoomSelect: (val: boolean) => void }) => {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(1);
 
@@ -49,7 +49,8 @@ const ResponsiveMap = ({ element, width, height }: MapConfig) => {
     <div ref={wrapperRef} className="w-full overflow-x-auto overflow-y-hidden px-2 pb-8 sm:px-4 lg:overflow-x-hidden">
       <div className="mx-auto" style={{ width: width * scale, height: height * scale }}>
         <div style={{ width, height, transform: `scale(${scale})`, transformOrigin: 'top left' }}>
-          {element}
+          {/* Trimitem proprietatea mai departe in mod sigur pentru TypeScript */}
+          {cloneElement(element as ReactElement<any>, { onRoomSelect })}
         </div>
       </div>
     </div>
@@ -60,12 +61,14 @@ const Seats = () => {
   const [activeTab, setActiveTab] = useState<SeatTab>('Parter');
   const activeMap = mapByTab[activeTab as keyof typeof mapByTab];
 
+  const [isRoomSelected, setIsRoomSelected] = useState(false);
+
   return (
     <div className="min-h-screen bg-[#F5F3FF]">
-      <SeatsNavbar activeTab={activeTab} setActiveTab={setActiveTab} />
+      <SeatsNavbar activeTab={activeTab} setActiveTab={setActiveTab} isRoomSelected={isRoomSelected} />
 
       {activeMap ? (
-        <ResponsiveMap {...activeMap} />
+        <ResponsiveMap {...activeMap} onRoomSelect={setIsRoomSelected} />
       ) : (
         <div className="flex h-full items-center justify-center text-gray-400">
           Harta pentru {activeTab} este in lucru...

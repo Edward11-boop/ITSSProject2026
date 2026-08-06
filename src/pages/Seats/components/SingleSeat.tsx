@@ -4,7 +4,7 @@ interface SingleSeatProps {
     status: 'available' | 'occupied' | 'unavailable';
     type?: 'individual' | 'room';
     selectedSeat: string | null;
-    onSelect: (id: string) => void;
+    onSelect: (id: string, type?: 'individual' | 'room') => void; // Aici am adaugat tipul
     className?: string;
 }
 
@@ -43,8 +43,7 @@ const SingleSeat = ({
         <div className={`absolute group ${className}`}>
             <button
                 type="button"
-                disabled={!isClickable}
-                onClick={() => onSelect(id)}
+                onClick={() => onSelect(id, type)} // Aici trimitem si tipul in sus la harta
                 className={`flex h-[30px] w-[30px] items-center justify-center rounded text-xs font-bold transition-all ${getSeatColor(id, status, type, selectedSeat)} ${isClickable ? 'hover:scale-110 hover:shadow-md z-20' : ''}`}
             >
                 {number}
