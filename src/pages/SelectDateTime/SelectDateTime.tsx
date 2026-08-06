@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useMemo, useState } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 import Calendar from "@/components/Calendar"
 
@@ -6,20 +6,35 @@ type TipRezervare = "RECURENTA" | "O_ZI"
 type LocationState = { bookingType: TipRezervare; recurrenceWeeks?: number }
 
 const HOURS = Array.from({ length: 11 }, (_, i) => 8 + i)
+const MS_IN_DAY = 24 * 60 * 60 * 1000
+
+const addDays = (date: Date, days: number) =>
+  new Date(date.getFullYear(), date.getMonth(), date.getDate() + days)
+
+const toDateValue = (date: Date) => date.toISOString().split("T")[0]
 
 const SelectDateTime = () => {
   const navigate = useNavigate()
   const location = useLocation()
   const state = location.state as LocationState | null
   const bookingType = state?.bookingType ?? "O_ZI"
-  const recurrenceWeeks = state?.recurrenceWeeks
+  const recurrenceWeeks = state?.recurrenceWeeks ?? 0
+  const isRecurring = bookingType === "RECURENTA"
 
   const [date, setDate] = useState(new Date())
-  const [endDate, setEndDate] = useState(new Date())
   const [startHour, setStartHour] = useState(9)
   const [endHour, setEndHour] = useState(17)
   const [error, setError] = useState("")
 
+  const recurrenceDates = useMemo(() => {
+    if (!isRecurring || recurrenceWeeks <= 0) {
+      return []
+    }
+
+    return Array.from({ length: recurrenceWeeks }, (_, index) => addDays(date, (index + 1) * 7))
+  }, [date, isRecurring, recurrenceWeeks])
+
+  const endDate = recurrenceDates.at(-1) ?? date
 
   const handleContinue = () => {
     if (endHour <= startHour) {
@@ -27,16 +42,12 @@ const SelectDateTime = () => {
       return
     }
 
-    if (bookingType === "RECURENTA" && endDate < date) {
-      setError("Data de sfarsit trebuie sa fie dupa data de inceput.")
-      return
-    }
-
     navigate("/seats", {
       state: {
         bookingType,
-        date: date.toISOString().split("T")[0],
-        endDate: endDate.toISOString().split("T")[0],
+        date: toDateValue(date),
+        endDate: toDateValue(endDate),
+        recurrenceDates: recurrenceDates.map(toDateValue),
         startHour,
         endHour,
         recurrenceWeeks,
@@ -48,18 +59,27 @@ const SelectDateTime = () => {
     <div className="flex min-h-[calc(100vh-80px)] flex-col items-center justify-center gap-8 bg-white p-4">
       <h1 className="text-3xl font-bold text-[#29255E]">Alege data si intervalul orar</h1>
 
-      <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-start">
+      <div className="flex flex-col items-center gap-4">
         <div>
           <p className="mb-2 font-semibold text-[#29255E]">
-            {bookingType === "RECURENTA" ? "Data de inceput" : "Data rezervarii"}
+            {isRecurring ? "Data de inceput" : "Data rezervarii"}
           </p>
-          <Calendar selected={date} onSelect={setDate} />
+          <Calendar selected={date} onSelect={setDate} recurrenceDates={recurrenceDates} />
         </div>
 
-        {bookingType === "RECURENTA" && (
-          <div>
-            <p className="mb-2 font-semibold text-[#29255E]">Data de sfarsit a recurentei</p>
-            <Calendar selected={endDate} onSelect={setEndDate} />
+        {isRecurring && recurrenceWeeks > 0 && (
+          <div className="flex flex-wrap items-center justify-center gap-4 text-sm font-semibold text-[#29255E]">
+            <span className="flex items-center gap-2">
+              <span className="h-3 w-3 rounded-full bg-[#6D28D9]" />
+              Data aleasa
+            </span>
+            <span className="flex items-center gap-2">
+              <span className="h-3 w-3 rounded-full bg-[#C4B5FD]" />
+              Repetari saptamanale
+            </span>
+            <span>
+              Se repeta {recurrenceWeeks} {recurrenceWeeks === 1 ? "saptamana" : "saptamani"}, pana la {toDateValue(endDate)}.
+            </span>
           </div>
         )}
       </div>
@@ -92,5 +112,3 @@ const SelectDateTime = () => {
 }
 
 export default SelectDateTime
-
-
