@@ -34,7 +34,8 @@ export default function App() {
     "/seats",
     "/invite",
     "/select-date",
-    "/preferences"
+    "/preferences",
+    "/preferinte"
   ]
 
   const authPages = [
@@ -94,10 +95,11 @@ export default function App() {
             <Route path="/type-of-reservation" element={<TypeOfReservation />} />
             <Route path="/invite" element={<Invite />} />
 
-            {/* Rutele adăugate de voi două */}
+            {/* Rutele adĂ„Âugate de voi douĂ„Â */}
             <Route path="/hr-reports" element={<HRReports />} />
             <Route path="/select-date" element={<SelectDateTime />} />
             <Route path="/preferences" element={<Preferences />} />
+            <Route path="/preferinte" element={<Preferences />} />
           </Routes>
         </main>
       </div>
