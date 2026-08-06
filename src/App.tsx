@@ -15,6 +15,7 @@ import Seats from "@/pages/Seats"
 import TypeOfReservation from "./pages/TypeOfReservation"
 import Invite from "./pages/Invite"
 import HRReports from './pages/HR/HRReports';
+import SelectDateTime from "./pages/SelectDateTime"
 
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
@@ -87,14 +88,16 @@ export default function App() {
               }
             />
             <Route path="/history" element={<History />} />
-            <Route path="/hr-reports" element={<HRReports />} />
             <Route path="/user-details" element={<UserDetails />} />
             <Route path="/type-of-reservation" element={<TypeOfReservation />} />
             <Route path="/invite" element={<Invite />} />
+
+            {/* Rutele adăugate de voi două */}
             <Route path="/hr-reports" element={<HRReports />} />
-          </Routes >
-        </main >
-      </div >
-    </div >
+            <Route path="/select-date" element={<SelectDateTime />} />
+          </Routes>
+        </main>
+      </div>
+    </div>
   )
 }
