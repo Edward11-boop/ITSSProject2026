@@ -34,13 +34,13 @@ const SidebarHrItem = ({ isExtended }: SidebarHrItemProps) => {
           Istoric
         </button>
 
-        <button
-          type="button"
+        <Link
+          to="/preferences"
           className="flex items-center gap-4 bg-[#E9D5FF] px-5 py-4 text-left text-lg font-bold text-[#111827] hover:bg-[#D8B4FE]"
         >
           <img src={preferencesIcon} alt="" className="h-7 w-7" />
           Preferinte
-        </button>
+        </Link>
       </div>
     </div>
   );

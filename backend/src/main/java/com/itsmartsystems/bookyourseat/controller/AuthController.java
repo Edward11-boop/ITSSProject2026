@@ -2,39 +2,39 @@ package com.itsmartsystems.bookyourseat.controller;
 
 import com.itsmartsystems.bookyourseat.dto.*;
 import com.itsmartsystems.bookyourseat.service.AuthService;
+import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.web.bind.annotation.*;
-import jakarta.mail.MessagingException;
 
 @RestController
 public class AuthController {
 
-
     private final AuthService authService;
 
-    public AuthController(AuthService authService)
-    {
-        this.authService = authService ;
+    public AuthController(AuthService authService) {
+        this.authService = authService;
     }
 
     @PostMapping("/register")
-    public String register(@Valid @RequestBody RegisterRequest request)
-    {
+    public String register(@Valid @RequestBody RegisterRequest request) {
         authService.register(request);
         return "User registered successfully !";
     }
 
-
-
     @PostMapping("/login")
-    public String login(@Valid @RequestBody LoginRequest request)
-    {
+    public String login(@Valid @RequestBody LoginRequest request, HttpServletRequest httpRequest) {
         boolean mustChangePassword = authService.login(request);
-        if(mustChangePassword) {
+        httpRequest.getSession(true).setAttribute(
+                HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
+                SecurityContextHolder.getContext()
+        );
+
+        if (mustChangePassword) {
             return "Password must be changed !";
-        }
-        else {
+        } else {
             return "Logged successfully !";
         }
     }
@@ -46,23 +46,21 @@ public class AuthController {
     }
 
     @PutMapping("/change-password")
-    public String changePassword( @Valid @RequestBody ChangePasswordRequest request)
-    {
+    public String changePassword(@Valid @RequestBody ChangePasswordRequest request) {
         authService.changePassword(request);
         return "Password has been successfully changed !";
     }
 
     @PostMapping("/forgot-password")
-    public String forgotPassword(@Valid @RequestBody EmailRequest emailRequest) throws MessagingException{
+    public String forgotPassword(@Valid @RequestBody EmailRequest emailRequest) throws MessagingException {
         authService.emailRequestforChanging(emailRequest);
         return "If the email exists you'll receive an email to change the password !";
     }
 
     @PostMapping("/reset-password")
-    public String resetPassword(@Valid @RequestBody ChangeNewPasswordRequest request){
+    public String resetPassword(@Valid @RequestBody ChangeNewPasswordRequest request) {
         authService.forgotPassword(request);
-        return "Successfully changing the password , next time note it ! :))" ;
-
+        return "Successfully changing the password , next time note it ! :))";
     }
 
     @GetMapping("/me")
