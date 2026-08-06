@@ -12,7 +12,7 @@ const SidebarHrItem = ({ isExtended }: SidebarHrItemProps) => {
     <div className="group relative mt-10 flex justify-center">
       <Link
         to="/hr-reports"
-        className={`flex items-center justify-center gap-3 rounded-[18px] bg-[#6D28D9] px-3 py-3 transition-all hover:bg-[#7C3AED] ${
+        className={`flex items-center justify-center gap-3 rounded-[18px] px-3 py-3 transition-all hover:bg-[#7C3AED] ${
           isExtended ? "w-[calc(100%-24px)]" : ""
         }`}
       >
