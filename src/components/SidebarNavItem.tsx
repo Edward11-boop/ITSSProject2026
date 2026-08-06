@@ -9,10 +9,12 @@ type SidebarNavItemProps = {
 
 const SidebarNavItem = ({ to, icon, label, isExtended }: SidebarNavItemProps) => {
   return (
-    <Link to={to} className="mt-10 flex flex-col">
-      <button
-        type="button"
-        className="mt-auto flex items-center justify-center gap-3 rounded-lg px-1 py-1 hover:bg-[#6D28D9]"
+    <div className="mt-10 flex justify-center">
+      <Link
+        to={to}
+        className={`flex items-center justify-center gap-3 rounded-[18px] px-3 py-3 transition-all hover:bg-[#7C3AED] ${
+          isExtended ? "w-[calc(100%-24px)]" : ""
+        }`}
       >
         <img src={icon} alt={label} className="h-8 w-8 sm:h-10 sm:w-10" />
 
@@ -21,8 +23,8 @@ const SidebarNavItem = ({ to, icon, label, isExtended }: SidebarNavItemProps) =>
             {label}
           </span>
         )}
-      </button>
-    </Link>
+      </Link>
+    </div>
   )
 }
 
