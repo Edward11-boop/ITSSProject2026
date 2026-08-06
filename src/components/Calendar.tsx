@@ -16,9 +16,13 @@ const MONTHS = [
   "December",
 ];
 
-export default function Calendar() {
-  const [date, setDate] = useState(new Date());
-  const [selected, setSelected] = useState(new Date().getDate());
+type CalendarProps = {
+  selected: Date;
+  onSelect: (date: Date) => void;
+};
+
+export default function Calendar({ selected, onSelect }: CalendarProps) {
+  const [date, setDate] = useState(selected);
 
   const year = date.getFullYear();
   const month = date.getMonth();
@@ -32,6 +36,11 @@ export default function Calendar() {
 
   const changeMonth = (offset: number) =>
     setDate(new Date(year, month + offset, 1));
+
+  const isSelectedDay = (day: number | null) =>
+    day === selected.getDate() &&
+    month === selected.getMonth() &&
+    year === selected.getFullYear();
 
   return (
     <div style={{ background: "#DDD6FE", borderRadius: 24, padding: 24, width: 300, fontFamily: "sans-serif", color: "#1E1B4B" }}>
@@ -52,7 +61,7 @@ export default function Calendar() {
         {days.map((day, i) => (
           <div
             key={i}
-            onClick={() => day && setSelected(day)}
+            onClick={() => day && onSelect(new Date(year, month, day))}
             style={{
               cursor: day ? "pointer" : "default",
               borderRadius: "50%",
@@ -62,7 +71,7 @@ export default function Calendar() {
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              background: day === selected ? "#A8A29E" : "transparent",
+              background: isSelectedDay(day) ? "#A8A29E" : "transparent",
               fontWeight: 600,
             }}
           >
