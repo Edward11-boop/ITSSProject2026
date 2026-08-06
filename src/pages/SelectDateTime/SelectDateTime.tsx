@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom"
 import Calendar from "@/components/Calendar"
 
 type TipRezervare = "RECURENTA" | "O_ZI"
-type LocationState = { bookingType: TipRezervare }
+type LocationState = { bookingType: TipRezervare; recurrenceWeeks?: number }
 
 const HOURS = Array.from({ length: 11 }, (_, i) => 8 + i)
 
@@ -12,6 +12,7 @@ const SelectDateTime = () => {
   const location = useLocation()
   const state = location.state as LocationState | null
   const bookingType = state?.bookingType ?? "O_ZI"
+  const recurrenceWeeks = state?.recurrenceWeeks
 
   const [date, setDate] = useState(new Date())
   const [endDate, setEndDate] = useState(new Date())
@@ -38,6 +39,7 @@ const SelectDateTime = () => {
         endDate: endDate.toISOString().split("T")[0],
         startHour,
         endHour,
+        recurrenceWeeks,
       },
     })
   }
