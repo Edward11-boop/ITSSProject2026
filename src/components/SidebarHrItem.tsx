@@ -20,7 +20,7 @@ const SidebarHrItem = ({ isExtended }: SidebarHrItemProps) => {
 
         {isExtended && (
           <span className="whitespace-nowrap text-[20px] text-white sm:text-[24px]">
-            HR
+            Reports
           </span>
         )}
       </Link>
