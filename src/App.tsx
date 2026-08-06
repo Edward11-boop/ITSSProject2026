@@ -14,12 +14,9 @@ import UserDetails from "@/pages/UserDetails"
 import Seats from "@/pages/Seats"
 import TypeOfReservation from "./pages/TypeOfReservation"
 import Invite from "./pages/Invite"
-<<<<<<< HEAD
 import HRReports from './pages/HR/HRReports';
-=======
 import SelectDateTime from "./pages/SelectDateTime"
-import HRReports from "./pages/HRReports"
->>>>>>> 5f07ee464132ab874ff1dca84d36ee61eb777cfd
+
 
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
@@ -94,15 +91,9 @@ export default function App() {
             <Route path="/history" element={<History />} />
             <Route path="/hr-reports" element={<HRReports />} />
             <Route path="/user-details" element={<UserDetails />} />
-<<<<<<< HEAD
             <Route path="/type-of-reservation" element={<TypeOfReservation />} />
             <Route path="/invite" element={<Invite />} />
-            <Route path="/hr-reports" element={<HRReports />} />
-=======
-            <Route path="/type-of-reservation" element={<TypeOfReservation/>} />
-            <Route path="/invite" element={<Invite/>} />
             <Route path="/select-date" element={<SelectDateTime />} />
->>>>>>> 5f07ee464132ab874ff1dca84d36ee61eb777cfd
           </Routes>
         </main>
       </div>
