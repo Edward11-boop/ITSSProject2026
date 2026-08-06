@@ -34,25 +34,25 @@ const HRReports = () => {
 
     return (
         <div className="min-h-screen bg-[#F5F3FF] p-8">
-            {/* Titlul Paginii */}
+
             <div className="mb-8 text-center">
                 <h1 className="text-2xl font-bold text-[#2D2A4A]">Rapoarte și Analiză HR</h1>
                 <p className="text-sm text-gray-500 mt-1">Prezența medie lunară și utilizarea spațiilor de birouri</p>
             </div>
 
-            {/* Containerul principal */}
+
             <div className="max-w-7xl mx-auto space-y-8">
 
-                {/* PARTEA DE SUS: 2 Carduri */}
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
 
-                    {/* Card 1: Zilele cele mai aglomerate (Histogramă) */}
+
                     <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex flex-col justify-between">
                         <div>
                             <h3 className="text-base font-semibold text-[#2D2A4A] mb-1">Traficul pe Zile (Medie Lunară)</h3>
                             <p className="text-xs text-gray-400 mb-6">Numărul mediu de angajați prezenți fizic în birouri</p>
 
-                            {/* GRAFIC DE BARE */}
+
                             <div className="flex items-end justify-around h-48 px-2 pt-6 border-b border-l border-gray-200">
                                 {monthlyTraffic.map((item, index) => {
 
@@ -60,12 +60,12 @@ const HRReports = () => {
 
                                     return (
                                         <div key={index} className="flex flex-col items-center justify-end h-full w-full mx-2 group">
-                                            {/* Numărul de deasupra barei */}
+
                                             <span className="text-xs font-bold text-purple-700 mb-2 opacity-80 group-hover:opacity-100 transition-opacity">
                                                 {item.employeesCount}
                                             </span>
 
-                                            {/* Bara în sine */}
+
                                             <div
                                                 style={{ height: `${heightPercentage}%` }}
                                                 className="w-full max-w-[40px] bg-purple-500 rounded-t-md transition-all duration-500 ease-out group-hover:bg-purple-700 shadow-sm"
@@ -75,7 +75,7 @@ const HRReports = () => {
                                 })}
                             </div>
 
-                            {/* Zilele săptămânii sub axă */}
+
                             <div className="flex justify-around px-2 mt-3 text-xs font-medium text-gray-600">
                                 {monthlyTraffic.map((item, index) => (
                                     <span key={index} className="w-full max-w-[40px] text-center">{item.day}</span>
@@ -84,7 +84,7 @@ const HRReports = () => {
                         </div>
                     </div>
 
-                    {/* Card 2: Harta termică a zonelor populare */}
+
                     <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex flex-col">
                         <h3 className="text-base font-semibold text-[#2D2A4A] mb-1">Popularitatea Zonelor (Heatmap)</h3>
                         <p className="text-xs text-gray-400 mb-6">Gradul mediu lunar de solicitare pe fiecare zonă</p>
@@ -112,7 +112,7 @@ const HRReports = () => {
 
                 </div>
 
-                {/* PARTEA DE JOS: 1 Card lat */}
+
                 <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
                     <div className="flex justify-between items-center mb-6">
                         <div>
