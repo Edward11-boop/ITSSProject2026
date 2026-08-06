@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import SidebarNavItem from "@/components/SidebarNavItem";
+import SidebarHrItem from "@/components/SidebarHrItem";
 import logo from "../assets/Logo_without_bg.svg";
 import collapsedArrow from "../assets/CollapseArrow.svg";
 import home from "../assets/Home.svg";
 import invite from "../assets/Invite.svg";
 import history from "../assets/History.svg";
-import hrReports from "../assets/HR_reports_icon.svg";
 
 const navItems = [
   { to: "/dashboard", icon: home, label: "Home" },
@@ -14,7 +14,6 @@ const navItems = [
   { to: "/history", icon: history, label: "History" },
 ];
 
-const hrNavItem = { to: "/hr-reports", icon: hrReports, label: "HR reports" };
 
 type UserRole = "CEO" | "MANAGER" | "PM" | "DEV";
 
@@ -62,7 +61,7 @@ const Sidebar = () => {
 
   return (
     <aside
-      className={`h-screen shrink-0 overflow-hidden bg-[#1E1B4B] transition-all duration-300 ${
+      className={`h-screen shrink-0 overflow-visible bg-[#1E1B4B] transition-all duration-300 ${
         isExtended ? "w-56 sm:w-64" : "w-16 sm:w-26"
       }`}
     >
@@ -94,15 +93,7 @@ const Sidebar = () => {
               isExtended={isExtended}
             />
           ))}
-
-          {isHr && (
-            <SidebarNavItem
-              to={hrNavItem.to}
-              icon={hrNavItem.icon}
-              label={hrNavItem.label}
-              isExtended={isExtended}
-            />
-          )}
+          {isHr && <SidebarHrItem isExtended={isExtended} />}
         </div>
 
         <button
