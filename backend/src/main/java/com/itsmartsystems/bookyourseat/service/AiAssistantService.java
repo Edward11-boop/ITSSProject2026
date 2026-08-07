@@ -47,7 +47,7 @@ public class AiAssistantService {
                 .build().toUriString();
     }
     public String getRecommendation(double latOrigin, double longOrigin, LocalDateTime targetHour , String metodaDeplasare) {
-        List<RoutesOption> routes = trafficService.getTrafficRoutes(latOrigin, longOrigin);
+        List<RoutesOption> routes = trafficService.getTrafficRoutes(latOrigin, longOrigin, metodaDeplasare);
         WeatherInfo weather = weatherService.getWeather(latOrigin, longOrigin, targetHour);
 
         String prompt = "Un angajat vrea sa ajunga la birou la ora "

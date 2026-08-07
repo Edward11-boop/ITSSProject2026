@@ -1,4 +1,4 @@
-﻿import { useState } from "react"
+import { useState } from "react"
 import { Bot } from "lucide-react"
 import AssistantWindow, { type TravelMode } from "./components/AssistantWindow"
 import type { AssistantStatus } from "./types"
@@ -6,10 +6,16 @@ import type { AssistantStatus } from "./types"
 const idleMessage =
   "Salut! Pot sa te ajut cu informatii despre vreme si trafic pentru drumul catre birou."
 
+const formatLocalDateTime = (date: Date) => {
+  const pad = (value: number) => String(value).padStart(2, "0")
+
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`
+}
+
 const backendTravelModeBySelection: Record<TravelMode, string> = {
   driving: "DRIVE",
   walking: "WALK",
-  bicycling: "BICYCLE",
+  bicycling: "TWO_WHEELER",
   transit: "TRANSIT",
   "two-wheeler": "TWO_WHEELER",
 }
@@ -41,7 +47,7 @@ const AIAssistant = () => {
         const now = new Date()
         now.setMinutes(0, 0, 0)
         now.setHours(now.getHours() + 1)
-        const targetHour = now.toISOString().slice(0, 19)
+        const targetHour = formatLocalDateTime(now)
 
         try {
           const params = new URLSearchParams({

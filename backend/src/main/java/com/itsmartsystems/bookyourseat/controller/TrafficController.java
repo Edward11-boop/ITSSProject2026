@@ -26,8 +26,8 @@ public class TrafficController {
     }
 
     @GetMapping("/traffic-routes")
-    public List<RoutesOption> getRoutes(@RequestParam double lat, @RequestParam double lng) {
-        return trafficService.getTrafficRoutes(lat, lng);
+    public List<RoutesOption> getRoutes(@RequestParam double lat, @RequestParam double lng, @RequestParam(defaultValue = "DRIVE") String metodaDeplasare) {
+        return trafficService.getTrafficRoutes(lat, lng, metodaDeplasare);
     }
 
     @GetMapping("/weather-test")
