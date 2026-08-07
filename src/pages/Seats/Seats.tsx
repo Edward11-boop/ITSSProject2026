@@ -24,7 +24,8 @@ const mapByTab = {
 
 type SeatTab = typeof seatTabs[number];
 
-const ResponsiveMap = ({ element, width, height, onRoomSelect }: MapConfig & { onRoomSelect: (val: boolean) => void }) => {
+
+const ResponsiveMap = ({ element, width, height, onRoomSelect, onSeatSelect, onOccupiedSelect }: MapConfig & { onRoomSelect: (val: boolean) => void; onSeatSelect: (val: boolean) => void; onOccupiedSelect: (val: boolean) => void }) => {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(1);
 
@@ -49,8 +50,8 @@ const ResponsiveMap = ({ element, width, height, onRoomSelect }: MapConfig & { o
     <div ref={wrapperRef} className="w-full overflow-x-auto overflow-y-hidden px-2 pb-8 sm:px-4 lg:overflow-x-hidden">
       <div className="mx-auto" style={{ width: width * scale, height: height * scale }}>
         <div style={{ width, height, transform: `scale(${scale})`, transformOrigin: 'top left' }}>
-          {/* Trimitem proprietatea mai departe in mod sigur pentru TypeScript */}
-          {cloneElement(element as ReactElement<any>, { onRoomSelect })}
+
+          {cloneElement(element as ReactElement<any>, { onRoomSelect, onSeatSelect, onOccupiedSelect })}
         </div>
       </div>
     </div>
@@ -62,14 +63,27 @@ const Seats = () => {
   const activeMap = mapByTab[activeTab as keyof typeof mapByTab];
 
   const [isRoomSelected, setIsRoomSelected] = useState(false);
+  const [hasSelectedSeat, setHasSelectedSeat] = useState(false);
+
+  const [hasOccupiedSeat, setHasOccupiedSeat] = useState(false);
 
   return (
     <div className="min-h-screen bg-[#F5F3FF]">
-      <SeatsNavbar activeTab={activeTab} setActiveTab={setActiveTab} isRoomSelected={isRoomSelected} />
-
+      <SeatsNavbar
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        isRoomSelected={isRoomSelected}
+        hasSelectedSeat={hasSelectedSeat}
+        hasOccupiedSeatSelected={hasOccupiedSeat}
+      />
 
       {activeMap ? (
-        <ResponsiveMap {...activeMap} onRoomSelect={setIsRoomSelected} />
+        <ResponsiveMap
+          {...activeMap}
+          onRoomSelect={setIsRoomSelected}
+          onSeatSelect={setHasSelectedSeat}
+          onOccupiedSelect={setHasOccupiedSeat}
+        />
       ) : (
         <div className="flex h-full items-center justify-center text-gray-400">
           Harta pentru {activeTab} este in lucru...
@@ -82,6 +96,3 @@ const Seats = () => {
 };
 
 export default Seats;
-
-
-
