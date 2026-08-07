@@ -4,7 +4,7 @@ import SingleSeat from './SingleSeat';
 interface ParterMapProps {
     onRoomSelect?: (isRoom: boolean) => void;
     onSeatSelect?: (hasSelected: boolean) => void;
-    onOccupiedSelect?: (isOccupied: boolean) => void;
+    onOccupiedSelect?: (isOccupied: boolean) => void; 
 }
 
 const ParterMap = ({ onRoomSelect, onSeatSelect, onOccupiedSelect }: ParterMapProps) => {
@@ -14,12 +14,12 @@ const ParterMap = ({ onRoomSelect, onSeatSelect, onOccupiedSelect }: ParterMapPr
 
     const handleSeatSelection = (id: string, type?: 'individual' | 'room') => {
         const wasSelectedBeforeClick = getSelectedState(id) === 'selected';
-
+        
         const occupiedSeats = ["P-SD0-04", "P-SD0-05", "P-SD0-07", "P-SD0-08", "P-B0-04", "P-B0-06", "P-B0-08", "P-B0-09"];
         const isOccupied = occupiedSeats.includes(id);
 
         handleSeatClick(id);
-
+        
         if (onRoomSelect) {
             onRoomSelect(type === 'room');
         }
@@ -27,13 +27,13 @@ const ParterMap = ({ onRoomSelect, onSeatSelect, onOccupiedSelect }: ParterMapPr
         if (onSeatSelect) {
             onSeatSelect(!wasSelectedBeforeClick);
         }
-
+        
         if (onOccupiedSelect) {
             if (!wasSelectedBeforeClick) {
 
                 onOccupiedSelect(isOccupied);
             } else {
-
+                
                 onOccupiedSelect(false);
             }
         }

@@ -1,8 +1,45 @@
 import { useSeatSelection } from '@/hooks/useSeatSelection';
-import SingleSeat from './SingleSeat'
+import SingleSeat from './SingleSeat';
 
-const T2Etaj1Map = () => {
-    const { handleSeatClick, getSelectedState } = useSeatSelection([{ groupId: 'G-404', matches: (id: string) => id.includes('T2-404') }]);
+interface MapProps {
+  onRoomSelect?: (isRoom: boolean) => void;
+  onSeatSelect?: (hasSelected: boolean) => void;
+  onOccupiedSelect?: (isOccupied: boolean) => void;
+}
+
+const T2Etaj1Map = ({ onRoomSelect, onSeatSelect, onOccupiedSelect }: MapProps) => {
+  const { handleSeatClick, getSelectedState } = useSeatSelection([
+    { groupId: 'G-404', matches: (id: string) => id.includes('T2-404') }
+  ]);
+
+  const handleSeatSelection = (id: string, type?: 'individual' | 'room') => {
+    const wasSelectedBeforeClick = getSelectedState(id) === 'selected';
+
+    const occupiedSeats = [
+      "T2-B1-08", "T2-B1-06", "T2-B1-03", "T2-B1-01",
+      "T2-B1-02", "T2-B1-18", "T2-B1-17", "T2-B1-15",
+      "T2-B1-12", "T2-B1-13", "T2-B1-11"
+    ];
+    const isOccupied = occupiedSeats.includes(id);
+
+    handleSeatClick(id);
+
+    if (onRoomSelect) {
+      onRoomSelect(type === 'room');
+    }
+
+    if (onSeatSelect) {
+      onSeatSelect(!wasSelectedBeforeClick);
+    }
+
+    if (onOccupiedSelect) {
+      if (!wasSelectedBeforeClick) {
+        onOccupiedSelect(isOccupied);
+      } else {
+        onOccupiedSelect(false);
+      }
+    }
+  };
 
   return (
     <div className="relative mx-auto h-[650px] w-full max-w-[1000px] border border-gray-800 bg-[#F5F3FF] overflow-hidden shadow-sm">
@@ -21,7 +58,7 @@ const T2Etaj1Map = () => {
             number="1"
             status="available"
             selectedSeat={getSelectedState('T2-404-01')}
-            onSelect={handleSeatClick}
+            onSelect={handleSeatSelection}
             className="left-[68px] top-[90px]"
           />
           <SingleSeat
@@ -30,7 +67,7 @@ const T2Etaj1Map = () => {
             number="2"
             status="available"
             selectedSeat={getSelectedState('T2-404-02')}
-            onSelect={handleSeatClick}
+            onSelect={handleSeatSelection}
             className="left-[10px] top-[130px]"
           />
           <SingleSeat
@@ -39,7 +76,7 @@ const T2Etaj1Map = () => {
             number="3"
             status="available"
             selectedSeat={getSelectedState('T2-404-03')}
-            onSelect={handleSeatClick}
+            onSelect={handleSeatSelection}
             className="left-[10px] top-[180px]"
           />
           <SingleSeat
@@ -48,7 +85,7 @@ const T2Etaj1Map = () => {
             number="4"
             status="available"
             selectedSeat={getSelectedState('T2-404-04')}
-            onSelect={handleSeatClick}
+            onSelect={handleSeatSelection}
             className="left-[10px] top-[230px]"
           />
           <SingleSeat
@@ -57,7 +94,7 @@ const T2Etaj1Map = () => {
             number="5"
             status="available"
             selectedSeat={getSelectedState('T2-404-05')}
-            onSelect={handleSeatClick}
+            onSelect={handleSeatSelection}
             className="left-[10px] top-[280px]"
           />
           <SingleSeat
@@ -66,7 +103,7 @@ const T2Etaj1Map = () => {
             number="6"
             status="available"
             selectedSeat={getSelectedState('T2-404-06')}
-            onSelect={handleSeatClick}
+            onSelect={handleSeatSelection}
             className="left-[68px] top-[320px]"
           />
           <SingleSeat
@@ -75,7 +112,7 @@ const T2Etaj1Map = () => {
             number="7"
             status="available"
             selectedSeat={getSelectedState('T2-404-07')}
-            onSelect={handleSeatClick}
+            onSelect={handleSeatSelection}
             className="left-[130px] top-[280px]"
           />
           <SingleSeat
@@ -84,7 +121,7 @@ const T2Etaj1Map = () => {
             number="8"
             status="available"
             selectedSeat={getSelectedState('T2-404-08')}
-            onSelect={handleSeatClick}
+            onSelect={handleSeatSelection}
             className="left-[130px] top-[230px]"
           />
           <SingleSeat
@@ -93,7 +130,7 @@ const T2Etaj1Map = () => {
             number="9"
             status="available"
             selectedSeat={getSelectedState('T2-404-09')}
-            onSelect={handleSeatClick}
+            onSelect={handleSeatSelection}
             className="left-[130px] top-[180px]"
           />
           <SingleSeat
@@ -102,7 +139,7 @@ const T2Etaj1Map = () => {
             number="10"
             status="available"
             selectedSeat={getSelectedState('T2-404-10')}
-            onSelect={handleSeatClick}
+            onSelect={handleSeatSelection}
             className="left-[130px] top-[130px]"
           />
         </div>
@@ -118,199 +155,194 @@ const T2Etaj1Map = () => {
         B1
       </h3>
 
-        <div className="absolute left-[300px] top-[80px] h-[50px] w-[170px] border border-[#7C7777] bg-[#C1BDD2]" />
-        <div className="absolute left-[300px] top-[175px] h-[50px] w-[170px] border border-[#7C7777] bg-[#C1BDD2]" />
-        <div className="absolute left-[300px] top-[270px] h-[50px] w-[170px] border border-[#7C7777] bg-[#C1BDD2]" />
-        <div className="absolute left-[300px] top-[365px] h-[50px] w-[170px] border border-[#7C7777] bg-[#C1BDD2]" />
-        <div className="absolute left-[300px] top-[460px] h-[50px] w-[170px] border border-[#7C7777] bg-[#C1BDD2]" />
-        <div className="absolute left-[300px] top-[560px] h-[50px] w-[170px] border border-[#7C7777] bg-[#C1BDD2]" />
-    
-        <div className="absolute left-[700px] top-[80px] h-[50px] w-[170px] border border-[#7C7777] bg-[#C1BDD2]" />
-        <div className="absolute left-[700px] top-[175px] h-[50px] w-[170px] border border-[#7C7777] bg-[#C1BDD2]" />
-        <div className="absolute left-[700px] top-[270px] h-[50px] w-[170px] border border-[#7C7777] bg-[#C1BDD2]" />
-        <div className="absolute left-[700px] top-[365px] h-[50px] w-[170px] border border-[#7C7777] bg-[#C1BDD2]" />
-        <div className="absolute left-[700px] top-[460px] h-[50px] w-[170px] border border-[#7C7777] bg-[#C1BDD2]" />
-        <div className="absolute left-[700px] top-[560px] h-[50px] w-[170px] border border-[#7C7777] bg-[#C1BDD2]" />
+      <div className="absolute left-[300px] top-[80px] h-[50px] w-[170px] border border-[#7C7777] bg-[#C1BDD2]" />
+      <div className="absolute left-[300px] top-[175px] h-[50px] w-[170px] border border-[#7C7777] bg-[#C1BDD2]" />
+      <div className="absolute left-[300px] top-[270px] h-[50px] w-[170px] border border-[#7C7777] bg-[#C1BDD2]" />
+      <div className="absolute left-[300px] top-[365px] h-[50px] w-[170px] border border-[#7C7777] bg-[#C1BDD2]" />
+      <div className="absolute left-[300px] top-[460px] h-[50px] w-[170px] border border-[#7C7777] bg-[#C1BDD2]" />
+      <div className="absolute left-[300px] top-[560px] h-[50px] w-[170px] border border-[#7C7777] bg-[#C1BDD2]" />
 
-        <SingleSeat
+      <div className="absolute left-[700px] top-[80px] h-[50px] w-[170px] border border-[#7C7777] bg-[#C1BDD2]" />
+      <div className="absolute left-[700px] top-[175px] h-[50px] w-[170px] border border-[#7C7777] bg-[#C1BDD2]" />
+      <div className="absolute left-[700px] top-[270px] h-[50px] w-[170px] border border-[#7C7777] bg-[#C1BDD2]" />
+      <div className="absolute left-[700px] top-[365px] h-[50px] w-[170px] border border-[#7C7777] bg-[#C1BDD2]" />
+      <div className="absolute left-[700px] top-[460px] h-[50px] w-[170px] border border-[#7C7777] bg-[#C1BDD2]" />
+      <div className="absolute left-[700px] top-[560px] h-[50px] w-[170px] border border-[#7C7777] bg-[#C1BDD2]" />
+
+      <SingleSeat
         id="T2-B1-09"
         number="9"
         status="available"
         selectedSeat={getSelectedState("T2-B1-09")}
-        onSelect={handleSeatClick}
+        onSelect={handleSeatSelection}
         className="left-[325px] top-[40px]"
-        />
+      />
 
-        <SingleSeat
+      <SingleSeat
         id="T2-B1-10"
         number="10"
         status="available"
         selectedSeat={getSelectedState("T2-B1-10")}
-        onSelect={handleSeatClick}
+        onSelect={handleSeatSelection}
         className="left-[405px] top-[40px]"
-        />
+      />
 
-        {/* Masa 2 */}
-        <SingleSeat
+      {/* Masa 2 */}
+      <SingleSeat
         id="T2-B1-07"
         number="7"
         status="available"
         selectedSeat={getSelectedState("T2-B1-07")}
-        onSelect={handleSeatClick}
+        onSelect={handleSeatSelection}
         className="left-[325px] top-[135px]"
-        />
+      />
 
-        <SingleSeat
+      <SingleSeat
         id="T2-B1-08"
         number="8"
         status="occupied"
         selectedSeat={getSelectedState("T2-B1-08")}
-        onSelect={handleSeatClick}
+        onSelect={handleSeatSelection}
         className="left-[405px] top-[135px]"
-        />
+      />
 
-        {/* Masa 3 */}
-        <SingleSeat
+      {/* Masa 3 */}
+      <SingleSeat
         id="T2-B1-05"
         number="5"
         status="available"
         selectedSeat={getSelectedState("T2-B1-05")}
-        onSelect={handleSeatClick}
+        onSelect={handleSeatSelection}
         className="left-[325px] top-[230px]"
-        />
+      />
 
-        <SingleSeat
+      <SingleSeat
         id="T2-B1-06"
         number="6"
         status="occupied"
         selectedSeat={getSelectedState("T2-B1-06")}
-        onSelect={handleSeatClick}
+        onSelect={handleSeatSelection}
         className="left-[405px] top-[230px]"
-        />
+      />
 
-        {/* Masa 4 */}
-        <SingleSeat
+      {/* Masa 4 */}
+      <SingleSeat
         id="T2-B1-04"
         number="4"
         status="available"
         selectedSeat={getSelectedState("T2-B1-04")}
-        onSelect={handleSeatClick}
+        onSelect={handleSeatSelection}
         className="left-[325px] top-[325px]"
-        />
+      />
 
-        {/* Masa 5 */}
-        <SingleSeat
+      {/* Masa 5 */}
+      <SingleSeat
         id="T2-B1-03"
         number="3"
         status="occupied"
         selectedSeat={getSelectedState("T2-B1-03")}
-        onSelect={handleSeatClick}
+        onSelect={handleSeatSelection}
         className="left-[325px] top-[420px]"
-        />
+      />
 
-        {/* Masa 6 */}
-        <SingleSeat
+      {/* Masa 6 */}
+      <SingleSeat
         id="T2-B1-01"
         number="1"
         status="occupied"
         selectedSeat={getSelectedState("T2-B1-01")}
-        onSelect={handleSeatClick}
+        onSelect={handleSeatSelection}
         className="left-[325px] top-[520px]"
-        />
+      />
 
-        <SingleSeat
+      <SingleSeat
         id="T2-B1-02"
         number="2"
         status="occupied"
         selectedSeat={getSelectedState("T2-B1-02")}
-        onSelect={handleSeatClick}
+        onSelect={handleSeatSelection}
         className="left-[405px] top-[520px]"
-        />   
+      />
 
-        {/* Masa 1 */}
-        <SingleSeat
+      {/* Masa 1 */}
+      <SingleSeat
         id="T2-B1-18"
         number="18"
         status="occupied"
         selectedSeat={getSelectedState("T2-B1-18")}
-        onSelect={handleSeatClick}
+        onSelect={handleSeatSelection}
         className="left-[725px] top-[40px]"
-        />
+      />
 
-        {/* Masa 2 */}
-        <SingleSeat
+      {/* Masa 2 */}
+      <SingleSeat
         id="T2-B1-17"
         number="17"
         status="occupied"
         selectedSeat={getSelectedState("T2-B1-17")}
-        onSelect={handleSeatClick}
+        onSelect={handleSeatSelection}
         className="left-[725px] top-[135px]"
-        />
+      />
 
-        {/* Masa 3 */}
-        <SingleSeat
+      {/* Masa 3 */}
+      <SingleSeat
         id="T2-B1-16"
         number="16"
         status="available"
         selectedSeat={getSelectedState("T2-B1-16")}
-        onSelect={handleSeatClick}
+        onSelect={handleSeatSelection}
         className="left-[725px] top-[230px]"
-        />
+      />
 
-        {/* Masa 4 */}
-        <SingleSeat
+      {/* Masa 4 */}
+      <SingleSeat
         id="T2-B1-14"
         number="14"
         status="available"
         selectedSeat={getSelectedState("T2-B1-14")}
-        onSelect={handleSeatClick}
+        onSelect={handleSeatSelection}
         className="left-[725px] top-[325px]"
-        />
+      />
 
-        <SingleSeat
+      <SingleSeat
         id="T2-B1-15"
         number="15"
         status="occupied"
         selectedSeat={getSelectedState("T2-B1-15")}
-        onSelect={handleSeatClick}
+        onSelect={handleSeatSelection}
         className="left-[805px] top-[325px]"
-        />
+      />
 
-        {/* Masa 5 */}
-        <SingleSeat
+      {/* Masa 5 */}
+      <SingleSeat
         id="T2-B1-12"
         number="12"
         status="occupied"
         selectedSeat={getSelectedState("T2-B1-12")}
-        onSelect={handleSeatClick}
+        onSelect={handleSeatSelection}
         className="left-[725px] top-[420px]"
-        />
+      />
 
-        <SingleSeat
+      <SingleSeat
         id="T2-B1-13"
         number="13"
         status="occupied"
         selectedSeat={getSelectedState("T2-B1-13")}
-        onSelect={handleSeatClick}
+        onSelect={handleSeatSelection}
         className="left-[805px] top-[420px]"
-        />
+      />
 
-        {/* Masa 6 */}
-        <SingleSeat
+      {/* Masa 6 */}
+      <SingleSeat
         id="T2-B1-11"
         number="11"
         status="occupied"
         selectedSeat={getSelectedState("T2-B1-11")}
-        onSelect={handleSeatClick}
+        onSelect={handleSeatSelection}
         className="left-[725px] top-[520px]"
-        />
+      />
     </div>
   )
 }
 
-export default T2Etaj1Map
-
-
-
-
-
+export default T2Etaj1Map;
