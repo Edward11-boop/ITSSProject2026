@@ -78,8 +78,8 @@ const SeatsNavbar = ({ activeTab, setActiveTab, isRoomSelected }: SeatsNavbarPro
   return (
     <>
       <div className="bg-[#F5F3FF] px-4 py-4 sm:px-8 sm:py-6">
-        <div className="mx-auto flex w-full max-w-7xl flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex min-w-0 items-center gap-3">
+        <div className="mx-auto flex w-full max-w-7xl flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+          <div className="flex min-w-0 items-start gap-3 sm:items-center">
             <button
               type="button"
               onClick={() => navigate(-1)}
@@ -89,8 +89,8 @@ const SeatsNavbar = ({ activeTab, setActiveTab, isRoomSelected }: SeatsNavbarPro
               &larr;
             </button>
 
-            <div className="min-w-0 flex-1 overflow-x-auto pb-1">
-              <div className="flex w-max gap-2 pr-2">
+            <div className="min-w-0 flex-1 pb-1">
+              <div className="flex flex-wrap gap-2 pr-2">
                 {seatTabs.map((tab) => (
                   <button
                     type="button"
@@ -120,8 +120,8 @@ const SeatsNavbar = ({ activeTab, setActiveTab, isRoomSelected }: SeatsNavbarPro
             </div>
           </div>
 
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:shrink-0 sm:justify-end">
-            <div className="relative sm:order-2">
+          <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between lg:shrink-0 lg:justify-end">
+            <div className="relative lg:order-2">
               <button
                 type="button"
                 onClick={() => setIsLegendOpen(true)}
@@ -136,7 +136,7 @@ const SeatsNavbar = ({ activeTab, setActiveTab, isRoomSelected }: SeatsNavbarPro
             <button
               type="button"
               onClick={handleConfirmSelection}
-              className="w-full rounded-full bg-[#8B5CF6] px-5 py-3 font-semibold text-white transition-all hover:bg-[#7C3AED] hover:shadow-lg sm:w-auto sm:px-8 sm:order-1"
+              className="w-full rounded-full bg-[#8B5CF6] px-5 py-3 font-semibold text-white transition-all hover:bg-[#7C3AED] hover:shadow-lg lg:w-auto lg:px-8 lg:order-1"
             >
               Confirm new selection
             </button>
@@ -228,6 +228,8 @@ const SeatsNavbar = ({ activeTab, setActiveTab, isRoomSelected }: SeatsNavbarPro
 };
 
 export default SeatsNavbar;
+
+
 
 
 
