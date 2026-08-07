@@ -112,8 +112,8 @@ const SeatsNavbar = ({ activeTab, setActiveTab, isRoomSelected }: SeatsNavbarPro
                 Legenda Culorilor
               </button>
 
-              <div className="absolute left-0 top-full z-[100] hidden pt-2 group-hover:flex">
-                <div className="flex w-64 flex-col gap-3 rounded-lg border border-[#C4B5FD] bg-[#EDE9FE] p-3 opacity-100 shadow-xl">
+              <div className="absolute right-0 top-full z-[100] hidden pt-2 group-hover:flex">
+                <div className="flex w-[min(360px,calc(100vw-32px))] flex-col gap-3 rounded-lg border border-[#C4B5FD] bg-[#EDE9FE] p-3 opacity-100 shadow-xl">
                   <LegendContent />
                 </div>
               </div>
@@ -228,6 +228,7 @@ const SeatsNavbar = ({ activeTab, setActiveTab, isRoomSelected }: SeatsNavbarPro
 };
 
 export default SeatsNavbar;
+
 
 
 
