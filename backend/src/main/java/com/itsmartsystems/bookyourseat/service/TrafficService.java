@@ -37,7 +37,7 @@ public class TrafficService {
         this.restTemplate = restTemplate;
     }
 
-    public List<RoutesOption> getTrafficRoutes(double latOrigin, double longOrigin) {
+    public List<RoutesOption> getTrafficRoutes(double latOrigin, double longOrigin , String metodaDeplasare) {
         // am creat structura map urilor pentru json - > origin
         /*
         "origin":{
@@ -81,7 +81,7 @@ public class TrafficService {
         HashMap<String,Object> requestBody = new HashMap<>();
         requestBody.put("origin" , origin);
         requestBody.put("destination" , originDest);
-        requestBody.put("travelMode" , "DRIVE");
+        requestBody.put("travelMode" , metodaDeplasare);
         requestBody.put("routingPreference", "TRAFFIC_AWARE");
         requestBody.put("computeAlternativeRoutes", true );
 

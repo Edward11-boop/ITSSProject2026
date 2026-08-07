@@ -6,6 +6,14 @@ import type { AssistantStatus } from "./types"
 const idleMessage =
   "Salut! Pot sa te ajut cu informatii despre vreme si trafic pentru drumul catre birou."
 
+const backendTravelModeBySelection: Record<TravelMode, string> = {
+  driving: "DRIVE",
+  walking: "WALK",
+  bicycling: "BICYCLE",
+  transit: "TRANSIT",
+  "two-wheeler": "TWO_WHEELER",
+}
+
 const AIAssistant = () => {
   const [isOpen, setIsOpen] = useState(false)
   const [status, setStatus] = useState<AssistantStatus>("idle")
@@ -40,7 +48,7 @@ const AIAssistant = () => {
             lat: String(latitude),
             lng: String(longitude),
             targetHour,
-            metodaDeplasare: travelMode,
+            metodaDeplasare: backendTravelModeBySelection[travelMode],
           })
           const url = `http://localhost:8080/recommendation?${params.toString()}`
           const response = await fetch(url, { credentials: "include" })
@@ -96,3 +104,4 @@ const AIAssistant = () => {
 }
 
 export default AIAssistant
+
