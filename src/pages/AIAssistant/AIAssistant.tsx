@@ -1,22 +1,16 @@
 ﻿import { useState } from "react"
 import { Bot } from "lucide-react"
-import AssistantWindow from "./components/AssistantWindow"
+import AssistantWindow, { type TravelMode } from "./components/AssistantWindow"
 import type { AssistantStatus } from "./types"
 
 const idleMessage =
   "Salut! Pot sa te ajut cu informatii despre vreme si trafic pentru drumul catre birou."
 
-const getLocalTargetHour = () => {
-  const now = new Date()
-  now.setMinutes(0, 0, 0)
-  const timezoneOffsetMs = now.getTimezoneOffset() * 60 * 1000
-  return new Date(now.getTime() - timezoneOffsetMs).toISOString().slice(0, 19)
-}
-
 const AIAssistant = () => {
   const [isOpen, setIsOpen] = useState(false)
   const [status, setStatus] = useState<AssistantStatus>("idle")
   const [message, setMessage] = useState(idleMessage)
+  const [travelMode, setTravelMode] = useState<TravelMode>("driving")
 
   const handleRequestLocation = () => {
     if (!navigator.geolocation) {
@@ -31,52 +25,62 @@ const AIAssistant = () => {
     navigator.geolocation.getCurrentPosition(
       async (position) => {
         setStatus("loading")
-        setMessage("Analizez traficul si vremea pentru drumul catre birou...")
+        setMessage("Analizez traficul si vremea...")
+
+        const { latitude, longitude } = position.coords
+
+        // ora pentru care cerem recomandarea: acum, rotunjit la ora exacta urmatoare
+        const now = new Date()
+        now.setMinutes(0, 0, 0)
+        now.setHours(now.getHours() + 1)
+        const targetHour = now.toISOString().slice(0, 19)
 
         try {
           const params = new URLSearchParams({
-            lat: String(position.coords.latitude),
-            lng: String(position.coords.longitude),
-            targetHour: getLocalTargetHour(),
+            lat: String(latitude),
+            lng: String(longitude),
+            targetHour,
+            metodaDeplasare: travelMode,
           })
-
-          const response = await fetch(
-            `http://localhost:8080/recommendation?${params.toString()}`,
-          )
+          const url = `http://localhost:8080/recommendation?${params.toString()}`
+          const response = await fetch(url, { credentials: "include" })
 
           if (!response.ok) {
-            throw new Error(await response.text())
+            setStatus("error")
+            setMessage("Nu am putut obtine recomandarea. Incearca din nou.")
+            return
           }
 
-          const recommendation = await response.text()
-
+          const recomandare = await response.text()
           setStatus("succes")
-          setMessage(recommendation || "Nu am primit o recomandare momentan.")
+          setMessage(recomandare)
         } catch {
           setStatus("error")
-          setMessage(
-            "Nu am putut obtine recomandarea de trafic si vreme. Incearca din nou mai tarziu.",
-          )
+          setMessage("Nu am putut contacta serverul.")
         }
       },
       () => {
         setStatus("error")
         setMessage(
-          "Nu am putut obtine locatia. Verifica permisiunile browserului si incearca din nou.",
+          "Nu am putut obtine locatia. Verifica permisiunile browserului si incearca din nou."
         )
-      },
+      }
     )
   }
 
   return (
     <>
       {isOpen && (
-        <AssistantWindow
-          status={status}
-          message={message}
-          onClose={() => setIsOpen(false)}
-          onRequestLocation={handleRequestLocation}
-        />
+        <div className="fixed bottom-24 right-5 z-50 sm:bottom-28 sm:right-10">
+          <AssistantWindow
+            status={status}
+            message={message}
+            travelMode={travelMode}
+            onTravelModeChange={setTravelMode}
+            onClose={() => setIsOpen(false)}
+            onRequestLocation={handleRequestLocation}
+          />
+        </div>
       )}
 
       <button
@@ -92,4 +96,3 @@ const AIAssistant = () => {
 }
 
 export default AIAssistant
-

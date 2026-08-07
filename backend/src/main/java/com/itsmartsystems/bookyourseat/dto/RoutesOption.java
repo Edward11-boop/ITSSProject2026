@@ -42,5 +42,4 @@ public class RoutesOption {
         double km = distanceInMeters / 1000;
         return routeName + ": " + hours + "h " + minutes + "min, " + km + " km";
     }
-
 }

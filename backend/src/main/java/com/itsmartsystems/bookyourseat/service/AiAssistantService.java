@@ -9,17 +9,24 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+import org.springframework.web.util.UriComponentsBuilder;
 @Service
 public class AiAssistantService {
 
     @Value("${openai.api.key}")
     private String apiKey;
+
+    @Value("${office.latitude}")
+    private double latDest ;
+
+    @Value("${office.longitude}")
+    private double longDest;
 
     private final RestTemplate restTemplate;
     private final TrafficService trafficService;
@@ -31,7 +38,15 @@ public class AiAssistantService {
         this.weatherService = weatherService;
     }
 
-    public String getRecommendation(double latOrigin, double longOrigin, LocalDateTime targetHour) {
+    public String createURL(double latOrigin , double longOrigin , LocalDateTime targetHour , String metodaDeplasare){
+        return UriComponentsBuilder.fromUriString("https://www.google.com/maps/dir/")
+                .queryParam("api", "1")
+                .queryParam("origin" , latOrigin + "," + longOrigin)
+                .queryParam("destination" , latDest + "," + longDest)
+                .queryParam("travelmode" , metodaDeplasare)
+                .build().toUriString();
+    }
+    public String getRecommendation(double latOrigin, double longOrigin, LocalDateTime targetHour , String metodaDeplasare) {
         List<RoutesOption> routes = trafficService.getTrafficRoutes(latOrigin, longOrigin);
         WeatherInfo weather = weatherService.getWeather(latOrigin, longOrigin, targetHour);
 
@@ -83,6 +98,9 @@ public class AiAssistantService {
             return "Nu am putut genera o recomandare momentan.";
         }
 
-        return responseMessage.get("content").toString();
+        String aiText = responseMessage.get("content").toString();
+        String mapsUrl = createURL(latOrigin, longOrigin, targetHour, metodaDeplasare);
+
+        return aiText + "\n\n" + mapsUrl;
     }
 }

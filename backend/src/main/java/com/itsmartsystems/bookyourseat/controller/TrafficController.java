@@ -37,8 +37,15 @@ public class TrafficController {
     }
 
     @GetMapping("/recommendation")
-    public String getRecommendation(@RequestParam double lat, @RequestParam double lng, @RequestParam String targetHour) {
+    public String getRecommendation(@RequestParam double lat, @RequestParam double lng, @RequestParam String targetHour , @RequestParam String metodaDeplasare) {
         LocalDateTime dateTime = LocalDateTime.parse(targetHour);
-        return aiAssistantService.getRecommendation(lat, lng, dateTime);
+        return aiAssistantService.getRecommendation(lat, lng, dateTime , metodaDeplasare);
+    }
+
+    @GetMapping("/route-url")
+    public String getRouteUrl(@RequestParam double lat , @RequestParam double lng , @RequestParam String targetHour , @RequestParam String metodaDeplasare)
+    {
+        LocalDateTime dateTime = LocalDateTime.parse(targetHour);
+        return aiAssistantService.createURL(lat , lng , dateTime , metodaDeplasare);
     }
 }

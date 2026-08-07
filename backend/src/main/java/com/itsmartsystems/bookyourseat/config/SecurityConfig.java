@@ -22,7 +22,7 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/register", "/login" , "/change-password" , "/forgot-password" ,"/reset-password" , "/traffic-routes" , "/weather-test" , "/recommendation").permitAll()
+                        .requestMatchers("/register", "/login" , "/change-password" , "/forgot-password" ,"/reset-password" , "/traffic-routes" , "/weather-test" , "/recommendation" , "/route-url").permitAll()
                         .requestMatchers("/hr/**").hasAnyAuthority("CEO", "MANAGER")
                         .anyRequest().authenticated()
                 )
