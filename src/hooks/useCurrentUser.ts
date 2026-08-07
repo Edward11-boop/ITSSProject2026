@@ -15,7 +15,7 @@ const fallbackUser: CurrentUser = {
   role: "DEV",
 }
 
-export function useCurrentUser() {
+export function useCurrentUser(refreshKey?: string) {
   const [user, setUser] = useState<CurrentUser>(fallbackUser)
   const [isLoading, setIsLoading] = useState(true)
 
@@ -72,9 +72,10 @@ export function useCurrentUser() {
     return () => {
       isMounted = false
     }
-  }, [])
+  }, [refreshKey])
 
   return { user, isLoading }
 }
+
 
 

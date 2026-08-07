@@ -35,4 +35,12 @@ public class RoutesOption {
         this.durationInSeconds = durationInSeconds;
     }
 
+    @Override
+    public String toString() {
+        long hours = durationInSeconds / 3600;
+        long minutes = (durationInSeconds % 3600) / 60;
+        double km = distanceInMeters / 1000;
+        return routeName + ": " + hours + "h " + minutes + "min, " + km + " km";
+    }
+
 }

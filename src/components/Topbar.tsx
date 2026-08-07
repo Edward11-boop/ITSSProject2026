@@ -19,7 +19,7 @@ const Topbar = ({ notificationCount = 0, onOpenMobileMenu }: TopbarProps) => {
   const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false)
   const [isMobileUserMenuOpen, setIsMobileUserMenuOpen] = useState(false)
   const [searchValue, setSearchValue] = useState("")
-  const { user: currentUser, isLoading: isCurrentUserLoading } = useCurrentUser()
+  const { user: currentUser, isLoading: isCurrentUserLoading } = useCurrentUser(location.pathname)
   const displayName = isCurrentUserLoading ? "Se incarca..." : currentUser.name
   const displayEmail = isCurrentUserLoading ? "" : currentUser.email || "Email indisponibil"
   const userInitial = displayName.trim().charAt(0).toUpperCase() || "U"
@@ -294,6 +294,7 @@ const Topbar = ({ notificationCount = 0, onOpenMobileMenu }: TopbarProps) => {
 }
 
 export default Topbar
+
 
 
 
