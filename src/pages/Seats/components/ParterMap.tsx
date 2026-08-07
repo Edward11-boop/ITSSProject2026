@@ -1,21 +1,44 @@
 import { useSeatSelection } from '@/hooks/useSeatSelection';
 import SingleSeat from './SingleSeat';
 
-
 interface ParterMapProps {
     onRoomSelect?: (isRoom: boolean) => void;
+    onSeatSelect?: (hasSelected: boolean) => void;
+    onOccupiedSelect?: (isOccupied: boolean) => void;
 }
 
-const ParterMap = ({ onRoomSelect }: ParterMapProps) => {
-    const { handleSeatClick, getSelectedState } = useSeatSelection([{ groupId: 'G-S0', matches: (id: string) => id.includes('P-S0') }]);
-
+const ParterMap = ({ onRoomSelect, onSeatSelect, onOccupiedSelect }: ParterMapProps) => {
+    const { handleSeatClick, getSelectedState } = useSeatSelection([
+        { groupId: 'G-S0', matches: (id: string) => id.includes('P-S0') }
+    ]);
 
     const handleSeatSelection = (id: string, type?: 'individual' | 'room') => {
+        const wasSelectedBeforeClick = getSelectedState(id) === 'selected';
+
+        const occupiedSeats = ["P-SD0-04", "P-SD0-05", "P-SD0-07", "P-SD0-08", "P-B0-04", "P-B0-06", "P-B0-08", "P-B0-09"];
+        const isOccupied = occupiedSeats.includes(id);
+
         handleSeatClick(id);
+
         if (onRoomSelect) {
             onRoomSelect(type === 'room');
         }
+
+        if (onSeatSelect) {
+            onSeatSelect(!wasSelectedBeforeClick);
+        }
+
+        if (onOccupiedSelect) {
+            if (!wasSelectedBeforeClick) {
+
+                onOccupiedSelect(isOccupied);
+            } else {
+
+                onOccupiedSelect(false);
+            }
+        }
     };
+
 
     return (
         <div className="relative mx-auto h-[650px] w-full max-w-[1000px] border border-gray-800 bg-[#F5F3FF] overflow-hidden shadow-sm">
