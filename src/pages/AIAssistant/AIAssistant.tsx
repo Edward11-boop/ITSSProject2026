@@ -1,10 +1,17 @@
-import { useState } from "react"
+﻿import { useState } from "react"
 import { Bot } from "lucide-react"
 import AssistantWindow from "./components/AssistantWindow"
 import type { AssistantStatus } from "./types"
 
 const idleMessage =
   "Salut! Pot sa te ajut cu informatii despre vreme si trafic pentru drumul catre birou."
+
+const getLocalTargetHour = () => {
+  const now = new Date()
+  now.setMinutes(0, 0, 0)
+  const timezoneOffsetMs = now.getTimezoneOffset() * 60 * 1000
+  return new Date(now.getTime() - timezoneOffsetMs).toISOString().slice(0, 19)
+}
 
 const AIAssistant = () => {
   const [isOpen, setIsOpen] = useState(false)
@@ -22,18 +29,42 @@ const AIAssistant = () => {
     setMessage("Astept permisiunea pentru locatie...")
 
     navigator.geolocation.getCurrentPosition(
-      () => {
-        setStatus("succes")
-        setMessage(
-          "Locatia a fost primita. Asistentul este pregatit pentru integrarea datelor de vreme si trafic."
-        )
+      async (position) => {
+        setStatus("loading")
+        setMessage("Analizez traficul si vremea pentru drumul catre birou...")
+
+        try {
+          const params = new URLSearchParams({
+            lat: String(position.coords.latitude),
+            lng: String(position.coords.longitude),
+            targetHour: getLocalTargetHour(),
+          })
+
+          const response = await fetch(
+            `http://localhost:8080/recommendation?${params.toString()}`,
+          )
+
+          if (!response.ok) {
+            throw new Error(await response.text())
+          }
+
+          const recommendation = await response.text()
+
+          setStatus("succes")
+          setMessage(recommendation || "Nu am primit o recomandare momentan.")
+        } catch {
+          setStatus("error")
+          setMessage(
+            "Nu am putut obtine recomandarea de trafic si vreme. Incearca din nou mai tarziu.",
+          )
+        }
       },
       () => {
         setStatus("error")
         setMessage(
-          "Nu am putut obtine locatia. Verifica permisiunile browserului si incearca din nou."
+          "Nu am putut obtine locatia. Verifica permisiunile browserului si incearca din nou.",
         )
-      }
+      },
     )
   }
 
@@ -61,3 +92,4 @@ const AIAssistant = () => {
 }
 
 export default AIAssistant
+

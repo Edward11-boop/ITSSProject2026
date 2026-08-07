@@ -1,54 +1,13 @@
-import { useEffect, useState } from "react"
-import { Link } from "react-router-dom"
+﻿import { Link } from "react-router-dom"
 import AIAssistant from "@/pages/AIAssistant"
 import CityOverviewCard from "./components/CityOverviewCard"
 import OfficeActivityCard from "./components/OfficeActivityCard"
-
-type UserRole = "CEO" | "MANAGER" | "PM" | "DEV"
-
-type CurrentUser = {
-  id?: string
-  name: string
-  email: string
-  role: UserRole
-}
+import { useCurrentUser } from "@/hooks/useCurrentUser"
 
 const Dashboard = () => {
-  const [isHr, setIsHr] = useState(false)
-  const mockUser = {
-    name: "User",
-  }
-
-  useEffect(() => {
-    if (import.meta.env.VITE_MOCK_AUTH === "true") {
-      const mockUser = localStorage.getItem("mockUser")
-      if (!mockUser) {
-        setIsHr(false)
-        return
-      }
-
-      const data = JSON.parse(mockUser) as CurrentUser
-      setIsHr(data.role === "CEO" || data.role === "MANAGER")
-      return
-    }
-
-    fetch("http://localhost:8080/me", {
-      credentials: "include",
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Not logged in")
-        }
-
-        return response.json()
-      })
-      .then((data: CurrentUser) => {
-        setIsHr(data.role === "CEO" || data.role === "MANAGER")
-      })
-      .catch(() => {
-        setIsHr(false)
-      })
-  }, [])
+  const { user: currentUser, isLoading } = useCurrentUser()
+  const isHr = currentUser.role === "CEO" || currentUser.role === "MANAGER"
+  const displayName = isLoading ? "Se incarca..." : currentUser.name
 
   return (
     <div className="min-h-full bg-[#F5F3FF] p-4 sm:p-8">
@@ -57,7 +16,7 @@ const Dashboard = () => {
           <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <h2 className="text-xl font-bold text-[#29255E] sm:text-2xl">
-                Good morning, {mockUser.name}!
+                Good morning, {displayName}!
               </h2>
 
               <p className="mt-2 text-sm text-gray-500">

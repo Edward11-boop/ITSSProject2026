@@ -6,6 +6,7 @@ import com.itsmartsystems.bookyourseat.repository.UserRepository;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -15,7 +16,12 @@ import jakarta.mail.MessagingException;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
-
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
+import org.springframework.security.web.context.SecurityContextRepository;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 @Service
 public class AuthService {
 
@@ -58,10 +64,20 @@ public class AuthService {
     // --- LOGIN ---
     public boolean login(LoginRequest request){
         Optional<User> u = userRepository.findByEmail(request.getEmail());
-        if (u.isEmpty()) throw new IllegalArgumentException("Email isnt registered !");
         Authentication auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
         if (u.get().isFirstLog()) throw new IllegalArgumentException("Password must be changed before login !");
-        SecurityContextHolder.getContext().setAuthentication(auth);
+
+        SecurityContext context = SecurityContextHolder.createEmptyContext();
+        context.setAuthentication(auth);
+        SecurityContextHolder.setContext(context);
+
+        // salvare explicită în sesiune HTTP
+        ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+        HttpServletRequest httpRequest = attr.getRequest();
+        HttpServletResponse httpResponse = attr.getResponse();
+        SecurityContextRepository repo = new HttpSessionSecurityContextRepository();
+        repo.saveContext(context, httpRequest, httpResponse);
+
         return false;
     }
 
