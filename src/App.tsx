@@ -108,7 +108,6 @@ export default function App() {
             <Route path="/type-of-reservation" element={<TypeOfReservation />} />
             <Route path="/invite" element={<Invite />} />
 
-            {/* Rutele adaugate de voi douĂ„Â */}
             <Route path="/hr-reports" element={<HRReports />} />
             <Route path="/select-date" element={<SelectDateTime />} />
             <Route path="/preferences" element={<Preferences />} />
