@@ -18,6 +18,8 @@ type SeatsNavbarProps = {
   activeTab: SeatTab;
   setActiveTab: (tab: SeatTab) => void;
   isRoomSelected: boolean;
+  hasSelectedSeat: boolean;
+  hasOccupiedSeatSelected: boolean;
 };
 
 const legendItems = [
@@ -39,14 +41,24 @@ const LegendContent = () => (
   </>
 );
 
-const SeatsNavbar = ({ activeTab, setActiveTab, isRoomSelected }: SeatsNavbarProps) => {
+const SeatsNavbar = ({ activeTab, setActiveTab, isRoomSelected, hasSelectedSeat, hasOccupiedSeatSelected }: SeatsNavbarProps) => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const [popupState, setPopupState] = useState<'none' | 'success-admin' | 'success-direct' | 'error-taken' | 'error-admin-fail' | 'error-unavailable'>('none');
+  const [popupState, setPopupState] = useState<'none' | 'success-admin' | 'success-direct' | 'error-taken' | 'error-admin-fail' | 'error-unavailable' | 'error-no-selection'>('none');
   const [isLegendOpen, setIsLegendOpen] = useState(false);
 
   const handleConfirmSelection = () => {
+    if (!hasSelectedSeat) {
+      setPopupState('error-no-selection');
+      return;
+    }
+
+    if (hasOccupiedSeatSelected) {
+      setPopupState('error-taken');
+      return;
+    }
+
     const bookingType = location.state?.bookingType;
     const esteSala = isRoomSelected;
 
@@ -220,6 +232,15 @@ const SeatsNavbar = ({ activeTab, setActiveTab, isRoomSelected }: SeatsNavbarPro
           message="Acest loc nu poate fi rezervat in acest moment."
           sideMessage="Loc indisponibil"
           buttonText="OK, am inteles"
+          onClose={() => setPopupState('none')}
+        />
+      )}
+      {popupState === 'error-no-selection' && (
+        <ErrorPopUp
+          title="Nu ai selectat niciun loc."
+          message="Te rugam sa alegi un loc de pe harta inainte de a da confirmare."
+          sideMessage="Selectie lipsa"
+          buttonText="Inapoi la harta interactiva"
           onClose={() => setPopupState('none')}
         />
       )}

@@ -4,7 +4,7 @@ interface SingleSeatProps {
     status: 'available' | 'occupied' | 'unavailable';
     type?: 'individual' | 'room';
     selectedSeat: string | null;
-    onSelect: (id: string, type?: 'individual' | 'room') => void; // Aici am adaugat tipul
+    onSelect: (id: string, type?: 'individual' | 'room') => void; 
     className?: string;
 }
 
