@@ -73,7 +73,7 @@ const Topbar = ({ notificationCount = 0, onOpenMobileMenu }: TopbarProps) => {
             <Link
               to="/book-now"
               onClick={closeMobileMenus}
-              className="flex items-center justify-center rounded-[60px] border border-white bg-[#6D28D9] px-4 py-2 text-sm font-bold text-white transition hover:bg-[#5B21B6] sm:text-base"
+              className="flex items-center  select-none justify-center rounded-[60px] border border-white bg-[#6D28D9] px-4 py-2 text-sm font-bold text-white transition hover:bg-[#5B21B6] sm:text-base"
             >
               Book now
             </Link>
