@@ -6,11 +6,14 @@ import com.itsmartsystems.bookyourseat.repository.UserRepository;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.stereotype.Service;
 
 import jakarta.mail.MessagingException;
+import jakarta.servlet.http.HttpServletRequest;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -56,11 +59,17 @@ public class AuthService {
     }
 
     // --- LOGIN ---
-    public boolean login(LoginRequest request){
+    public boolean login(LoginRequest request, HttpServletRequest httpRequest){
         Optional<User> u = userRepository.findByEmail(request.getEmail());
+        if(u.isEmpty()) throw new IllegalArgumentException("Email or password is incorrect !");
+
         Authentication auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
         if (u.get().isFirstLog()) throw new IllegalArgumentException("Password must be changed before login !");
-        SecurityContextHolder.getContext().setAuthentication(auth);
+
+        SecurityContext context = SecurityContextHolder.createEmptyContext();
+        context.setAuthentication(auth);
+        SecurityContextHolder.setContext(context);
+        httpRequest.getSession(true).setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, context);
         return false;
     }
 
@@ -68,9 +77,16 @@ public class AuthService {
     public UserDetails UserDet()
     {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if(auth == null || !auth.isAuthenticated() || "anonymousUser".equals(auth.getName())) {
+            throw new IllegalArgumentException("User is not authenticated !");
+        }
+
         String email = auth.getName();
         Optional<User> user = userRepository.findByEmail(email);
+        if(user.isEmpty()) throw new IllegalArgumentException("Authenticated user was not found !");
+
         UserDetails userDetails = new UserDetails();
+        userDetails.setId(user.get().getId());
         userDetails.setEmail(user.get().getEmail());
         userDetails.setName(user.get().getName());
         userDetails.setRole(user.get().getRole());

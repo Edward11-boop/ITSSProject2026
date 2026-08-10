@@ -26,9 +26,9 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public String login(@Valid @RequestBody LoginRequest request)
+    public String login(@Valid @RequestBody LoginRequest request, HttpServletRequest httpRequest)
     {
-        boolean mustChangePassword = authService.login(request);
+        boolean mustChangePassword = authService.login(request, httpRequest);
         if(mustChangePassword) {
             return "Password must be changed !";
         }
@@ -69,3 +69,4 @@ public class AuthController {
     }
 
 }
+

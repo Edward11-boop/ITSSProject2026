@@ -1,5 +1,5 @@
 ﻿import { useEffect, useState } from "react"
-
+import { useLocation } from "react-router-dom"
 export type UserRole = "CEO" | "MANAGER" | "PM" | "DEV"
 
 export type CurrentUser = {
@@ -18,7 +18,7 @@ const fallbackUser: CurrentUser = {
 export function useCurrentUser() {
   const [user, setUser] = useState<CurrentUser>(fallbackUser)
   const [isLoading, setIsLoading] = useState(true)
-
+  const location = useLocation()
   useEffect(() => {
     let isMounted = true
 
@@ -72,7 +72,7 @@ export function useCurrentUser() {
     return () => {
       isMounted = false
     }
-  }, [])
+  }, [location.pathname])
 
   return { user, isLoading }
 }
