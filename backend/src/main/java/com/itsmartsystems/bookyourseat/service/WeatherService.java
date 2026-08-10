@@ -36,6 +36,52 @@ public class WeatherService {
          */
         // preiau json-ul din raspunsul cererii
 
+
+        /*
+              {
+              "latitude": 44.43,
+              "longitude": 26.10,
+              "hourly": {
+                "time": [
+                  "2026-07-31T00:00",
+                  "2026-07-31T01:00",
+                  "2026-07-31T02:00",
+                  "2026-07-31T09:00"
+                ],
+                "temperature_2m": [
+                  18.2,
+                  17.9,
+                  17.5,
+                  29.1
+                ],
+                "wind_speed_10m": [
+                  3.1,
+                  2.8,
+                  2.5,
+                  4.7
+                ],
+                "precipitation": [
+                  0.0,
+                  0.0,
+                  0.2,
+                  0.0
+                ],
+                "snowfall": [
+                  0.0,
+                  0.0,
+                  0.0,
+                  0.0
+                ],
+                "weather_code": [
+                  1,
+                  1,
+                  2,
+                  0
+                ]
+              }
+            }
+         */
+
         Map<String , Object> bodyResponse = request.getBody();
         Map<String , Object> hourly = (Map<String , Object>) bodyResponse.get("hourly");
         List<String> time = (List<String>) hourly.get("time");
