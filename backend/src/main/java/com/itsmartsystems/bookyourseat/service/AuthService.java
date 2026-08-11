@@ -29,12 +29,14 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final EmailService emailService;
+    private final UserSyncService userSyncService;
 
-    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, EmailService emailService) {
+    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, EmailService emailService, UserSyncService userSyncService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.authenticationManager = authenticationManager;
         this.emailService = emailService;
+        this.userSyncService = userSyncService;
     }
 
     // Method for checking the password
@@ -58,7 +60,8 @@ public class AuthService {
         if(!checkPassword(request.getPassword())) throw new IllegalArgumentException("Password must contain at least 2 special chars and to be >= 10 chars");
         String crypted = passwordEncoder.encode(request.getPassword());
         User user = new User(request.getName(), request.getEmail(), crypted, request.getRole(), true);
-        userRepository.save(user);
+        User savedUser = userRepository.save(user);
+        userSyncService.syncUser(savedUser);
     }
 
     // --- LOGIN ---
@@ -66,6 +69,8 @@ public class AuthService {
         Optional<User> u = userRepository.findByEmail(request.getEmail());
         Authentication auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
         if (u.get().isFirstLog()) throw new IllegalArgumentException("Password must be changed before login !");
+
+        handleFirstLogin(u.get());
 
         SecurityContext context = SecurityContextHolder.createEmptyContext();
         context.setAuthentication(auth);
@@ -91,6 +96,9 @@ public class AuthService {
         if(!passwordEncoder.matches(request.getOldPassword(), u.get().getPassword())) throw new IllegalArgumentException("Passwords doesnt match !");
 
         if(!checkPassword(request.getNewPassword())) throw new IllegalArgumentException("Password must contain at least 2 special chars and to be >= 10 chars");
+       
+         handleFirstLogin(u.get());
+       
         String crypted = passwordEncoder.encode(request.getNewPassword());
         User existingUser = u.get();
         existingUser.setPassword(crypted);
@@ -108,8 +116,21 @@ public class AuthService {
         User user = u.get();
         user.setToken(token);
         user.setTokenExpiresAt(expiresAt);
-        userRepository.save(user);
+        User savedUser = userRepository.save(user);
+        userSyncService.syncUser(savedUser);
         emailService.emailToSend(user.getEmail(), token);
+    }
+
+    public void handleFirstLogin(User user) {
+        if (!user.isFirstLog()) {
+            return;
+        }
+
+        userSyncService.syncUser(user);
+
+        user.setFirstLog(false);
+        User savedUser = userRepository.save(user);
+        userSyncService.syncUser(savedUser);
     }
 
     public void forgotPassword(ChangeNewPasswordRequest request)
@@ -129,7 +150,8 @@ public class AuthService {
         user.setToken(null);
         // after the user changed the password one time the token will be null
         // so that he cant reset the password 30 times in 15 minutes
-        userRepository.save(user);
+        User savedUser = userRepository.save(user);
+        userSyncService.syncUser(savedUser);
     }
 
     public UserDetails UserDet() {
