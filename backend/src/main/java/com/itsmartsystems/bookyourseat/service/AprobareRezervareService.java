@@ -27,12 +27,14 @@ public class AprobareRezervareService {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String email = auth.getName();
         Optional<User> user = userRepository.findByEmail(email);
-        if (user.isEmpty()) throw new IllegalArgumentException("Utilizator inexistent!");
-        if (!(user.get().getRole() == User.Role.PM || user.get().getRole() == User.Role.CEO || user.get().getRole() == User.Role.MANAGER)) {
+        if (user.isEmpty())
+            throw new IllegalArgumentException("Utilizator inexistent!");
+        if (!(user.get().getRole() == User.Role.PM || user.get().getRole() == User.Role.CEO
+                || user.get().getRole() == User.Role.MANAGER)) {
             throw new IllegalArgumentException("Not allowed here !");
         }
 
-        Rezervare rezervare = rezervareRepository.findById(idRezervare)
+        Rezervare rezervare = rezervareRepository.findById(Long.valueOf(idRezervare))
                 .orElseThrow(() -> new IllegalArgumentException("Reservation not found!"));
         if (rezervare.getStare() != Rezervare.Stare.IN_ASTEPTARE) {
             throw new IllegalArgumentException("Invalid reservation !");
@@ -40,7 +42,8 @@ public class AprobareRezervareService {
 
         if (rezervare.getIdSerie() == null) {
             rezervare.setStare(Rezervare.Stare.APROBATA);
-            rezervare.setAprobatDe(user.get().getName());
+            rezervare.setAprobatDe(Long.valueOf(user.get().getId()));
+            ;
             rezervare.setDataAprobarii(LocalDateTime.now());
             return rezervareRepository.save(rezervare);
         } else {
@@ -48,7 +51,7 @@ public class AprobareRezervareService {
             for (Rezervare r : serie) {
                 if (r.getStare() == Rezervare.Stare.IN_ASTEPTARE) {
                     r.setStare(Rezervare.Stare.APROBATA);
-                    r.setAprobatDe(user.get().getName());
+                    r.setAprobatDe(Long.valueOf(user.get().getId()));
                     r.setDataAprobarii(LocalDateTime.now());
                 }
             }
@@ -61,12 +64,14 @@ public class AprobareRezervareService {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String email = auth.getName();
         Optional<User> user = userRepository.findByEmail(email);
-        if (user.isEmpty()) throw new IllegalArgumentException("Utilizator inexistent!");
-        if (!(user.get().getRole() == User.Role.PM || user.get().getRole() == User.Role.MANAGER || user.get().getRole() == User.Role.CEO)) {
+        if (user.isEmpty())
+            throw new IllegalArgumentException("Utilizator inexistent!");
+        if (!(user.get().getRole() == User.Role.PM || user.get().getRole() == User.Role.MANAGER
+                || user.get().getRole() == User.Role.CEO)) {
             throw new IllegalArgumentException("Nu aveți dreptul să respingeți rezervări!");
         }
 
-        Rezervare rezervare = rezervareRepository.findById(idRezervare)
+        Rezervare rezervare = rezervareRepository.findById(Long.valueOf(idRezervare))
                 .orElseThrow(() -> new IllegalArgumentException("Reservation not found!"));
         if (rezervare.getStare() != Rezervare.Stare.IN_ASTEPTARE) {
             throw new IllegalArgumentException("Invalid Reservation !");
@@ -74,7 +79,7 @@ public class AprobareRezervareService {
 
         if (rezervare.getIdSerie() == null) {
             rezervare.setStare(Rezervare.Stare.RESPINSA);
-            rezervare.setAprobatDe(user.get().getName());
+            rezervare.setAprobatDe(Long.valueOf(user.get().getId()));
             rezervare.setMotivRespingere(motivRespingere);
             rezervare.setDataAprobarii(LocalDateTime.now());
             return rezervareRepository.save(rezervare);
@@ -83,7 +88,7 @@ public class AprobareRezervareService {
             for (Rezervare r : serie) {
                 if (r.getStare() == Rezervare.Stare.IN_ASTEPTARE) {
                     r.setStare(Rezervare.Stare.RESPINSA);
-                    r.setAprobatDe(user.get().getName());
+                    r.setAprobatDe(Long.valueOf(user.get().getId()));
                     r.setMotivRespingere(motivRespingere);
                     r.setDataAprobarii(LocalDateTime.now());
                 }
