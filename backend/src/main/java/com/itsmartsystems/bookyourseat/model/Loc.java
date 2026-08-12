@@ -1,30 +1,75 @@
 package com.itsmartsystems.bookyourseat.model;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import jakarta.persistence.*;
 
-@Document(collection = "seats")
+@Entity
+@Table(name = "Loc")
 public class Loc {
 
     @Id
-    private String id;
-    private String salaId;
-    private String cod;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne
+    @JoinColumn(name = "room_id", nullable = false)
+    private Room room;
+
+    @Column(name = "code", nullable = false, length = 50)
+    private String code;
+
+    @Column(name = "status", nullable = false, length = 50)
     private String status;
+
+    @Column(name = "type", nullable = false, length = 50)
+    private String type;
 
     public Loc() {}
 
-    public Loc(String salaId, String cod, String status) {
-        this.salaId = salaId;
-        this.cod = cod;
+    public Loc(Long id, Room room, String code, String status, String type) {
+        this.id = id;
+        this.room = room;
+        this.code = code;
+        this.status = status;
+        this.type = type;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Room getRoom() {
+        return room;
+    }
+
+    public void setRoom(Room room) {
+        this.room = room;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
         this.status = status;
     }
 
-    public String getId() { return id; }
-    public String getSalaId() { return salaId; }
-    public void setSalaId(String salaId) { this.salaId = salaId; }
-    public String getCod() { return cod; }
-    public void setCod(String cod) { this.cod = cod; }
-    public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
 }

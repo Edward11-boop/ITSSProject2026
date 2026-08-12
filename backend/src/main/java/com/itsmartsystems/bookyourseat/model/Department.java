@@ -25,7 +25,6 @@ public class Department {
         this.name = name;
     }
 
-    // Getters și Setters
     public Long getId() {
         return id;
     }

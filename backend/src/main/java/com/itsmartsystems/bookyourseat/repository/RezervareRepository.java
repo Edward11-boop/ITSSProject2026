@@ -9,7 +9,10 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface RezervareRepository extends JpaRepository<Rezervare, Long> {
+public interface
+
+
+RezervareRepository extends JpaRepository<Rezervare, Long> {
 
     List<Rezervare> findByIdSerie(String idSerie);
 

@@ -16,8 +16,6 @@ public class WeatherInfo {
 
     private int weatherCode;
 
-
-
     public int getWeatherCode() {
         return weatherCode;
     }

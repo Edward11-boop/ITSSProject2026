@@ -1,99 +1,68 @@
 package com.itsmartsystems.bookyourseat.model;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-
-
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
-@Document(collection = "reservations")
+@Entity
+@Table(name = "reservation")
 public class Reservation {
 
     @Id
-    private String id;
-    private String seriesId ;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
-    public String getSeriesId() {
-        return seriesId;
-    }
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
-    public void setSeriesId(String seriesId) {
-        this.seriesId = seriesId;
-    }
+    @ManyToOne
+    @JoinColumn(name = "seat_id", nullable = false)
+    private Seat seat;
 
-    public String getUserId() {
-        return userId;
-    }
+    @ManyToOne
+    @JoinColumn(name = "room_id", nullable = false)
+    private Room room;
 
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
+    @Column(name = "start_date_time", nullable = false)
+    private LocalDateTime startDateTime;
 
-    public String getSpaceId() {
-        return spaceId;
-    }
+    @Column(name = "end_date_time", nullable = false)
+    private LocalDateTime endDateTime;
 
-    public void setSpaceId(String spaceId) {
-        this.spaceId = spaceId;
-    }
-
-    public String getSeatId() {
-        return seatId;
-    }
-
-    public void setSeatId(String seatId) {
-        this.seatId = seatId;
-    }
-
-    public LocalDateTime getStartTime() {
-        return startTime;
-    }
-
-    public void setStartTime(LocalDateTime startTime) {
-        this.startTime = startTime;
-    }
-
-    public LocalDateTime getEndTime() {
-        return endTime;
-    }
-
-    public void setEndTime(LocalDateTime endTime) {
-        this.endTime = endTime;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    private String userId ;
-    private String spaceId;
-    private String seatId ;
-    private LocalDateTime startTime ;
-    private LocalDateTime endTime ;
+    @Column(name = "status", nullable = false, length = 100)
     private String status;
-    private LocalDateTime createdAt;
 
-    public Reservation(String seriesId, String userId, String spaceId, String seatId, LocalDateTime startTime, LocalDateTime endTime, String status, LocalDateTime createdAt) {
-        this.seriesId = seriesId;
-        this.userId = userId;
-        this.spaceId = spaceId;
-        this.seatId = seatId;
-        this.startTime = startTime;
-        this.endTime = endTime;
+    @Column(name = "recurrence", nullable = false)
+    private Integer recurrence;
+
+    public Reservation() {}
+
+    public Reservation(Integer id, User user, Seat seat, Room room, LocalDateTime startDateTime, LocalDateTime endDateTime, String status, Integer recurrence) {
+        this.id = id;
+        this.user = user;
+        this.seat = seat;
+        this.room = room;
+        this.startDateTime = startDateTime;
+        this.endDateTime = endDateTime;
         this.status = status;
-        this.createdAt = createdAt;
+        this.recurrence = recurrence;
     }
-    public Reservation(){}
+
+    public Integer getId() { return id; }
+    public User getUser() { return user; }
+    public Seat getSeat() { return seat; }
+    public Room getRoom() { return room; }
+    public LocalDateTime getStartDateTime() { return startDateTime; }
+    public LocalDateTime getEndDateTime() { return endDateTime; }
+    public String getStatus() { return status; }
+    public Integer getRecurrence() { return recurrence; }
+
+    public void setId(Integer id) { this.id = id; }
+    public void setUser(User user) { this.user = user; }
+    public void setSeat(Seat seat) { this.seat = seat; }
+    public void setRoom(Room room) { this.room = room; }
+    public void setStartDateTime(LocalDateTime startDateTime) { this.startDateTime = startDateTime; }
+    public void setEndDateTime(LocalDateTime endDateTime) { this.endDateTime = endDateTime; }
+    public void setStatus(String status) { this.status = status; }
+    public void setRecurrence(Integer recurrence) { this.recurrence = recurrence; }
 }

@@ -1,19 +1,52 @@
 package com.itsmartsystems.bookyourseat.model;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import jakarta.persistence.*;
 
-@Document(collection = "seats")
+@Entity
+@Table(name = "seat")
 public class Seat {
-    @Id
-    private String id ;
 
-    public String getSpaceId() {
-        return spaceId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne
+    @JoinColumn(name = "room_id", nullable = false)
+    private Room room;
+
+    @Column(name = "code", nullable = false, length = 50)
+    private String code;
+
+    @Column(name = "status", nullable = false, length = 50)
+    private String status;
+
+    @Column(name = "type", nullable = false, length = 50)
+    private String type;
+
+    public Seat() {}
+
+    public Seat(Long id, Room room, String code, String status, String type) {
+        this.id = id;
+        this.room = room;
+        this.code = code;
+        this.status = status;
+        this.type = type;
     }
 
-    public void setSpaceId(String spaceId) {
-        this.spaceId = spaceId;
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Room getRoom() {
+        return room;
+    }
+
+    public void setRoom(Room room) {
+        this.room = room;
     }
 
     public String getCode() {
@@ -32,20 +65,11 @@ public class Seat {
         this.status = status;
     }
 
-    private String spaceId ;
-    private String code ;
-    private String status ;
-
-
-
-    public Seat(String spaceId, String code, String status) {
-        this.spaceId = spaceId;
-        this.code = code;
-        this.status = status;
+    public String getType() {
+        return type;
     }
-    public Seat() {}
 
-
-
-
+    public void setType(String type) {
+        this.type = type;
+    }
 }

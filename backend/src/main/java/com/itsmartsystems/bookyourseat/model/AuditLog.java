@@ -20,9 +20,9 @@ public class AuditLog {
     private Long userId;
 
     @Column(name = "reservation_id")
-    private Long reservationId;
+    private Reservation reservationId;
 
-    @Column(nullable = false, length = 100)
+    @Column(name = "action" , nullable = false, length = 100)
     private String action;
 
     @Column(nullable = false, length = 50)
@@ -34,7 +34,7 @@ public class AuditLog {
     public AuditLog() {
     }
 
-    public AuditLog(Long userId, Long reservationId, String action, String source, LocalDateTime createdAt) {
+    public AuditLog(Long userId, Reservation reservationId, String action, String source, LocalDateTime createdAt) {
         this.userId = userId;
         this.reservationId = reservationId;
         this.action = action;
@@ -58,11 +58,11 @@ public class AuditLog {
         this.userId = userId;
     }
 
-    public Long getReservationId() {
+    public Reservation getReservationId() {
         return reservationId;
     }
 
-    public void setReservationId(Long reservationId) {
+    public void setReservationId(Reservation reservationId) {
         this.reservationId = reservationId;
     }
 
