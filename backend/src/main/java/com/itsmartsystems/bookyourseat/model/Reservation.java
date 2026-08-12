@@ -9,18 +9,18 @@ public class Reservation {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "seat_id", nullable = false)
+    @JoinColumn(name = "seat_id")
     private Seat seat;
 
     @ManyToOne
-    @JoinColumn(name = "room_id", nullable = false)
+    @JoinColumn(name = "room_id")
     private Room room;
 
     @Column(name = "start_date_time", nullable = false)
@@ -37,7 +37,7 @@ public class Reservation {
 
     public Reservation() {}
 
-    public Reservation(Integer id, User user, Seat seat, Room room, LocalDateTime startDateTime, LocalDateTime endDateTime, String status, Integer recurrence) {
+    public Reservation(Long id, User user, Seat seat, Room room, LocalDateTime startDateTime, LocalDateTime endDateTime, String status, Integer recurrence) {
         this.id = id;
         this.user = user;
         this.seat = seat;
@@ -48,7 +48,7 @@ public class Reservation {
         this.recurrence = recurrence;
     }
 
-    public Integer getId() { return id; }
+    public Long getId() { return id; }
     public User getUser() { return user; }
     public Seat getSeat() { return seat; }
     public Room getRoom() { return room; }
@@ -57,7 +57,7 @@ public class Reservation {
     public String getStatus() { return status; }
     public Integer getRecurrence() { return recurrence; }
 
-    public void setId(Integer id) { this.id = id; }
+    public void setId(Long id) { this.id = id; }
     public void setUser(User user) { this.user = user; }
     public void setSeat(Seat seat) { this.seat = seat; }
     public void setRoom(Room room) { this.room = room; }

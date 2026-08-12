@@ -13,7 +13,7 @@ public class Room {
 
     @ManyToOne
     @JoinColumn(name = "floor_id" , nullable = false )
-    private Floor floor_id;
+    private Floor floor;
 
     @Column(name = "code" ,unique = true ,  nullable = false , length = 50)
     private String code ;
@@ -29,7 +29,7 @@ public class Room {
     }
 
     public Floor getFloor_id() {
-        return floor_id;
+        return floor;
     }
 
     public String getCode() {
@@ -53,8 +53,8 @@ public class Room {
         this.id = id;
     }
 
-    public void setFloor_id(Floor floor_id) {
-        this.floor_id = floor_id;
+    public void setFloor_id(Floor floor) {
+        this.floor = floor;
     }
 
     public void setCode(String code) {
@@ -76,9 +76,9 @@ public class Room {
     @Column(name = "capacity" , nullable = false )
     private Long capacity ;
 
-    public Room(Long id, Floor floor_id, String code, String name, String type, Long capacity) {
+    public Room(Long id, Floor floor, String code, String name, String type, Long capacity) {
         this.id = id;
-        this.floor_id = floor_id;
+        this.floor = floor;
         this.code = code;
         this.name = name;
         this.type = type;
