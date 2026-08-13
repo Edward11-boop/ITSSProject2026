@@ -23,11 +23,11 @@ type SeatsNavbarProps = {
 };
 
 const legendItems = [
-  { icon: singleSeatAvailable, alt: 'single seat available', label: 'Disponibil (loc individual)' },
+  { icon: singleSeatAvailable, alt: 'single seat available', label: 'Disponibil (seat individual)' },
   { icon: occupied, alt: 'occupied', label: 'Ocupat' },
   { icon: selected, alt: 'selected', label: 'Selectat' },
   { icon: indisponibil, alt: 'indisponibil', label: 'Indisponibil' },
-  { icon: roomAvailable, alt: 'room available', label: 'Disponibil (doar daca se rezerva toata sala)' },
+  { icon: roomAvailable, alt: 'room available', label: 'Disponibil (doar daca se rezerva toata room)' },
 ];
 
 const LegendContent = () => (
@@ -199,7 +199,7 @@ const SeatsNavbar = ({ activeTab, setActiveTab, isRoomSelected, hasSelectedSeat,
 
       {popupState === 'success-direct' && (
         <SuccessPopUp
-          title="Rezervare efectuata cu succes. O puteti vizualiza in Rezervarile mele"
+          title="Reservation efectuata cu succes. O puteti vizualiza in Rezervarile mele"
           sideMessage="Cererea a fost efectuata"
           highlightedText="CU SUCCES"
           onClose={() => setPopupState('none')}
@@ -208,9 +208,9 @@ const SeatsNavbar = ({ activeTab, setActiveTab, isRoomSelected, hasSelectedSeat,
 
       {popupState === 'error-taken' && (
         <ErrorPopUp
-          title="Acest loc este deja rezervat."
-          message="Va rugam sa alegeti alt loc."
-          sideMessage="Loc ocupat"
+          title="Acest seat este deja rezervat."
+          message="Va rugam sa alegeti alt seat."
+          sideMessage="Seat ocupat"
           buttonText="Inapoi la harta interactiva"
           onClose={() => setPopupState('none')}
         />
@@ -228,17 +228,17 @@ const SeatsNavbar = ({ activeTab, setActiveTab, isRoomSelected, hasSelectedSeat,
 
       {popupState === 'error-unavailable' && (
         <ErrorPopUp
-          title="Ai ales un loc indisponibil. Te rugam sa selectezi alt loc."
-          message="Acest loc nu poate fi rezervat in acest moment."
-          sideMessage="Loc indisponibil"
+          title="Ai ales un seat indisponibil. Te rugam sa selectezi alt seat."
+          message="Acest seat nu poate fi rezervat in acest moment."
+          sideMessage="Seat indisponibil"
           buttonText="OK, am inteles"
           onClose={() => setPopupState('none')}
         />
       )}
       {popupState === 'error-no-selection' && (
         <ErrorPopUp
-          title="Nu ai selectat niciun loc."
-          message="Te rugam sa alegi un loc de pe harta inainte de a da confirmare."
+          title="Nu ai selectat niciun seat."
+          message="Te rugam sa alegi un seat de pe harta inainte de a da confirmare."
           sideMessage="Selectie lipsa"
           buttonText="Inapoi la harta interactiva"
           onClose={() => setPopupState('none')}

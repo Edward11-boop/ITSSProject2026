@@ -39,7 +39,7 @@ const T1Etaj1Map = () => {
 
             {/* ================= SALA EVENIMENTE (E1) - MASA IN U ================= */}
             <div className="absolute top-[30px] left-[400px] text-[15px] font-semibold text-gray-800 leading-tight">
-                Sala<br />Evenimente,<br />E1
+                Room<br />Evenimente,<br />E1
             </div>
 
             <div className="absolute top-[30px] left-[610px] h-[280px] w-[35px] border border-[#7C7777] bg-[#C1BDD2]"></div>
@@ -80,7 +80,7 @@ const T1Etaj1Map = () => {
 
             {/* ================= SALA SEDINTE S1 ================= */}
             <div className="absolute top-[440px] left-[460px] text-[13px] font-semibold text-gray-800 leading-tight">
-                Sala<br />sedinte,<br />S1
+                Room<br />sedinte,<br />S1
             </div>
 
             <div className="absolute top-[485px] left-[540px] h-[160px] w-[50px] border border-[#7C7777] bg-[#C1BDD2]"></div>

@@ -4,8 +4,8 @@ import BackButton from "@/components/BackButton"
 import AIAssistant from "@/pages/AIAssistant";
 
 const reservationTypes = [
-  { label: "Rezervare recurenta", bookingType: "RECURENTA" },
-  { label: "Rezervare o singura zi", bookingType: "O_ZI" },
+  { label: "Reservation recurenta", bookingType: "RECURENTA" },
+  { label: "Reservation o singura zi", bookingType: "O_ZI" },
 ] as const;
 
 const TypeOfReservation = () => {

@@ -6,10 +6,10 @@ const Preferences = () => {
     const [searchQuery, setSearchQuery] = useState('');
 
     const colleaguesData = [
-        { id: 1, name: 'Claudiu I.', percentage: 25, days: 5, room: 'Sala 404', seat: 'Locul 12' },
+        { id: 1, name: 'Claudiu I.', percentage: 25, days: 5, room: 'Room 404', seat: 'Locul 12' },
         { id: 2, name: 'Ana P.', percentage: 60, days: 12, room: 'Open Space T1', seat: 'Locul 5' },
-        { id: 3, name: 'Cristian M.', percentage: 5, days: 1, room: 'Sala Gaming G2', seat: 'Canapea' },
-        { id: 4, name: 'Diana R.', percentage: 90, days: 19, room: 'Sala de Ședințe S1', seat: 'Locul 2' },
+        { id: 3, name: 'Cristian M.', percentage: 5, days: 1, room: 'Room Gaming G2', seat: 'Canapea' },
+        { id: 4, name: 'Diana R.', percentage: 90, days: 19, room: 'Room de Ședințe S1', seat: 'Locul 2' },
         { id: 5, name: 'Andrei V.', percentage: 50, days: 10, room: 'Outland', seat: 'Locul 8' },
         { id: 6, name: 'Edi T.', percentage: 75, days: 15, room: 'Birou B1', seat: 'Locul 5' },
         { id: 7, name: 'Antonia D.', percentage: 70, days: 14, room: 'Birou B1', seat: 'Locul 6' },
@@ -80,8 +80,8 @@ const Preferences = () => {
                             </div>
                         )}
                     </div>
-                    
-                    <AIAssistant/>
+
+                    <AIAssistant />
 
                 </div>
             </div>
