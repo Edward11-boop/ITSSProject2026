@@ -22,8 +22,12 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+<<<<<<< HEAD
 
 .env
 *.env
 backend/.env
 backend/src/main/resources/application.properties
+=======
+backend/target/
+>>>>>>> 88fde1a62a73c6a85ec275505faff960835f4191

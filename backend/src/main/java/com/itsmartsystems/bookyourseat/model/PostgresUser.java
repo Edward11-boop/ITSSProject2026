@@ -12,7 +12,7 @@ import jakarta.persistence.Table;
 public class PostgresUser {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @Column(name = "mongo_user_id", unique = true, nullable = false)
     private String mongoUserId;
@@ -46,11 +46,11 @@ public class PostgresUser {
         this.phoneNumber = phoneNumber;
     }
 
-    public Integer getId() {
+    public Long getId() {
         return this.id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

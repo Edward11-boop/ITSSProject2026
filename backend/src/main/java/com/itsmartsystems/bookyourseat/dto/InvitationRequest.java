@@ -9,7 +9,7 @@ public class InvitationRequest {
     private Long seatId;
     private LocalDateTime startDateTime;
     private LocalDateTime endDateTime;
-    
+
     public Long getSenderId() {
         return senderId;
     }
