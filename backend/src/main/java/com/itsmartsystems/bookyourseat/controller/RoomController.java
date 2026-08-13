@@ -8,11 +8,11 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-public class SalaController {
+public class RoomController {
 
     private final RoomRepository roomRepository;
 
-    public SalaController(RoomRepository roomRepository) {
+    public RoomController(RoomRepository roomRepository) {
         this.roomRepository = roomRepository;
     }
 

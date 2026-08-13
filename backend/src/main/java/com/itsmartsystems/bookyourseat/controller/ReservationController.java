@@ -1,18 +1,22 @@
 package com.itsmartsystems.bookyourseat.controller;
 
-
 import com.itsmartsystems.bookyourseat.dto.ReservationRequest;
 import com.itsmartsystems.bookyourseat.model.PostgresUser;
 import com.itsmartsystems.bookyourseat.model.Reservation;
-import com.itsmartsystems.bookyourseat.model.User;
 import com.itsmartsystems.bookyourseat.repository.PostgresUserRepository;
 import com.itsmartsystems.bookyourseat.service.ReservationService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/reservations")
@@ -26,23 +30,22 @@ public class ReservationController {
         this.postgresUserRepository = postgresUserRepository;
     }
 
-    private PostgresUser getCurrentUser()
-    {
+    private PostgresUser getCurrentUser() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String email = auth.getName();
-        Optional<PostgresUser> user = postgresUserRepository.findByEmail(email);
-        if(user.isEmpty()) throw new IllegalArgumentException("This user does not exist ");
-        return user.get();
+        return postgresUserRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("This user does not exist"));
     }
 
-    private void verify(PostgresUser user)
-    {
-        if(!(user.getRole().equals("PM") || user.getRole().equals("CEO") || user.getRole().equals("MANAGER"))) throw new IllegalArgumentException("You do not have permissions !");
+    private void verify(PostgresUser user) {
+        String role = user.getRole();
+        if (!("PM".equals(role) || "CEO".equals(role) || "MANAGER".equals(role))) {
+            throw new IllegalArgumentException("You do not have permissions!");
+        }
     }
 
     @PostMapping
-    public Reservation createReservation(@RequestBody ReservationRequest reservationRequest)
-    {
+    public Reservation createReservation(@RequestBody ReservationRequest reservationRequest) {
         PostgresUser user = getCurrentUser();
         return reservationService.createReservation(
                 user,
@@ -55,8 +58,7 @@ public class ReservationController {
     }
 
     @PutMapping("/{id}")
-    public Reservation modifyReservation(@PathVariable Long id , @RequestBody ReservationRequest reservationRequest)
-    {
+    public Reservation modifyReservation(@PathVariable Long id, @RequestBody ReservationRequest reservationRequest) {
         PostgresUser user = getCurrentUser();
         return reservationService.modifyReservation(
                 user,
@@ -70,46 +72,41 @@ public class ReservationController {
     }
 
     @DeleteMapping("/{id}")
-    public void deleteReservation(@PathVariable Long id)
-    {
+    public void deleteReservation(@PathVariable Long id) {
         reservationService.deleteReservation(id);
     }
 
     @PutMapping("/approve/{id}")
-    public Reservation approveReservation(@PathVariable Long id )
-    {
-        PostgresUser user = getCurrentUser();
-        verify(user);
+    public Reservation approveReservation(@PathVariable Long id) {
+        verify(getCurrentUser());
         return reservationService.approveReservation(id);
     }
 
     @PutMapping("/reject/{id}")
-    public Reservation rejectReservation(@PathVariable Long id)
-    {
-        PostgresUser user = getCurrentUser();
-        verify(user);
+    public Reservation rejectReservation(@PathVariable Long id) {
+        verify(getCurrentUser());
         return reservationService.rejectReservation(id);
     }
 
-    @GetMapping("/reservations/history")
+    @GetMapping("/history")
     public List<Reservation> historyReservation() {
         PostgresUser user = getCurrentUser();
-        return reservationService.historyReservation((user.getId()));
+        return reservationService.historyReservation(user.getId());
     }
 
-    @GetMapping("/reservations/pending")
+    @GetMapping("/pending")
     public List<Reservation> pendingReservations() {
         verify(getCurrentUser());
         return reservationService.pendingReservations();
     }
 
-    @GetMapping("/reservations/approved")
+    @GetMapping("/approved")
     public List<Reservation> approvedReservations() {
         verify(getCurrentUser());
         return reservationService.approvedReservations();
     }
 
-    @GetMapping("/reservations/rejected")
+    @GetMapping("/rejected")
     public List<Reservation> rejectedReservations() {
         verify(getCurrentUser());
         return reservationService.rejectedReservations();

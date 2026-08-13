@@ -9,11 +9,11 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-public class LocController {
+public class SeatController {
 
     private final SeatRepository locRepository;
 
-    public LocController(SeatRepository locRepository) {
+    public SeatController(SeatRepository locRepository) {
         this.locRepository = locRepository;
     }
 
@@ -23,7 +23,7 @@ public class LocController {
     }
 
     @GetMapping("/locuri/room/{salaId}")
-    public List<Seat> getLocuriDinSala(@PathVariable String salaId) {
-        return locRepository.findBySalaId(salaId);
+    public List<Seat> getLocuriDinSala(@PathVariable Long roomId) {
+        return locRepository.findByRoomId(roomId);
     }
 }
