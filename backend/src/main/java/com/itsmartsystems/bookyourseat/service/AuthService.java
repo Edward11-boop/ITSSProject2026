@@ -1,8 +1,8 @@
 package com.itsmartsystems.bookyourseat.service;
 
 import com.itsmartsystems.bookyourseat.dto.*;
-import com.itsmartsystems.bookyourseat.model.User;
-import com.itsmartsystems.bookyourseat.repository.UserRepository;
+import com.itsmartsystems.bookyourseat.model.PostgresUser;import com.itsmartsystems.bookyourseat.model.User;
+import com.itsmartsystems.bookyourseat.repository.PostgresUserRepository;import com.itsmartsystems.bookyourseat.repository.UserRepository;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -30,13 +30,14 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final EmailService emailService;
     private final UserSyncService userSyncService;
-
-    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, EmailService emailService, UserSyncService userSyncService) {
+    private final PostgresUserRepository postgresUserRepository;
+    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, EmailService emailService, UserSyncService userSyncService , PostgresUserRepository postgresUserRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.authenticationManager = authenticationManager;
         this.emailService = emailService;
         this.userSyncService = userSyncService;
+        this.postgresUserRepository = postgresUserRepository;
     }
 
     // Method for checking the password
