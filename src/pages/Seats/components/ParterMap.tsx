@@ -81,7 +81,7 @@ const ParterMap = ({ onRoomSelect, onSeatSelect, onOccupiedSelect }: ParterMapPr
 
             {/* ZONA 4 - SĂLILE (AICI SUNT SALILE) */}
             <div className="absolute top-0 right-0 w-[350px] h-[250px] p-4">
-                <h3 className="text-sm font-semibold text-gray-800 leading-tight">Sala<br />sedinte<br />S0</h3>
+                <h3 className="text-sm font-semibold text-gray-800 leading-tight">Room<br />sedinte<br />S0</h3>
                 <div className="absolute top-[80px] left-[70px] h-[45px] w-[200px] border border-[#7C7777] bg-[#C1BDD2]"></div>
                 <div className="absolute top-[115px] left-[225px] h-[75px] w-[45px] border-x border-[#7C7777] bg-[#C1BDD2]">
                     <div className="absolute bottom-0 right-0 h-px w-[34px] bg-[#7C7777]"></div>
@@ -100,7 +100,7 @@ const ParterMap = ({ onRoomSelect, onSeatSelect, onOccupiedSelect }: ParterMapPr
 
             {/* ZONA 5 */}
             <div className="absolute top-[250px] right-0 w-[350px] h-[280px]">
-                <h3 className="absolute top-[60px] right-[20px] text-sm font-semibold text-gray-800 leading-tight">Sala<br />birouri<br />B0</h3>
+                <h3 className="absolute top-[60px] right-[20px] text-sm font-semibold text-gray-800 leading-tight">Room<br />birouri<br />B0</h3>
                 <div className="absolute top-[20px] left-[60px] h-[240px] w-[35px] border border-[#7C7777] bg-[#C1BDD2]"></div>
                 <SingleSeat selectedSeat={getSelectedState("P-B0-01")} onSelect={handleSeatSelection} id="P-B0-01" number="1" status="available" className="top-[25px] left-[20px]" />
                 <SingleSeat selectedSeat={getSelectedState("P-B0-02")} onSelect={handleSeatSelection} id="P-B0-02" number="2" status="available" className="top-[60px] left-[20px]" />

@@ -1,8 +1,8 @@
 package com.itsmartsystems.bookyourseat.service;
 
-import com.itsmartsystems.bookyourseat.model.Rezervare;
+import com.itsmartsystems.bookyourseat.model.Reservation;
 import com.itsmartsystems.bookyourseat.model.User;
-import com.itsmartsystems.bookyourseat.repository.RezervareRepository;
+import com.itsmartsystems.bookyourseat.repository.ReservationRepository;
 import com.itsmartsystems.bookyourseat.repository.UserRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -15,15 +15,15 @@ import java.util.Optional;
 @Service
 public class AprobareRezervareService {
 
-    private final RezervareRepository rezervareRepository;
+    private final ReservationRepository reservationRepository;
     private final UserRepository userRepository;
 
-    public AprobareRezervareService(RezervareRepository rezervareRepository, UserRepository userRepository) {
-        this.rezervareRepository = rezervareRepository;
+    public AprobareRezervareService(ReservationRepository reservationRepository, UserRepository userRepository) {
+        this.reservationRepository = reservationRepository;
         this.userRepository = userRepository;
     }
 
-    public Rezervare aprobaRezervare(String idRezervare) {
+    public Reservation aprobaRezervare(String idRezervare) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String email = auth.getName();
         Optional<User> user = userRepository.findByEmail(email);
@@ -34,33 +34,33 @@ public class AprobareRezervareService {
             throw new IllegalArgumentException("Not allowed here !");
         }
 
-        Rezervare rezervare = rezervareRepository.findById(Long.valueOf(idRezervare))
+        Reservation reservation = reservationRepository.findById(Long.valueOf(idRezervare))
                 .orElseThrow(() -> new IllegalArgumentException("Reservation not found!"));
-        if (rezervare.getStare() != Rezervare.Stare.IN_ASTEPTARE) {
+        if (reservation.getStare() != Reservation.Stare.IN_ASTEPTARE) {
             throw new IllegalArgumentException("Invalid reservation !");
         }
 
-        if (rezervare.getIdSerie() == null) {
-            rezervare.setStare(Rezervare.Stare.APROBATA);
-            rezervare.setAprobatDe(Long.valueOf(user.get().getId()));
+        if (reservation.getIdSerie() == null) {
+            reservation.setStare(Reservation.Stare.APROBATA);
+            reservation.setAprobatDe(Long.valueOf(user.get().getId()));
             ;
-            rezervare.setDataAprobarii(LocalDateTime.now());
-            return rezervareRepository.save(rezervare);
+            reservation.setDataAprobarii(LocalDateTime.now());
+            return reservationRepository.save(reservation);
         } else {
-            List<Rezervare> serie = rezervareRepository.findByIdSerie(rezervare.getIdSerie());
-            for (Rezervare r : serie) {
-                if (r.getStare() == Rezervare.Stare.IN_ASTEPTARE) {
-                    r.setStare(Rezervare.Stare.APROBATA);
+            List<Reservation> serie = reservationRepository.findByIdSerie(reservation.getIdSerie());
+            for (Reservation r : serie) {
+                if (r.getStare() == Reservation.Stare.IN_ASTEPTARE) {
+                    r.setStare(Reservation.Stare.APROBATA);
                     r.setAprobatDe(Long.valueOf(user.get().getId()));
                     r.setDataAprobarii(LocalDateTime.now());
                 }
             }
-            rezervareRepository.saveAll(serie);
-            return rezervare;
+            reservationRepository.saveAll(serie);
+            return reservation;
         }
     }
 
-    public Rezervare respingeRezervare(String idRezervare, String motivRespingere) {
+    public Reservation respingeRezervare(String idRezervare, String motivRespingere) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String email = auth.getName();
         Optional<User> user = userRepository.findByEmail(email);
@@ -71,30 +71,30 @@ public class AprobareRezervareService {
             throw new IllegalArgumentException("Nu aveți dreptul să respingeți rezervări!");
         }
 
-        Rezervare rezervare = rezervareRepository.findById(Long.valueOf(idRezervare))
+        Reservation reservation = reservationRepository.findById(Long.valueOf(idRezervare))
                 .orElseThrow(() -> new IllegalArgumentException("Reservation not found!"));
-        if (rezervare.getStare() != Rezervare.Stare.IN_ASTEPTARE) {
+        if (reservation.getStare() != Reservation.Stare.IN_ASTEPTARE) {
             throw new IllegalArgumentException("Invalid Reservation !");
         }
 
-        if (rezervare.getIdSerie() == null) {
-            rezervare.setStare(Rezervare.Stare.RESPINSA);
-            rezervare.setAprobatDe(Long.valueOf(user.get().getId()));
-            rezervare.setMotivRespingere(motivRespingere);
-            rezervare.setDataAprobarii(LocalDateTime.now());
-            return rezervareRepository.save(rezervare);
+        if (reservation.getIdSerie() == null) {
+            reservation.setStare(Reservation.Stare.RESPINSA);
+            reservation.setAprobatDe(Long.valueOf(user.get().getId()));
+            reservation.setMotivRespingere(motivRespingere);
+            reservation.setDataAprobarii(LocalDateTime.now());
+            return reservationRepository.save(reservation);
         } else {
-            List<Rezervare> serie = rezervareRepository.findByIdSerie(rezervare.getIdSerie());
-            for (Rezervare r : serie) {
-                if (r.getStare() == Rezervare.Stare.IN_ASTEPTARE) {
-                    r.setStare(Rezervare.Stare.RESPINSA);
+            List<Reservation> serie = reservationRepository.findByIdSerie(reservation.getIdSerie());
+            for (Reservation r : serie) {
+                if (r.getStare() == Reservation.Stare.IN_ASTEPTARE) {
+                    r.setStare(Reservation.Stare.RESPINSA);
                     r.setAprobatDe(Long.valueOf(user.get().getId()));
                     r.setMotivRespingere(motivRespingere);
                     r.setDataAprobarii(LocalDateTime.now());
                 }
             }
-            rezervareRepository.saveAll(serie);
-            return rezervare;
+            reservationRepository.saveAll(serie);
+            return reservation;
         }
     }
 }

@@ -1,6 +1,6 @@
 package com.itsmartsystems.bookyourseat.dto;
 
-import com.itsmartsystems.bookyourseat.model.Rezervare;
+import com.itsmartsystems.bookyourseat.model.Reservation;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 public class ReservationRequest {
 
     @NotNull(message = "Booking type is required")
-    private Rezervare.TipRezervare bookingType;
+    private Reservation.TipRezervare bookingType;
 
     @NotNull(message = "Start time is required")
     private LocalDateTime startTime;
@@ -24,10 +24,11 @@ public class ReservationRequest {
     private String seatId;
     private LocalDate dataSfarsitRecurenta;
 
-    public ReservationRequest() {}
+    public ReservationRequest() {
+    }
 
-    public ReservationRequest(Rezervare.TipRezervare bookingType, LocalDateTime startTime, LocalDateTime endTime,
-                              String spaceId, String seatId, LocalDate dataSfarsitRecurenta) {
+    public ReservationRequest(Reservation.TipRezervare bookingType, LocalDateTime startTime, LocalDateTime endTime,
+            String spaceId, String seatId, LocalDate dataSfarsitRecurenta) {
         this.bookingType = bookingType;
         this.startTime = startTime;
         this.endTime = endTime;
@@ -36,10 +37,27 @@ public class ReservationRequest {
         this.dataSfarsitRecurenta = dataSfarsitRecurenta;
     }
 
-    public Rezervare.TipRezervare getBookingType() { return bookingType; }
-    public LocalDateTime getStartTime() { return startTime; }
-    public LocalDateTime getEndTime() { return endTime; }
-    public String getSpaceId() { return spaceId; }
-    public String getSeatId() { return seatId; }
-    public LocalDate getDataSfarsitRecurenta() { return dataSfarsitRecurenta; }
+    public Reservation.TipRezervare getBookingType() {
+        return bookingType;
+    }
+
+    public LocalDateTime getStartTime() {
+        return startTime;
+    }
+
+    public LocalDateTime getEndTime() {
+        return endTime;
+    }
+
+    public String getSpaceId() {
+        return spaceId;
+    }
+
+    public String getSeatId() {
+        return seatId;
+    }
+
+    public LocalDate getDataSfarsitRecurenta() {
+        return dataSfarsitRecurenta;
+    }
 }

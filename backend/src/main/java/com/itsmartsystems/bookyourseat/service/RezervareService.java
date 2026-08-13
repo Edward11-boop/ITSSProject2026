@@ -1,11 +1,11 @@
 package com.itsmartsystems.bookyourseat.service;
 
-import com.itsmartsystems.bookyourseat.model.Loc;
-import com.itsmartsystems.bookyourseat.model.Rezervare;
-import com.itsmartsystems.bookyourseat.model.Sala;
-import com.itsmartsystems.bookyourseat.repository.LocRepository;
-import com.itsmartsystems.bookyourseat.repository.RezervareRepository;
-import com.itsmartsystems.bookyourseat.repository.SalaRepository;
+import com.itsmartsystems.bookyourseat.model.Seat;
+import com.itsmartsystems.bookyourseat.model.Reservation;
+import com.itsmartsystems.bookyourseat.model.Room;
+import com.itsmartsystems.bookyourseat.repository.SeatRepository;
+import com.itsmartsystems.bookyourseat.repository.ReservationRepository;
+import com.itsmartsystems.bookyourseat.repository.RoomRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.DayOfWeek;
@@ -19,58 +19,59 @@ import java.util.UUID;
 @Service
 public class RezervareService {
 
-    private final RezervareRepository rezervareRepository;
-    private final SalaRepository salaRepository;
-    private final LocRepository locRepository;
+    private final ReservationRepository reservationRepository;
+    private final RoomRepository roomRepository;
+    private final SeatRepository locRepository;
 
-    public RezervareService(RezervareRepository rezervareRepository, SalaRepository salaRepository,
-            LocRepository locRepository) {
-        this.rezervareRepository = rezervareRepository;
-        this.salaRepository = salaRepository;
+    public RezervareService(ReservationRepository reservationRepository, RoomRepository roomRepository,
+            SeatRepository locRepository) {
+        this.reservationRepository = reservationRepository;
+        this.roomRepository = roomRepository;
         this.locRepository = locRepository;
     }
 
     public void creareRezervare(String idUtilizator, String codSala, String idLoc, LocalDateTime oraInceput,
-            LocalDateTime oraSfarsit, Rezervare.TipRezervare tipRezervare, LocalDate dataSfarsitRecurenta) {
+            LocalDateTime oraSfarsit, Reservation.TipRezervare tipRezervare, LocalDate dataSfarsitRecurenta) {
 
-        Optional<Sala> sala = Optional.ofNullable(salaRepository.findByCod(codSala));
-        if (sala.isEmpty()) {
-            throw new IllegalArgumentException("Sala este gresita!");
+        Optional<Room> room = Optional.ofNullable(roomRepository.findByCod(codSala));
+        if (room.isEmpty()) {
+            throw new IllegalArgumentException("Room este gresita!");
         }
 
-        Optional<Loc> loc = Optional.ofNullable(locRepository.findByCod(idLoc));
-        if (loc.isEmpty()) {
+        Optional<Seat> seat = Optional.ofNullable(locRepository.findByCod(idLoc));
+        if (seat.isEmpty()) {
             throw new IllegalArgumentException("Locul selectat este indisponibil!");
         }
 
-        if (!loc.get().getSalaId().equals(sala.get().getId())) {
-            throw new IllegalArgumentException("Sala si locul nu corespund!");
+        if (!seat.get().getSalaId().equals(room.get().getId())) {
+            throw new IllegalArgumentException("Room si locul nu corespund!");
         }
 
-        List<Rezervare> rezervariExistente = rezervareRepository.findByIdLocAndStare(Long.valueOf(loc.get().getId()),
-                Rezervare.Stare.APROBATA);
-        for (Rezervare rezervare : rezervariExistente) {
-            if (oraInceput.isBefore(rezervare.getOraSfarsit()) && oraSfarsit.isAfter(rezervare.getOraInceput())) {
-                throw new IllegalArgumentException("Loc rezervat in acest interval orar!");
+        List<Reservation> rezervariExistente = reservationRepository.findByIdLocAndStare(
+                Long.valueOf(seat.get().getId()),
+                Reservation.Stare.APROBATA);
+        for (Reservation reservation : rezervariExistente) {
+            if (oraInceput.isBefore(reservation.getOraSfarsit()) && oraSfarsit.isAfter(reservation.getOraInceput())) {
+                throw new IllegalArgumentException("Seat rezervat in acest interval orar!");
             }
         }
 
-        Rezervare rezervare;
-        if (tipRezervare == Rezervare.TipRezervare.UNICA) {
-            rezervare = new Rezervare(
+        Reservation reservation;
+        if (tipRezervare == Reservation.TipRezervare.UNICA) {
+            reservation = new Reservation(
                     null,
                     Long.valueOf(idUtilizator),
-                    Long.valueOf(sala.get().getId()),
-                    Long.valueOf(loc.get().getId()),
+                    Long.valueOf(room.get().getId()),
+                    Long.valueOf(seat.get().getId()),
                     oraInceput,
                     oraSfarsit,
-                    Rezervare.Stare.IN_ASTEPTARE,
+                    Reservation.Stare.IN_ASTEPTARE,
                     LocalDateTime.now(),
                     tipRezervare);
-            rezervareRepository.save(rezervare);
+            reservationRepository.save(reservation);
         } else {
             String idSerie = UUID.randomUUID().toString();
-            List<Rezervare> rezervariRecurente = new ArrayList<>();
+            List<Reservation> rezervariRecurente = new ArrayList<>();
             LocalDate ziCurenta = oraInceput.toLocalDate();
 
             while (ziCurenta.isBefore(dataSfarsitRecurenta) || ziCurenta.isEqual(dataSfarsitRecurenta)) {
@@ -80,83 +81,84 @@ public class RezervareService {
                     LocalDateTime inceputZi = ziCurenta.atTime(oraInceput.toLocalTime());
                     LocalDateTime sfarsitZi = ziCurenta.atTime(oraSfarsit.toLocalTime());
 
-                    Rezervare rezervareZi = new Rezervare(
+                    Reservation rezervareZi = new Reservation(
                             idSerie,
                             Long.valueOf(idUtilizator),
-                            Long.valueOf(sala.get().getId()),
-                            Long.valueOf(loc.get().getId()),
+                            Long.valueOf(room.get().getId()),
+                            Long.valueOf(seat.get().getId()),
                             inceputZi,
                             sfarsitZi,
-                            Rezervare.Stare.IN_ASTEPTARE,
+                            Reservation.Stare.IN_ASTEPTARE,
                             LocalDateTime.now(),
                             tipRezervare);
                     rezervariRecurente.add(rezervareZi);
                 }
                 ziCurenta = ziCurenta.plusDays(1);
             }
-            rezervareRepository.saveAll(rezervariRecurente);
+            reservationRepository.saveAll(rezervariRecurente);
         }
     }
 
     public void stergereRezervare(String id) {
-        Rezervare rezervare = rezervareRepository.findById(Long.valueOf(id))
-                .orElseThrow(() -> new IllegalArgumentException("Rezervare invalida!"));
-        rezervareRepository.delete(rezervare);
+        Reservation reservation = reservationRepository.findById(Long.valueOf(id))
+                .orElseThrow(() -> new IllegalArgumentException("Reservation invalida!"));
+        reservationRepository.delete(reservation);
     }
 
-    public Rezervare modificareRezervare(String id, String idUtilizator, String codSala, String idLoc,
-            LocalDateTime oraInceput, LocalDateTime oraSfarsit, Rezervare.TipRezervare tipRezervare) {
+    public Reservation modificareRezervare(String id, String idUtilizator, String codSala, String idLoc,
+            LocalDateTime oraInceput, LocalDateTime oraSfarsit, Reservation.TipRezervare tipRezervare) {
 
-        Optional<Sala> sala = Optional.ofNullable(salaRepository.findByCod(codSala));
-        if (sala.isEmpty()) {
-            throw new IllegalArgumentException("Sala este goala!");
+        Optional<Room> room = Optional.ofNullable(roomRepository.findByCod(codSala));
+        if (room.isEmpty()) {
+            throw new IllegalArgumentException("Room este goala!");
         }
 
-        Optional<Loc> loc = locRepository.findById(idLoc);
-        if (loc.isEmpty()) {
+        Optional<Seat> seat = locRepository.findById(idLoc);
+        if (seat.isEmpty()) {
             throw new IllegalArgumentException("Locul este indisponibil!");
         }
 
-        if (!loc.get().getSalaId().equals(sala.get().getId())) {
+        if (!seat.get().getSalaId().equals(room.get().getId())) {
             throw new IllegalArgumentException("Salile nu corespund!");
         }
 
-        List<Rezervare> rezervariExistente = rezervareRepository.findByIdLocAndStare(Long.valueOf(loc.get().getId()),
-                Rezervare.Stare.APROBATA);
-        for (Rezervare rezervare : rezervariExistente) {
-            if (rezervare.getId().equals(id))
+        List<Reservation> rezervariExistente = reservationRepository.findByIdLocAndStare(
+                Long.valueOf(seat.get().getId()),
+                Reservation.Stare.APROBATA);
+        for (Reservation reservation : rezervariExistente) {
+            if (reservation.getId().equals(id))
                 continue;
-            if (oraInceput.isBefore(rezervare.getOraSfarsit()) && oraSfarsit.isAfter(rezervare.getOraInceput())) {
-                throw new IllegalArgumentException("Loc rezervat in acest interval orar!");
+            if (oraInceput.isBefore(reservation.getOraSfarsit()) && oraSfarsit.isAfter(reservation.getOraInceput())) {
+                throw new IllegalArgumentException("Seat rezervat in acest interval orar!");
             }
         }
 
-        Rezervare rezervare = rezervareRepository.findById(Long.valueOf(id))
-                .orElseThrow(() -> new IllegalArgumentException("Rezervare invalida!"));
+        Reservation reservation = reservationRepository.findById(Long.valueOf(id))
+                .orElseThrow(() -> new IllegalArgumentException("Reservation invalida!"));
 
-        rezervare.setIdUtilizator(Long.valueOf(idUtilizator));
-        rezervare.setIdSala(Long.valueOf(sala.get().getId()));
-        rezervare.setIdLoc(Long.valueOf(loc.get().getId()));
-        rezervare.setOraInceput(oraInceput);
-        rezervare.setOraSfarsit(oraSfarsit);
-        rezervare.setTipRezervare(tipRezervare);
+        reservation.setIdUtilizator(Long.valueOf(idUtilizator));
+        reservation.setIdSala(Long.valueOf(room.get().getId()));
+        reservation.setIdLoc(Long.valueOf(seat.get().getId()));
+        reservation.setOraInceput(oraInceput);
+        reservation.setOraSfarsit(oraSfarsit);
+        reservation.setTipRezervare(tipRezervare);
 
-        return rezervareRepository.save(rezervare);
+        return reservationRepository.save(reservation);
     }
 
-    public List<Rezervare> istoricRezervari(String idUtilizator) {
-        return rezervareRepository.findByIdUtilizator(Long.valueOf(idUtilizator));
+    public List<Reservation> istoricRezervari(String idUtilizator) {
+        return reservationRepository.findByIdUtilizator(Long.valueOf(idUtilizator));
     }
 
-    public List<Rezervare> rezervariInAsteptare() {
-        return rezervareRepository.findByStare(Rezervare.Stare.IN_ASTEPTARE);
+    public List<Reservation> rezervariInAsteptare() {
+        return reservationRepository.findByStare(Reservation.Stare.IN_ASTEPTARE);
     }
 
     public List<String> locuriOcupate(String idSala, LocalDateTime oraInceput, LocalDateTime oraSfarsit) {
-        List<Rezervare> rezervari = rezervareRepository.findByIdSalaAndStare(Long.valueOf(idSala),
-                Rezervare.Stare.APROBATA);
+        List<Reservation> rezervari = reservationRepository.findByIdSalaAndStare(Long.valueOf(idSala),
+                Reservation.Stare.APROBATA);
         List<String> locuriOcupate = new ArrayList<>();
-        for (Rezervare r : rezervari) {
+        for (Reservation r : rezervari) {
             if (oraInceput.isBefore(r.getOraSfarsit()) && oraSfarsit.isAfter(r.getOraInceput())) {
                 locuriOcupate.add(String.valueOf(r.getIdLoc()));
             }
