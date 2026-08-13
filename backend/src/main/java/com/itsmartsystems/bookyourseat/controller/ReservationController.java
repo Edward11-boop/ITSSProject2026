@@ -1,5 +1,6 @@
 package com.itsmartsystems.bookyourseat.controller;
 
+import com.itsmartsystems.bookyourseat.Role;
 import com.itsmartsystems.bookyourseat.dto.ReservationRequest;
 import com.itsmartsystems.bookyourseat.model.PostgresUser;
 import com.itsmartsystems.bookyourseat.model.Reservation;
@@ -38,8 +39,8 @@ public class ReservationController {
     }
 
     private void verify(PostgresUser user) {
-        String role = user.getRole();
-        if (!("PM".equals(role) || "CEO".equals(role) || "MANAGER".equals(role))) {
+        Role role = user.getRole();
+        if (!(role == Role.PM || role == Role.CEO || role == Role.MANAGER)) {
             throw new IllegalArgumentException("You do not have permissions!");
         }
     }

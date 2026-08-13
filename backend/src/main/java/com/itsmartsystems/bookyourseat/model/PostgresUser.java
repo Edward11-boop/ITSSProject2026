@@ -1,11 +1,7 @@
 package com.itsmartsystems.bookyourseat.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.itsmartsystems.bookyourseat.Role;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "users")
@@ -20,8 +16,14 @@ public class PostgresUser {
     @Column(name = "department_id")
     private Integer departmentId;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role", nullable = false, length = 50)
+    private Role role;
+
+    @Column(name = "name", nullable = false, length = 150)
     private String name;
-    private String role;
+
+    @Column(name = "email", nullable = false, unique = true)
     private String email;
 
     @Column(name = "phone_number")
@@ -34,7 +36,7 @@ public class PostgresUser {
             String mongoUserId,
             Integer departmentId,
             String name,
-            String role,
+            Role role,
             String email,
             String phoneNumber
     ) {
@@ -78,11 +80,11 @@ public class PostgresUser {
         this.name = name;
     }
 
-    public String getRole() {
+    public Role getRole() {
         return this.role;
     }
 
-    public void setRole(String role) {
+    public void setRole(Role role) {
         this.role = role;
     }
 
