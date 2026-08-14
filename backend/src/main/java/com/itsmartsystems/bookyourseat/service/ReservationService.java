@@ -1,7 +1,7 @@
 package com.itsmartsystems.bookyourseat.service;
 
 
-import com.itsmartsystems.bookyourseat.model.*;
+import com.itsmartsystems.bookyourseat.Status;import com.itsmartsystems.bookyourseat.model.*;
 import com.itsmartsystems.bookyourseat.repository.ReservationRepository;
 import com.itsmartsystems.bookyourseat.repository.RoomRepository;
 import com.itsmartsystems.bookyourseat.repository.SeatRepository;
@@ -44,15 +44,15 @@ public class ReservationService {
         }
 
         List<Reservation> reservations = seatCode == null
-        ? reservationRepository.findByRoom_IdAndStatus(room.get().getId() , "APPROVED")
-        : reservationRepository.findBySeat_IdAndStatus(seatObj.getId() , "APPROVED");
+        ? reservationRepository.findByRoom_IdAndStatus(room.get().getId() , Status.APPROVED)
+        : reservationRepository.findBySeat_IdAndStatus(seatObj.getId() , Status.APPROVED);
 
         for(Reservation r : reservations)
         {
             if(start.isBefore(r.getEndDateTime()) && end.isAfter(r.getStartDateTime())) throw new IllegalArgumentException("This seat is already occupied !");
         }
 
-        Reservation reservation = new Reservation(user, seatObj , room.get() , start , end , "PENDING" , recurrence );
+        Reservation reservation = new Reservation(user, seatObj , room.get() , start , end , Status.PENDING , recurrence );
         return reservationRepository.save(reservation);
     }
     public void deleteReservation(Long id)
@@ -83,8 +83,8 @@ public class ReservationService {
         }
 
         List<Reservation> reservations = seatCode == null
-                ? reservationRepository.findByRoom_IdAndStatus(room.get().getId() , "APPROVED")
-                : reservationRepository.findBySeat_IdAndStatus(seatObj.getId() , "APPROVED");
+                ? reservationRepository.findByRoom_IdAndStatus(room.get().getId() , Status.APPROVED)
+                : reservationRepository.findBySeat_IdAndStatus(seatObj.getId() , Status.APPROVED);
 
         for(Reservation res : reservations)
         {
@@ -98,7 +98,7 @@ public class ReservationService {
         reservationObj.setSeat(seatObj);
         reservationObj.setStartDateTime(start);
         reservationObj.setEndDateTime(end);
-        reservationObj.setStatus("PENDING");
+        reservationObj.setStatus(Status.PENDING);
         reservationObj.setRecurrence(recurrence);
 
         return reservationRepository.save(reservationObj);
@@ -109,10 +109,10 @@ public class ReservationService {
         Optional<Reservation> reservation = reservationRepository.findById(reservationId);
         if(reservation.isEmpty()) throw new IllegalArgumentException("Reservation does not exist !");
 
-        if(!reservation.get().getStatus().equals("PENDING")) throw new IllegalArgumentException("Only pending reservations can be approved!");
+        if(!reservation.get().getStatus().equals(Status.PENDING)) throw new IllegalArgumentException("Only pending reservations can be approved!");
 
         Reservation reservationObj = reservation.get();
-        reservationObj.setStatus("APPROVED");
+        reservationObj.setStatus(Status.APPROVED);
         return reservationRepository.save(reservationObj);
     }
 
@@ -121,10 +121,10 @@ public class ReservationService {
         Optional<Reservation> reservation = reservationRepository.findById(reservationId);
         if(reservation.isEmpty()) throw new IllegalArgumentException("Reservation does not exist !");
 
-        if(!reservation.get().getStatus().equals("PENDING")) throw new IllegalArgumentException("Only pending reservations can be rejected!");
+        if(!reservation.get().getStatus().equals(Status.PENDING)) throw new IllegalArgumentException("Only pending reservations can be rejected!");
 
         Reservation reservationObj = reservation.get();
-        reservationObj.setStatus("REJECTED");
+        reservationObj.setStatus(Status.REJECTED);
         return reservationRepository.save(reservationObj);
     }
 
@@ -136,19 +136,19 @@ public class ReservationService {
 
     public List<Reservation> approvedReservations()
     {
-        List<Reservation> reservations = reservationRepository.findByStatus("APPROVED");
+        List<Reservation> reservations = reservationRepository.findByStatus(Status.APPROVED);
         return reservations;
     }
 
     public List<Reservation> pendingReservations()
     {
-        List<Reservation> reservations = reservationRepository.findByStatus("PENDING");
+        List<Reservation> reservations = reservationRepository.findByStatus(Status.PENDING);
         return reservations;
     }
 
     public List<Reservation> rejectedReservations()
     {
-        List<Reservation> reservations = reservationRepository.findByStatus("REJECTED");
+        List<Reservation> reservations = reservationRepository.findByStatus(Status.REJECTED);
         return reservations;
     }
 }

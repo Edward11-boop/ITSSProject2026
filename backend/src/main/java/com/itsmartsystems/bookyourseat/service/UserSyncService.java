@@ -1,5 +1,6 @@
 package com.itsmartsystems.bookyourseat.service;
 
+import com.itsmartsystems.bookyourseat.Role;
 import com.itsmartsystems.bookyourseat.model.PostgresUser;
 import com.itsmartsystems.bookyourseat.model.User;
 import com.itsmartsystems.bookyourseat.repository.PostgresUserRepository;
@@ -14,12 +15,14 @@ public class UserSyncService {
     }
 
     public PostgresUser syncUser(User mongoUser) {
-        PostgresUser postgresUser = postgresUserRepository.findByMongoUserId(mongoUser.getId()).orElseGet(PostgresUser::new);
+        PostgresUser postgresUser = postgresUserRepository.findByMongoUserId(mongoUser.getId())
+                .orElseGet(PostgresUser::new);
 
         postgresUser.setMongoUserId(mongoUser.getId());
         postgresUser.setName(mongoUser.getName());
         postgresUser.setEmail(mongoUser.getEmail());
-        postgresUser.setRole(mongoUser.getRole().name());
+
+        postgresUser.setRole(Role.valueOf(mongoUser.getRole().name()));
 
         return postgresUserRepository.save(postgresUser);
     }

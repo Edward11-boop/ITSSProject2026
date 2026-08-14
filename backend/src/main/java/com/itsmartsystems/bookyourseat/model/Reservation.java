@@ -1,6 +1,6 @@
 package com.itsmartsystems.bookyourseat.model;
 
-import jakarta.persistence.*;
+import com.itsmartsystems.bookyourseat.Status;import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
@@ -29,8 +29,9 @@ public class Reservation {
     @Column(name = "end_date_time", nullable = false)
     private LocalDateTime endDateTime;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, length = 100)
-    private String status;
+    private Status status;
 
     @Column(name = "recurrence", nullable = false)
     private Integer recurrence;
@@ -38,7 +39,7 @@ public class Reservation {
     public Reservation() {}
 
     public Reservation(PostgresUser user, Seat seat, Room room, LocalDateTime startDateTime,
-                       LocalDateTime endDateTime, String status, Integer recurrence) {
+                       LocalDateTime endDateTime, Status status, Integer recurrence) {
         this.user = user;
         this.seat = seat;
         this.room = room;
@@ -59,8 +60,8 @@ public class Reservation {
     public void setStartDateTime(LocalDateTime startDateTime) { this.startDateTime = startDateTime; }
     public LocalDateTime getEndDateTime() { return endDateTime; }
     public void setEndDateTime(LocalDateTime endDateTime) { this.endDateTime = endDateTime; }
-    public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
+    public Status getStatus() { return status; }
+    public void setStatus(Status status) { this.status = status; }
     public Integer getRecurrence() { return recurrence; }
     public void setRecurrence(Integer recurrence) { this.recurrence = recurrence; }
 }

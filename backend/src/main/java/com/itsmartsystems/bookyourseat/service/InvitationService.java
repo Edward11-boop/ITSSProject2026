@@ -1,5 +1,6 @@
 package com.itsmartsystems.bookyourseat.service;
 
+import com.itsmartsystems.bookyourseat.Status;
 import com.itsmartsystems.bookyourseat.dto.InvitationRequest;
 import com.itsmartsystems.bookyourseat.model.Invitation;
 import com.itsmartsystems.bookyourseat.model.PostgresUser;
@@ -24,8 +25,8 @@ public class InvitationService {
         private final ReservationRepository reservationRepository;
 
         public InvitationService(InvitationRepository invitationRepository,
-                        PostgresUserRepository postgresUserRepository, SeatRepository seatRepository,
-                        ReservationRepository reservationRepository) {
+                        PostgresUserRepository postgresUserRepository,
+                        SeatRepository seatRepository, ReservationRepository reservationRepository) {
                 this.invitationRepository = invitationRepository;
                 this.postgresUserRepository = postgresUserRepository;
                 this.seatRepository = seatRepository;
@@ -48,14 +49,14 @@ public class InvitationService {
                 invitation.setSeatId(seat);
                 invitation.setStartDateTime(cerere.getStartDateTime());
                 invitation.setEndDateTime(cerere.getEndDateTime());
-                invitation.setStatus("PENDING");
+                invitation.setStatus(Status.PENDING);
                 invitation.setCreatedAt(LocalDateTime.now());
 
                 return invitationRepository.save(invitation);
         }
 
         public List<Invitation> getPendingInvitationsForUser(Long userId) {
-                return invitationRepository.findByReceiverId_IdAndStatus(userId, "PENDING");
+                return invitationRepository.findByReceiverId_IdAndStatus(userId, Status.PENDING);
         }
 
         @Transactional
@@ -63,7 +64,7 @@ public class InvitationService {
                 Invitation invitation = invitationRepository.findById(invitationId)
                                 .orElseThrow(() -> new RuntimeException("Invitation not found!"));
 
-                if (!invitation.getStatus().equals("PENDING")) {
+                if (invitation.getStatus() != Status.PENDING) {
                         throw new RuntimeException("Invitation has already been processed!");
                 }
 
@@ -77,12 +78,12 @@ public class InvitationService {
                 reservation.setRoom(invitation.getSeatId().getRoom());
                 reservation.setStartDateTime(invitation.getStartDateTime());
                 reservation.setEndDateTime(invitation.getEndDateTime());
-                reservation.setStatus("CONFIRMED");
+                reservation.setStatus(Status.APPROVED);
                 reservation.setRecurrence(0);
 
                 Reservation savedReservation = reservationRepository.save(reservation);
 
-                invitation.setStatus("ACCEPTED");
+                invitation.setStatus(Status.ACCEPTED);
                 invitation.setRespondedAt(LocalDateTime.now());
                 invitation.setCreatedReservationId(savedReservation);
 
@@ -93,7 +94,7 @@ public class InvitationService {
                 Invitation invitation = invitationRepository.findById(invitationId)
                                 .orElseThrow(() -> new RuntimeException("Invitation not found!"));
 
-                invitation.setStatus("DECLINED");
+                invitation.setStatus(Status.DECLINED);
                 invitation.setRespondedAt(LocalDateTime.now());
 
                 invitationRepository.save(invitation);

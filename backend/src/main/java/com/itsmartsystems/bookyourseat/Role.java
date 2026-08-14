@@ -1,8 +1,13 @@
 package com.itsmartsystems.bookyourseat;
 
 public enum Role {
-    DEV ,
+    CEO,
+    MANAGER,
     PM,
-    MANAGER ,
-    CEO ,
+    HR,
+    DEV,
+    QA,
+    DESIGNER,
+    DEVOPS,
+    INTERN
 }

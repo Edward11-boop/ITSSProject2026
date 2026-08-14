@@ -1,5 +1,6 @@
 package com.itsmartsystems.bookyourseat.repository;
 
+import com.itsmartsystems.bookyourseat.Status;
 import com.itsmartsystems.bookyourseat.model.Invitation;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -15,9 +16,9 @@ public interface InvitationRepository extends JpaRepository<Invitation, Long> {
 
     List<Invitation> findBySeatId_Id(Long seatId);
 
-    List<Invitation> findByStatus(String status);
+    List<Invitation> findByStatus(Status status);
 
-    List<Invitation> findByReceiverId_IdAndStatus(Long receiverId, String status);
+    List<Invitation> findByReceiverId_IdAndStatus(Long receiverId, Status status);
 
     boolean existsByCreatedReservationId_Id(Long reservationId);
 }

@@ -23,7 +23,7 @@ public class LocController {
     }
 
     @GetMapping("/locuri/room/{salaId}")
-    public List<Seat> getLocuriDinSala(@PathVariable String salaId) {
-        return locRepository.findBySalaId(salaId);
+    public List<Seat> getLocuriBySala(@PathVariable String salaId) {
+        return locRepository.findByRoomId(Long.valueOf(salaId));
     }
 }

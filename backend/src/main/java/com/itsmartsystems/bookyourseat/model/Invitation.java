@@ -1,9 +1,8 @@
 package com.itsmartsystems.bookyourseat.model;
 
 
-import jakarta.persistence.*;
+import com.itsmartsystems.bookyourseat.Status;import jakarta.persistence.*;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -32,8 +31,9 @@ public class Invitation {
     @Column(name = "end_date_time", nullable = false)
     private LocalDateTime endDateTime;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status" , nullable = false , length = 50 , columnDefinition = "VARCHAR(50) DEFAULT 'PENDING'")
-    private String status;
+    private Status status;
 
     @ManyToOne
     @JoinColumn(name = "created_reservation_id" , unique = true )
@@ -47,7 +47,7 @@ public class Invitation {
 
     public Invitation() {}
 
-    public Invitation(Long id, PostgresUser senderId, PostgresUser receiverId, Seat seatId, LocalDateTime startDateTime, LocalDateTime endDateTime, String status, Reservation createdReservationId, LocalDateTime createdAt, LocalDateTime respondedAt) {
+    public Invitation(Long id, PostgresUser senderId, PostgresUser receiverId, Seat seatId, LocalDateTime startDateTime, LocalDateTime endDateTime, Status status, Reservation createdReservationId, LocalDateTime createdAt, LocalDateTime respondedAt) {
         this.id = id;
         this.senderId = senderId;
         this.receiverId = receiverId;
@@ -108,11 +108,11 @@ public class Invitation {
         this.endDateTime = endDateTime;
     }
 
-    public String getStatus() {
+    public Status getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(Status status) {
         this.status = status;
     }
 

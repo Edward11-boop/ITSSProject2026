@@ -3,19 +3,14 @@ package com.itsmartsystems.bookyourseat.service;
 import com.itsmartsystems.bookyourseat.dto.RoutesOption;
 import com.itsmartsystems.bookyourseat.dto.WeatherInfo;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.http.MediaType;import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClient;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.springframework.web.util.UriComponentsBuilder;
 @Service
 public class AiAssistantService {
 
@@ -28,12 +23,12 @@ public class AiAssistantService {
     @Value("${office.longitude}")
     private double longDest;
 
-    private final RestTemplate restTemplate;
+    private final RestClient restClient;
     private final TrafficService trafficService;
     private final WeatherService weatherService;
 
-    public AiAssistantService(RestTemplate restTemplate, TrafficService trafficService, WeatherService weatherService) {
-        this.restTemplate = restTemplate;
+    public AiAssistantService(RestClient restClient, TrafficService trafficService, WeatherService weatherService) {
+        this.restClient = restClient;
         this.trafficService = trafficService;
         this.weatherService = weatherService;
     }
@@ -71,18 +66,14 @@ public class AiAssistantService {
         request.put("model", "gpt-4o-mini");
         request.put("messages", List.of(message));
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "Bearer " + apiKey);
-        headers.setContentType(MediaType.APPLICATION_JSON);
+        Map body = restClient.post()
+                .uri("https://api.openai.com/v1/chat/completions")
+                .header("Authorization", "Bearer " + apiKey)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(request)
+                .retrieve()
+                .body(Map.class);
 
-        HttpEntity<HashMap<String, Object>> entity = new HttpEntity<>(request, headers);
-        ResponseEntity<Map> requestAi = restTemplate.postForEntity(
-                "https://api.openai.com/v1/chat/completions",
-                entity,
-                Map.class
-        );
-
-        Map<String, Object> body = requestAi.getBody();
         if (body == null || body.get("choices") == null) {
             return "Nu am putut genera o recomandare momentan.";
         }

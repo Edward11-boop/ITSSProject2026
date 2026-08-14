@@ -2,13 +2,8 @@ package com.itsmartsystems.bookyourseat.service;
 
 import com.itsmartsystems.bookyourseat.dto.RoutesOption;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
-
-import org.springframework.http.HttpHeaders;
+import org.springframework.web.client.RestClient;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,12 +24,12 @@ public class TrafficService {
     @Value("${google.maps.routes.url}")
     private String mapsURL;
 
-    private final RestTemplate restTemplate ;
+    private final RestClient restClient ;
 
 
-    public TrafficService(RestTemplate restTemplate)
+    public TrafficService(RestClient restClient)
     {
-        this.restTemplate = restTemplate;
+        this.restClient = restClient;
     }
 
     public List<RoutesOption> getTrafficRoutes(double latOrigin, double longOrigin , String metodaDeplasare) {
@@ -85,20 +80,17 @@ public class TrafficService {
         requestBody.put("routingPreference", "TRAFFIC_AWARE");
         requestBody.put("computeAlternativeRoutes", true );
 
-        // HEADERS
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("X-Goog-Api-Key" , apiKey);
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.set("X-Goog-FieldMask", "routes.duration,routes.distanceMeters");
-
-        // combinam REQUEST + HEADERS intr un ENTITY
-        HttpEntity< Map<String, Object>> entity = new HttpEntity<>(requestBody , headers);
-
-        // Trimitem cererea
-        ResponseEntity<Map> cerere = restTemplate.postForEntity(mapsURL, entity , Map.class);
+        // Trimitem cererea (HEADERS + BODY, direct in lant, cu RestClient)
+        Map<String, Object> response = restClient.post()
+                .uri(mapsURL)
+                .header("X-Goog-Api-Key", apiKey)
+                .header("X-Goog-FieldMask", "routes.duration,routes.distanceMeters")
+                .contentType(org.springframework.http.MediaType.APPLICATION_JSON)
+                .body(requestBody)
+                .retrieve()
+                .body(Map.class);
 
         // Primim raspunsul
-        Map<String , Object> response = cerere.getBody();
         List<Map<String, Object>> routes = (List<Map<String, Object>>) response.get("routes");
 
 
@@ -115,15 +107,4 @@ public class TrafficService {
         }
         return result ;
     }
-
-
-
-
-
-
-
-
-
-
-
 }

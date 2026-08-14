@@ -30,8 +30,5 @@ public class CustomUserDetailsService implements UserDetailsService{
                             .authorities(user.get().getRole().name())
                             .build();
                 }
-
-
-
             }
 }
