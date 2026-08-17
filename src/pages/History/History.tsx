@@ -8,11 +8,11 @@ import type { Booking, BookingTab } from "./types";
 import { getBookingStatusClassName } from "@/lib/bookingStatus";
 
 const initialBookings: Booking[] = [
-  { id: 1, title: "Reservation 1", date: "28 Iulie 2026", seat: "Rand 3, C7", room: "Room A", time: "09:00 - 17:00", status: "In asteptare", tab: "Viitoare" },
-  { id: 2, title: "Reservation 2", date: "30 Iulie 2026", seat: "Rand 1, C2", room: "Room B", time: "10:00 - 18:00", status: "Confirmat", tab: "Viitoare" },
-  { id: 3, title: "Reservation 3", date: "02 August 2026", seat: "Rand 2, C5", room: "Room A", time: "09:00 - 17:00", status: "In asteptare", tab: "Viitoare" },
-  { id: 4, title: "Reservation 4 (Finalizata)", date: "15 Iulie 2026", seat: "Rand 2, C1", room: "Room B", time: "09:00 - 17:00", status: "Finalizat", tab: "Trecute" },
-  { id: 5, title: "Reservation 5 (Anulata)", date: "20 Iulie 2026", seat: "Rand 4, C12", room: "Room C", time: "10:00 - 14:00", status: "Anulat", tab: "Anulate" },
+  { id: 1, title: "Rezervare 1", date: "28 Iulie 2026", seat: "Rand 3, C7", room: "Sala A", time: "09:00 - 17:00", status: "In asteptare", tab: "Viitoare" },
+  { id: 2, title: "Rezervare 2", date: "30 Iulie 2026", seat: "Rand 1, C2", room: "Sala B", time: "10:00 - 18:00", status: "Confirmat", tab: "Viitoare" },
+  { id: 3, title: "Rezervare 3", date: "02 August 2026", seat: "Rand 2, C5", room: "Sala A", time: "09:00 - 17:00", status: "In asteptare", tab: "Viitoare" },
+  { id: 4, title: "Rezervare 4 (Finalizata)", date: "15 Iulie 2026", seat: "Rand 2, C1", room: "Sala B", time: "09:00 - 17:00", status: "Finalizat", tab: "Trecute" },
+  { id: 5, title: "Rezervare 5 (Anulata)", date: "20 Iulie 2026", seat: "Rand 4, C12", room: "Sala C", time: "10:00 - 14:00", status: "Anulat", tab: "Anulate" },
 ];
 
 const History = () => {
@@ -71,7 +71,7 @@ const History = () => {
                           <span className="text-xl">S</span>
                         </div>
                         <div className="min-w-0">
-                          <p className="text-xs text-gray-500">Data - Scaun - Room</p>
+                          <p className="text-xs text-gray-500">Data - Scaun - Sala</p>
                           <p className="font-bold text-[#29255E]">
                             {booking.date} - {booking.seat} - {booking.room}
                           </p>
@@ -127,7 +127,7 @@ const History = () => {
 
       {popupState === 'success' && (
         <SuccessPopUp
-          title="Reservation stearsa"
+          title="Rezervare stearsa"
           sideMessage="Rezervarea ta a fost stearsa"
           highlightedText="CU SUCCES"
           onClose={() => setPopupState('none')} // La OK, închidem tot

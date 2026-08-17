@@ -1,7 +1,7 @@
 interface SingleSeatProps {
     id: string;
     number: string | number;
-    status: 'available' | 'occupied' | 'unavailable';
+    status: 'available' | 'occupied' | 'unavailable' | 'pending';
     type?: 'individual' | 'room';
     selectedSeat: string | null;
     onSelect: (id: string, type?: 'individual' | 'room') => void; 
@@ -23,6 +23,8 @@ const getSeatColor = (
             return 'bg-[#FECACA] text-[#1E1B4B] border border-[#F5A1A1]';
         case 'unavailable':
             return 'bg-[#C1BDD2] border border-[#7C7777] text-gray-500 cursor-not-allowed';
+        case 'pending':
+            return 'bg-[#FDE68A] text-[#78350F] border border-[#F59E0B]';
         default:
             return 'bg-[#C1BDD2]';
     }
@@ -43,7 +45,11 @@ const SingleSeat = ({
         <div className={`absolute group ${className}`}>
             <button
                 type="button"
-                onClick={() => onSelect(id, type)} // Aici trimitem si tipul in sus la harta
+                disabled={!isClickable}
+                onClick={() => {
+                    if (!isClickable) return;
+                    onSelect(id, type)
+                }} // Aici trimitem si tipul in sus la harta
                 className={`flex h-[30px] w-[30px] items-center justify-center rounded text-xs font-bold transition-all ${getSeatColor(id, status, type, selectedSeat)} ${isClickable ? 'hover:scale-110 hover:shadow-md z-20' : ''}`}
             >
                 {number}
@@ -57,3 +63,6 @@ const SingleSeat = ({
 };
 
 export default SingleSeat;
+
+
+

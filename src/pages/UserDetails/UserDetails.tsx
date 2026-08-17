@@ -1,4 +1,4 @@
-﻿import AIAssistant from "@/pages/AIAssistant";
+import AIAssistant from "@/pages/AIAssistant";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { useState } from 'react';
 import { getBookingStatusClassName } from '@/lib/bookingStatus';
@@ -14,9 +14,9 @@ const UserDetails = () => {
     name: currentUser.name,
     role: currentUser.role,
     email: isLoading ? "Se incarca..." : currentUser.email || "Email indisponibil",
-    phone: "+40 721 234 567",
-    department: "Inginerie Software - Etaj 3",
-    preferredSeat: "Rand 3, Mijloc - Room A",
+    phone: isLoading ? "Se incarca..." : currentUser.phoneNumber || "Telefon indisponibil",
+    department: isLoading ? "Se incarca..." : currentUser.departmentId ? `Departament #${currentUser.departmentId}` : "Departament indisponibil",
+    preferredSeat: "Rand 3, Mijloc - Sala A",
     preferredTime: "09:00 - 17:00"
   };
 
@@ -27,12 +27,12 @@ const UserDetails = () => {
   });
 
   const [bookingHistory] = useState([
-    { id: 1, date: '24 Jul 2026', seat: 'R3 - C7', room: 'Room A', status: 'Confirmat' },
-    { id: 2, date: '22 Jul 2026', seat: 'R1 - C2', room: 'Room B', status: 'Confirmat' },
-    { id: 3, date: '18 Jul 2026', seat: 'R2 - C5', room: 'Room A', status: 'In asteptare' },
-    { id: 4, date: '10 Jul 2026', seat: 'R4 - C1', room: 'Room C', status: 'Anulat' },
-    { id: 5, date: '05 Jul 2026', seat: 'R3 - C9', room: 'Room A', status: 'Confirmat' },
-    { id: 6, date: '28 Jun 2026', seat: 'R2 - C3', room: 'Room B', status: 'Confirmat' },
+    { id: 1, date: '24 Jul 2026', seat: 'R3 - C7', room: 'Sala A', status: 'Confirmat' },
+    { id: 2, date: '22 Jul 2026', seat: 'R1 - C2', room: 'Sala B', status: 'Confirmat' },
+    { id: 3, date: '18 Jul 2026', seat: 'R2 - C5', room: 'Sala A', status: 'In asteptare' },
+    { id: 4, date: '10 Jul 2026', seat: 'R4 - C1', room: 'Sala C', status: 'Anulat' },
+    { id: 5, date: '05 Jul 2026', seat: 'R3 - C9', room: 'Sala A', status: 'Confirmat' },
+    { id: 6, date: '28 Jun 2026', seat: 'R2 - C3', room: 'Sala B', status: 'Confirmat' },
   ]);
 
 
@@ -92,7 +92,7 @@ const UserDetails = () => {
             </div>
 
             <div className="rounded-3xl bg-[#F4F3FF] p-6 shadow-sm">
-              <h3 className="mb-4 font-bold text-[#29255E]">Preferinte reservation</h3>
+              <h3 className="mb-4 font-bold text-[#29255E]">Preferinte rezervare</h3>
               <div className="flex flex-col gap-3">
                 <div className="flex items-center gap-4 rounded-xl bg-white p-3">
                   <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#F4F3FF] text-[#8B5CF6]">??</span>

@@ -39,9 +39,11 @@ public class Notification {
     @Column(name = "created_at", nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime createdAt;
 
-    public Notification() {}
+    public Notification() {
+    }
 
-    public Notification(Long id, PostgresUser user, Reservation reservation, Invitation invitation, String title, String message, String type, boolean isRead, LocalDateTime createdAt) {
+    public Notification(Long id, PostgresUser user, Reservation reservation, Invitation invitation, String title,
+            String message, String type, boolean isRead, LocalDateTime createdAt) {
         this.id = id;
         this.user = user;
         this.reservation = reservation;
@@ -53,23 +55,75 @@ public class Notification {
         this.createdAt = createdAt;
     }
 
-    public Long getId() { return id; }
-    public PostgresUser getUser() { return user; }
-    public Reservation getReservation() { return reservation; }
-    public Invitation getInvitation() { return invitation; }
-    public String getTitle() { return title; }
-    public String getMessage() { return message; }
-    public String getType() { return type; }
-    public boolean isRead() { return isRead; }
-    public LocalDateTime getCreatedAt() { return createdAt; }
+    public Long getId() {
+        return id;
+    }
 
-    public void setId(Long id) { this.id = id; }
-    public void setUser(PostgresUser user) { this.user = user; }
-    public void setReservation(Reservation reservation) { this.reservation = reservation; }
-    public void setInvitation(Invitation invitation) { this.invitation = invitation; }
-    public void setTitle(String title) { this.title = title; }
-    public void setMessage(String message) { this.message = message; }
-    public void setType(String type) { this.type = type; }
-    public void setRead(boolean read) { isRead = read; }
-    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+    public PostgresUser getUser() {
+        return user;
+    }
+
+    public Reservation getReservation() {
+        return reservation;
+    }
+
+    public Invitation getInvitation() {
+        return invitation;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public boolean isRead() {
+        return isRead;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setUser(PostgresUser user) {
+        this.user = user;
+    }
+
+    public void setReservation(Reservation reservation) {
+        this.reservation = reservation;
+    }
+
+    public void setInvitation(Invitation invitation) {
+        this.invitation = invitation;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public void setRead(boolean read) {
+        isRead = read;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
 }

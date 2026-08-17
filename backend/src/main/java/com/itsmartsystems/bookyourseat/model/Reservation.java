@@ -1,6 +1,7 @@
 package com.itsmartsystems.bookyourseat.model;
 
-import com.itsmartsystems.bookyourseat.Status;import jakarta.persistence.*;
+import com.itsmartsystems.bookyourseat.Status;
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
@@ -36,10 +37,14 @@ public class Reservation {
     @Column(name = "recurrence", nullable = false)
     private Integer recurrence;
 
-    public Reservation() {}
+    @Column(name = "reminder_sent")
+    private boolean reminderSent = false;
+
+    public Reservation() {
+    }
 
     public Reservation(PostgresUser user, Seat seat, Room room, LocalDateTime startDateTime,
-                       LocalDateTime endDateTime, Status status, Integer recurrence) {
+            LocalDateTime endDateTime, Status status, Integer recurrence) {
         this.user = user;
         this.seat = seat;
         this.room = room;
@@ -49,19 +54,71 @@ public class Reservation {
         this.recurrence = recurrence;
     }
 
-    public Long getId() { return id; }
-    public PostgresUser getUser() { return user; }
-    public void setUser(PostgresUser user) { this.user = user; }
-    public Seat getSeat() { return seat; }
-    public void setSeat(Seat seat) { this.seat = seat; }
-    public Room getRoom() { return room; }
-    public void setRoom(Room room) { this.room = room; }
-    public LocalDateTime getStartDateTime() { return startDateTime; }
-    public void setStartDateTime(LocalDateTime startDateTime) { this.startDateTime = startDateTime; }
-    public LocalDateTime getEndDateTime() { return endDateTime; }
-    public void setEndDateTime(LocalDateTime endDateTime) { this.endDateTime = endDateTime; }
-    public Status getStatus() { return status; }
-    public void setStatus(Status status) { this.status = status; }
-    public Integer getRecurrence() { return recurrence; }
-    public void setRecurrence(Integer recurrence) { this.recurrence = recurrence; }
+    public Long getId() {
+        return id;
+    }
+
+    public PostgresUser getUser() {
+        return user;
+    }
+
+    public void setUser(PostgresUser user) {
+        this.user = user;
+    }
+
+    public Seat getSeat() {
+        return seat;
+    }
+
+    public void setSeat(Seat seat) {
+        this.seat = seat;
+    }
+
+    public Room getRoom() {
+        return room;
+    }
+
+    public void setRoom(Room room) {
+        this.room = room;
+    }
+
+    public LocalDateTime getStartDateTime() {
+        return startDateTime;
+    }
+
+    public void setStartDateTime(LocalDateTime startDateTime) {
+        this.startDateTime = startDateTime;
+    }
+
+    public LocalDateTime getEndDateTime() {
+        return endDateTime;
+    }
+
+    public void setEndDateTime(LocalDateTime endDateTime) {
+        this.endDateTime = endDateTime;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
+    public Integer getRecurrence() {
+        return recurrence;
+    }
+
+    public void setRecurrence(Integer recurrence) {
+        this.recurrence = recurrence;
+    }
+
+    public boolean isReminderSent() {
+        return reminderSent;
+    }
+
+    public void setReminderSent(boolean reminderSent) {
+        this.reminderSent = reminderSent;
+    }
 }

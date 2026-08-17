@@ -1,0 +1,8 @@
+package com.itsmartsystems.bookyourseat.repository;
+
+import com.itsmartsystems.bookyourseat.model.Sala;
+import org.springframework.data.mongodb.repository.MongoRepository;
+
+public interface SalaRepository extends MongoRepository<Sala, String> {
+    Sala findByCod(String cod);
+}

@@ -14,21 +14,21 @@ const HRReports = () => {
 
     const [zonePopularity] = useState([
         { zone: 'Parter (SD0, S0, B0)', occupancyRate: '85%', level: 'Ridicat' },
-        { zone: 'T1 Etaj 1 (Room Evenimente & S1)', occupancyRate: '92%', level: 'Foarte Ridicat' },
-        { zone: 'T1 Etaj 2 (Room Gaming G2)', occupancyRate: '45%', level: 'Moderat' },
-        { zone: 'T2 Etaj 1 (Room 404 & B1)', occupancyRate: '78%', level: 'Ridicat' },
+        { zone: 'T1 Etaj 1 (Sala Evenimente & S1)', occupancyRate: '92%', level: 'Foarte Ridicat' },
+        { zone: 'T1 Etaj 2 (Sala Gaming G2)', occupancyRate: '45%', level: 'Moderat' },
+        { zone: 'T2 Etaj 1 (Sala 404 & B1)', occupancyRate: '78%', level: 'Ridicat' },
         { zone: 'T2 Etaj 2 (Outland, SD2, B2)', occupancyRate: '60%', level: 'Moderat' },
     ]);
 
     const [roomsUtilization] = useState([
-        { name: 'Room de ședințe S0 (Parter)', type: 'Reservation Integrală', utilization: '75%' },
-        { name: 'Room de birouri B0 (Parter)', type: 'Locuri individuale', utilization: '80%' },
-        { name: 'Room Evenimente E1 (T1, Etaj 1)', type: 'Reservation Integrală', utilization: '95%' },
-        { name: 'Room de ședințe S1 (T1, Etaj 1)', type: 'Reservation Integrală', utilization: '60%' },
-        { name: 'Room Gaming G2 (T1, Etaj 2)', type: 'Locuri individuale', utilization: '40%' },
-        { name: 'Room 404 (T2, Etaj 1)', type: 'Reservation Integrală', utilization: '90%' },
-        { name: 'Room de birouri B1 (T2, Etaj 1)', type: 'Locuri individuale', utilization: '70%' },
-        { name: 'Outland O2 (T2, Etaj 2)', type: 'Reservation Integrală', utilization: '85%' },
+        { name: 'Sala de ședințe S0 (Parter)', type: 'Rezervare Integrală', utilization: '75%' },
+        { name: 'Sala de birouri B0 (Parter)', type: 'Locuri individuale', utilization: '80%' },
+        { name: 'Sala Evenimente E1 (T1, Etaj 1)', type: 'Rezervare Integrală', utilization: '95%' },
+        { name: 'Sala de ședințe S1 (T1, Etaj 1)', type: 'Rezervare Integrală', utilization: '60%' },
+        { name: 'Sala Gaming G2 (T1, Etaj 2)', type: 'Locuri individuale', utilization: '40%' },
+        { name: 'Sala 404 (T2, Etaj 1)', type: 'Rezervare Integrală', utilization: '90%' },
+        { name: 'Sala de birouri B1 (T2, Etaj 1)', type: 'Locuri individuale', utilization: '70%' },
+        { name: 'Outland O2 (T2, Etaj 2)', type: 'Rezervare Integrală', utilization: '85%' },
         { name: 'Birouri B2 & SD2 (T2, Etaj 2)', type: 'Mixt', utilization: '65%' },
     ]);
 
@@ -123,7 +123,7 @@ const HRReports = () => {
                     <div className="flex justify-between items-center mb-6">
                         <div>
                             <h3 className="text-base font-semibold text-[#2D2A4A]">Rata de Ocupare per Sală / Birou</h3>
-                            <p className="text-xs text-gray-400">Statistici detaliate (reservation integrală vs. locuri individuale)</p>
+                            <p className="text-xs text-gray-400">Statistici detaliate (rezervare integrală vs. locuri individuale)</p>
                         </div>
                     </div>
 
@@ -147,7 +147,7 @@ const HRReports = () => {
 
             </div>
 
-            <AIAssistant />
+            <AIAssistant/>
         </div>
     );
 };

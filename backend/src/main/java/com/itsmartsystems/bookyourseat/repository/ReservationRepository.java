@@ -1,9 +1,11 @@
 package com.itsmartsystems.bookyourseat.repository;
 
 import com.itsmartsystems.bookyourseat.Status;
+import com.itsmartsystems.bookyourseat.model.PostgresUser;
 import com.itsmartsystems.bookyourseat.model.Reservation;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
@@ -17,4 +19,18 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
     List<Reservation> findByStatus(Status status);
 
     List<Reservation> findByRecurrence(Integer recurrence);
+
+    List<Reservation> findByUser_DepartmentIdAndStartDateTimeBetween(
+            Long departmentId,
+            LocalDateTime startOfDay,
+            LocalDateTime endOfDay);
+
+    List<Reservation> findByStatusAndReminderSentFalseAndStartDateTimeBetween(Status status, LocalDateTime start,
+            LocalDateTime end);
+
+    boolean existsByUserAndStartDateTimeBetween(
+            PostgresUser user,
+            LocalDateTime startOfDay,
+            LocalDateTime endOfDay);
+
 }

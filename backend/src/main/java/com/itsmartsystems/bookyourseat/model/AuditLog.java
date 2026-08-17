@@ -6,6 +6,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Column;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import java.time.LocalDateTime;
 
 @Entity
@@ -18,11 +20,11 @@ public class AuditLog {
 
     @Column(name = "user_id", nullable = false)
     private Long userId;
-
-    @Column(name = "reservation_id")
+    @ManyToOne
+    @JoinColumn(name = "reservation_id")
     private Reservation reservationId;
 
-    @Column(name = "action" , nullable = false, length = 100)
+    @Column(name = "action", nullable = false, length = 100)
     private String action;
 
     @Column(nullable = false, length = 50)

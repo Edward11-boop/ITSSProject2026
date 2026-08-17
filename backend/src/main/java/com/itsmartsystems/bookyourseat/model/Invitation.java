@@ -1,8 +1,6 @@
 package com.itsmartsystems.bookyourseat.model;
 
-
-import com.itsmartsystems.bookyourseat.Status;import jakarta.persistence.*;
-
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
@@ -10,19 +8,19 @@ import java.time.LocalDateTime;
 public class Invitation {
 
     @Id
-    @GeneratedValue(strategy =  GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "sender_id" , nullable = false)
-    private PostgresUser senderId ;
+    @JoinColumn(name = "sender_id", nullable = false)
+    private PostgresUser senderId;
 
     @ManyToOne
-    @JoinColumn(name = "receiver_id" , nullable = false)
-    private PostgresUser receiverId ;
+    @JoinColumn(name = "receiver_id", nullable = false)
+    private PostgresUser receiverId;
 
     @ManyToOne
-    @JoinColumn(name = "seat_id" , nullable = false)
+    @JoinColumn(name = "seat_id", nullable = false)
     private Seat seatId;
 
     @Column(name = "start_date_time", nullable = false)
@@ -31,23 +29,27 @@ public class Invitation {
     @Column(name = "end_date_time", nullable = false)
     private LocalDateTime endDateTime;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "status" , nullable = false , length = 50 , columnDefinition = "VARCHAR(50) DEFAULT 'PENDING'")
-    private Status status;
+    @Column(name = "status", nullable = false, length = 50, columnDefinition = "VARCHAR(50) DEFAULT 'PENDING'")
+    private String status;
 
-    @ManyToOne
-    @JoinColumn(name = "created_reservation_id" , unique = true )
-    private Reservation createdReservationId ;
+    // FIX: Am schimbat din @ManyToOne în @OneToOne pentru a se potrivi cu unique =
+    // true
+    @OneToOne
+    @JoinColumn(name = "created_reservation_id", unique = true)
+    private Reservation createdReservationId;
 
-    @Column(name = "created_at" , nullable = false , columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
-    private LocalDateTime createdAt ;
+    @Column(name = "created_at", nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    private LocalDateTime createdAt;
 
-    @Column(name = "responded_at" )
-    private LocalDateTime respondedAt ;
+    @Column(name = "responded_at")
+    private LocalDateTime respondedAt;
 
-    public Invitation() {}
+    public Invitation() {
+    }
 
-    public Invitation(Long id, PostgresUser senderId, PostgresUser receiverId, Seat seatId, LocalDateTime startDateTime, LocalDateTime endDateTime, Status status, Reservation createdReservationId, LocalDateTime createdAt, LocalDateTime respondedAt) {
+    public Invitation(Long id, PostgresUser senderId, PostgresUser receiverId, Seat seatId, LocalDateTime startDateTime,
+            LocalDateTime endDateTime, String status, Reservation createdReservationId, LocalDateTime createdAt,
+            LocalDateTime respondedAt) {
         this.id = id;
         this.senderId = senderId;
         this.receiverId = receiverId;
@@ -60,6 +62,7 @@ public class Invitation {
         this.respondedAt = respondedAt;
     }
 
+    // Getters and Setters
     public Long getId() {
         return id;
     }
@@ -108,11 +111,11 @@ public class Invitation {
         this.endDateTime = endDateTime;
     }
 
-    public Status getStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(Status status) {
+    public void setStatus(String status) {
         this.status = status;
     }
 
@@ -139,5 +142,4 @@ public class Invitation {
     public void setRespondedAt(LocalDateTime respondedAt) {
         this.respondedAt = respondedAt;
     }
-
 }

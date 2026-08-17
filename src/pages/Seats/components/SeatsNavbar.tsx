@@ -1,4 +1,4 @@
-﻿import { useState } from 'react';
+import { useState } from 'react';
 import { X } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import singleSeatAvailable from '@/assets/singleSeatAvailable.svg';
@@ -20,14 +20,16 @@ type SeatsNavbarProps = {
   isRoomSelected: boolean;
   hasSelectedSeat: boolean;
   hasOccupiedSeatSelected: boolean;
+  selectedSeatCode: string;
+  selectedRoomCode: string;
 };
 
 const legendItems = [
-  { icon: singleSeatAvailable, alt: 'single seat available', label: 'Disponibil (seat individual)' },
+  { icon: singleSeatAvailable, alt: 'single seat available', label: 'Disponibil (loc individual)' },
   { icon: occupied, alt: 'occupied', label: 'Ocupat' },
   { icon: selected, alt: 'selected', label: 'Selectat' },
   { icon: indisponibil, alt: 'indisponibil', label: 'Indisponibil' },
-  { icon: roomAvailable, alt: 'room available', label: 'Disponibil (doar daca se rezerva toata room)' },
+  { icon: roomAvailable, alt: 'room available', label: 'Disponibil (doar daca se rezerva toata sala)' },
 ];
 
 const LegendContent = () => (
@@ -41,15 +43,16 @@ const LegendContent = () => (
   </>
 );
 
-const SeatsNavbar = ({ activeTab, setActiveTab, isRoomSelected, hasSelectedSeat, hasOccupiedSeatSelected }: SeatsNavbarProps) => {
+const SeatsNavbar = ({ activeTab, setActiveTab, isRoomSelected, hasSelectedSeat, hasOccupiedSeatSelected, selectedSeatCode, selectedRoomCode }: SeatsNavbarProps) => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const [popupState, setPopupState] = useState<'none' | 'success-admin' | 'success-direct' | 'error-taken' | 'error-admin-fail' | 'error-unavailable' | 'error-no-selection'>('none');
+  const [popupState, setPopupState] = useState<'none' | 'success-admin' | 'success-direct' | 'error-taken' | 'error-admin-fail' | 'error-unavailable' | 'error-no-selection' | 'error-no-room'>('none');
   const [isLegendOpen, setIsLegendOpen] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('Te rugam sa incerci din nou mai tarziu.');
 
-  const handleConfirmSelection = () => {
-    if (!hasSelectedSeat) {
+  const handleConfirmSelection = async () => {
+    if (!selectedSeatCode) {
       setPopupState('error-no-selection');
       return;
     }
@@ -59,34 +62,53 @@ const SeatsNavbar = ({ activeTab, setActiveTab, isRoomSelected, hasSelectedSeat,
       return;
     }
 
+    if (!selectedRoomCode) {
+      setPopupState('error-no-room');
+      return;
+    }
+
     const bookingType = location.state?.bookingType;
-    const esteSala = isRoomSelected;
+      const date = location.state?.date;
+      const startHour = location.state?.startHour;
+      const endHour = location.state?.endHour;
+      const recurrenceWeeks = location.state?.recurrenceWeeks;
 
+      let response: Response;
 
-    const eroareServerLocOcupat = false;
-    const eroareServerAdminFail = false;
-    const eroareLocIndisponibil = false;
+      try {
+        response = await fetch("http://localhost:8080/reservations", {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            roomCode: selectedRoomCode,
+            seatCode: isRoomSelected ? null : selectedSeatCode,
+            start: `${date}T${String(startHour).padStart(2, "0")}:00:00`,
+            end: `${date}T${String(endHour).padStart(2, "0")}:00:00`,
+            recurrence: bookingType === "RECURENTA" ? recurrenceWeeks : 0,
+          }),
+        });
+      } catch {
+        setErrorMessage('Backend-ul nu raspunde. Verifica daca serverul este pornit pe localhost:8080.');
+        setPopupState('error-admin-fail');
+        return;
+      }
 
-    if (eroareServerLocOcupat) {
-      setPopupState('error-taken');
-    }
-    else if (eroareServerAdminFail) {
-      setPopupState('error-admin-fail');
-    }
-    else if (eroareLocIndisponibil) {
-      setPopupState('error-unavailable');
-    }
-    else if (bookingType === 'RECURENTA' || esteSala) {
-      setPopupState('success-admin');
-    }
-    else if (bookingType === 'O_ZI' && !esteSala) {
-      setPopupState('success-direct');
-    }
-    else {
-      navigate('/type-of-reservation');
-    }
-  };
+      if (!response.ok) {
+        const backendMessage = await response.text();
+        setErrorMessage(backendMessage || `Eroare backend: ${response.status}`);
+        setPopupState('error-admin-fail');
+        return;
+      }
 
+      if (bookingType === 'RECURENTA' || isRoomSelected) {
+        setPopupState('success-admin');
+      } else {
+        setPopupState('success-direct');
+      }
+    };
   return (
     <>
       <div className="bg-[#F5F3FF] px-4 py-4 sm:px-8 sm:py-6">
@@ -199,7 +221,7 @@ const SeatsNavbar = ({ activeTab, setActiveTab, isRoomSelected, hasSelectedSeat,
 
       {popupState === 'success-direct' && (
         <SuccessPopUp
-          title="Reservation efectuata cu succes. O puteti vizualiza in Rezervarile mele"
+          title="Rezervare efectuata cu succes. O puteti vizualiza in Rezervarile mele"
           sideMessage="Cererea a fost efectuata"
           highlightedText="CU SUCCES"
           onClose={() => setPopupState('none')}
@@ -208,9 +230,9 @@ const SeatsNavbar = ({ activeTab, setActiveTab, isRoomSelected, hasSelectedSeat,
 
       {popupState === 'error-taken' && (
         <ErrorPopUp
-          title="Acest seat este deja rezervat."
-          message="Va rugam sa alegeti alt seat."
-          sideMessage="Seat ocupat"
+          title="Acest loc este deja rezervat."
+          message="Va rugam sa alegeti alt loc."
+          sideMessage="Loc ocupat"
           buttonText="Inapoi la harta interactiva"
           onClose={() => setPopupState('none')}
         />
@@ -218,9 +240,9 @@ const SeatsNavbar = ({ activeTab, setActiveTab, isRoomSelected, hasSelectedSeat,
 
       {popupState === 'error-admin-fail' && (
         <ErrorPopUp
-          title="Cererea nu s-a putut trimite catre administrator."
-          message="Te rugam sa incerci din nou mai tarziu."
-          sideMessage="Eroare trimitere cerere"
+          title="Backend-ul a respins rezervarea."
+          message={errorMessage}
+          sideMessage="Eroare backend"
           buttonText="OK, am inteles"
           onClose={() => setPopupState('none')}
         />
@@ -228,17 +250,25 @@ const SeatsNavbar = ({ activeTab, setActiveTab, isRoomSelected, hasSelectedSeat,
 
       {popupState === 'error-unavailable' && (
         <ErrorPopUp
-          title="Ai ales un seat indisponibil. Te rugam sa selectezi alt seat."
-          message="Acest seat nu poate fi rezervat in acest moment."
-          sideMessage="Seat indisponibil"
+          title="Ai ales un loc indisponibil. Te rugam sa selectezi alt loc."
+          message="Acest loc nu poate fi rezervat in acest moment."
+          sideMessage="Loc indisponibil"
           buttonText="OK, am inteles"
           onClose={() => setPopupState('none')}
         />
       )}
-      {popupState === 'error-no-selection' && (
+      {popupState === 'error-no-room' && (
         <ErrorPopUp
-          title="Nu ai selectat niciun seat."
-          message="Te rugam sa alegi un seat de pe harta inainte de a da confirmare."
+          title="Nu am putut identifica sala pentru locul selectat."
+          message="Codul locului selectat nu este mapat la o sala din backend."
+          sideMessage="Sala lipsa"
+          buttonText="Inapoi la harta interactiva"
+          onClose={() => setPopupState('none')}
+        />
+      )}      {popupState === 'error-no-selection' && (
+        <ErrorPopUp
+          title="Nu ai selectat niciun loc."
+          message="Te rugam sa alegi un loc de pe harta inainte de a da confirmare."
           sideMessage="Selectie lipsa"
           buttonText="Inapoi la harta interactiva"
           onClose={() => setPopupState('none')}
@@ -249,6 +279,15 @@ const SeatsNavbar = ({ activeTab, setActiveTab, isRoomSelected, hasSelectedSeat,
 };
 
 export default SeatsNavbar;
+
+
+
+
+
+
+
+
+
 
 
 

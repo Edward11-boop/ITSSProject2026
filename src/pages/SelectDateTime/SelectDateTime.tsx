@@ -12,7 +12,13 @@ const MS_IN_DAY = 24 * 60 * 60 * 1000
 const addDays = (date: Date, days: number) =>
   new Date(date.getFullYear(), date.getMonth(), date.getDate() + days)
 
-const toDateValue = (date: Date) => date.toISOString().split("T")[0]
+const toDateValue = (date: Date) => {
+  const an = date.getFullYear();
+  const luna = String(date.getMonth() + 1).padStart(2, '0');
+  const ziua = String(date.getDate()).padStart(2, '0');
+
+  return `${an}-${luna}-${ziua}`;
+};
 
 const SelectDateTime = () => {
   const navigate = useNavigate()

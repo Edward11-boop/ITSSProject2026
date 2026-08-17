@@ -1,7 +1,7 @@
 package com.itsmartsystems.bookyourseat.controller;
 
-import com.itsmartsystems.bookyourseat.model.Seat;
-import com.itsmartsystems.bookyourseat.repository.SeatRepository;
+import com.itsmartsystems.bookyourseat.model.Loc;
+import com.itsmartsystems.bookyourseat.repository.LocRepository;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -11,19 +11,19 @@ import java.util.List;
 @RestController
 public class LocController {
 
-    private final SeatRepository locRepository;
+    private final LocRepository locRepository;
 
-    public LocController(SeatRepository locRepository) {
+    public LocController(LocRepository locRepository) {
         this.locRepository = locRepository;
     }
 
     @GetMapping("/locuri")
-    public List<Seat> getAllLocuri() {
+    public List<Loc> getAllLocuri() {
         return locRepository.findAll();
     }
 
-    @GetMapping("/locuri/room/{salaId}")
-    public List<Seat> getLocuriBySala(@PathVariable String salaId) {
-        return locRepository.findByRoomId(Long.valueOf(salaId));
+    @GetMapping("/locuri/sala/{salaId}")
+    public List<Loc> getLocuriDinSala(@PathVariable String salaId) {
+        return locRepository.findBySalaId(salaId);
     }
 }

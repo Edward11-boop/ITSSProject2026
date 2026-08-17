@@ -1,12 +1,14 @@
-﻿import { useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 
-export type UserRole = "CEO" | "MANAGER" | "PM" | "DEV"
+export type UserRole = "CEO" | "MANAGER" | "PM" | "DEV" | "HR"
 
 export type CurrentUser = {
   id?: string
   name: string
   email: string
   role: UserRole
+  phoneNumber?: string
+  departmentId?: number
 }
 
 const fallbackUser: CurrentUser = {
@@ -76,6 +78,3 @@ export function useCurrentUser(refreshKey?: string) {
 
   return { user, isLoading }
 }
-
-
-
