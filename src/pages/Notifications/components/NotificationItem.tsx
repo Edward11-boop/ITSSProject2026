@@ -2,6 +2,7 @@
 
 export type Notification = {
   id: number
+  invitationId?: number
   message: string
   date: string
   startTime: string

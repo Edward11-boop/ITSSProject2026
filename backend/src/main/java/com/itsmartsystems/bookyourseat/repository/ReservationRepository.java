@@ -20,7 +20,7 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
 
     List<Reservation> findByRecurrence(Integer recurrence);
 
-    List<Reservation> findByUser_DepartmentIdAndStartDateTimeBetween(
+    List<Reservation> findByUserDepartmentIdAndStartDateTimeBetween(
             Long departmentId,
             LocalDateTime startOfDay,
             LocalDateTime endOfDay);

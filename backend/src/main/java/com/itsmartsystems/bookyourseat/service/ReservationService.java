@@ -187,7 +187,7 @@ public class ReservationService {
         LocalDateTime startOfDay = savedReservation.getStartDateTime().toLocalDate().atStartOfDay();
         LocalDateTime endOfDay = savedReservation.getStartDateTime().toLocalDate().atTime(java.time.LocalTime.MAX);
 
-        List<Reservation> deptReservations = reservationRepository.findByUser_DepartmentIdAndStartDateTimeBetween(
+        List<Reservation> deptReservations = reservationRepository.findByUserDepartmentIdAndStartDateTimeBetween(
                 deptId, startOfDay, endOfDay);
 
         if (deptReservations.size() >= 2) {
@@ -207,14 +207,13 @@ public class ReservationService {
 
                 if (!hasReservation && !hasInvitation) {
 
-                    // --- PROTECȚIE ÎMPOTRIVA NULL POINTER (deoarece room poate fi null acum) ---
                     Long roomId;
                     if (savedReservation.getRoom() != null) {
                         roomId = savedReservation.getRoom().getId();
                     } else if (savedReservation.getSeat() != null) {
                         roomId = savedReservation.getSeat().getRoom().getId();
                     } else {
-                        continue; // Dacă nu avem nici cameră, nici scaun, trecem mai departe
+                        continue;
                     }
 
                     List<Seat> availableSeats = seatRepository.findAvailableSeatsInRoom(
@@ -247,7 +246,7 @@ public class ReservationService {
     private void triggerN8nWebhook(Invitation invitation) {
         try {
             RestTemplate restTemplate = new RestTemplate();
-
+            // RestClient
             String n8nWebhookUrl = "https://alexandrei18.app.n8n.cloud/webhook-test/78355d23-4bfa-4594-9b3a-8dc04e612e38";
 
             Map<String, Object> payload = new HashMap<>();

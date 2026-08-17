@@ -1,7 +1,8 @@
 import BackButton from "@/components/BackButton";
 import AIAssistant from "@/pages/AIAssistant";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Bell } from "lucide-react";
+import { useCurrentUser } from "@/hooks/useCurrentUser";
 import NotificationItem, { type Notification } from "./components/NotificationItem";
 
 export const initialNotifications: Notification[] = [
@@ -41,15 +42,84 @@ export const initialNotifications: Notification[] = [
     status: "pending",
     isRead: false,
   },
-]
+];
+
+type BackendNotification = {
+  id: number;
+  title?: string;
+  message: string;
+  type?: string;
+  read?: boolean;
+  createdAt?: string;
+  invitation?: {
+    id: number;
+    status?: string;
+    startDateTime?: string;
+    endDateTime?: string;
+  };
+};
 
 type NotificationsProps = {
   onNotificationRemoved?: () => void;
 };
 
+const formatTime = (value: Date) => value.toLocaleTimeString("ro-RO", {
+  hour: "2-digit",
+  minute: "2-digit",
+  hour12: false,
+});
+
+const toNotificationModel = (item: BackendNotification): Notification => {
+  const start = item.invitation?.startDateTime ? new Date(item.invitation.startDateTime) : new Date();
+  const end = item.invitation?.endDateTime ? new Date(item.invitation.endDateTime) : new Date();
+  const normalizedStatus = (item.invitation?.status ?? "PENDING").toLowerCase();
+
+  return {
+    id: item.id,
+    invitationId: item.invitation?.id,
+    message: item.message || item.title || "New office invitation",
+    date: start.toISOString().slice(0, 10),
+    startTime: formatTime(start),
+    endTime: formatTime(end),
+    status: normalizedStatus === "accepted" ? "accepted" : normalizedStatus === "declined" ? "declined" : "pending",
+    isRead: Boolean(item.read),
+  };
+};
+
 const Notifications = ({ onNotificationRemoved }: NotificationsProps) => {
-  const [notifications, setNotifications] = useState(initialNotifications);
+  const { user } = useCurrentUser();
+  const [notifications, setNotifications] = useState<Notification[]>(initialNotifications);
   const scheduledRemovalIds = useRef<Set<number>>(new Set());
+
+  useEffect(() => {
+    if (!user.id) {
+      return;
+    }
+
+    const userId = Number(user.id);
+    if (!Number.isFinite(userId)) {
+      return;
+    }
+
+    fetch(`http://localhost:8080/api/notifications/user/${userId}`, {
+      credentials: "include",
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Failed to load notifications");
+        }
+
+        return response.json() as Promise<BackendNotification[]>;
+      })
+      .then((data) => {
+        if (Array.isArray(data) && data.length > 0) {
+          setNotifications(data.map(toNotificationModel));
+        }
+      })
+      .catch(() => {
+        setNotifications(initialNotifications);
+      });
+  }, [user.id]);
 
   const removeNotification = (
     notificationId: number,
@@ -72,7 +142,18 @@ const Notifications = ({ onNotificationRemoved }: NotificationsProps) => {
     }, delay)
   }
 
-  const handleAccept = (notification: Notification) => {
+  const handleAccept = async (notification: Notification) => {
+    const invitationId = notification.invitationId ?? notification.id;
+
+    try {
+      await fetch(`http://localhost:8080/api/invitations/${invitationId}/accept`, {
+        method: "POST",
+        credentials: "include",
+      });
+    } catch {
+      // no-op: keep local optimistic update if backend is unavailable
+    }
+
     setNotifications((previousNotifications) =>
       previousNotifications.map((item) =>
         item.id === notification.id
@@ -83,12 +164,24 @@ const Notifications = ({ onNotificationRemoved }: NotificationsProps) => {
             }
           : item,
       ),
-    )
+    );
 
-    removeNotification(notification.id)
+    removeNotification(notification.id);
   }
 
-  const handleDecline = (notificationId: number) => {
+  const handleDecline = async (notificationId: number) => {
+    const notification = notifications.find((item) => item.id === notificationId);
+    const invitationId = notification?.invitationId ?? notificationId;
+
+    try {
+      await fetch(`http://localhost:8080/api/invitations/${invitationId}/decline`, {
+        method: "POST",
+        credentials: "include",
+      });
+    } catch {
+      // no-op: keep local optimistic update if backend is unavailable
+    }
+
     setNotifications((previousNotifications) =>
       previousNotifications.map((item) =>
         item.id === notificationId
@@ -99,9 +192,9 @@ const Notifications = ({ onNotificationRemoved }: NotificationsProps) => {
             }
           : item,
       ),
-    )
+    );
 
-    removeNotification(notificationId)
+    removeNotification(notificationId);
   }
 
   const formatDate = (date: string) => {
