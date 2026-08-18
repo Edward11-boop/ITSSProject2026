@@ -66,8 +66,8 @@ public class HrService {
 
         if (department != null && !department.isBlank()) {
             Department departmentObj = departmentRepository.findByNameIgnoreCase(department).orElse(null);
-            if (departmentObj != null && departmentObj.getId() != null) {
-                Integer departmentId = Math.toIntExact(departmentObj.getId());
+            if (departmentObj != null) {
+                Integer departmentId = departmentObj.getId();
                 users = users.stream()
                         .filter(u -> u.getDepartmentId() != null && u.getDepartmentId().equals(departmentId))
                         .toList();

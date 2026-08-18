@@ -1,6 +1,7 @@
 package com.itsmartsystems.bookyourseat.service;
 
 import com.itsmartsystems.bookyourseat.Role;
+import com.itsmartsystems.bookyourseat.model.Department;
 import com.itsmartsystems.bookyourseat.model.PostgresUser;
 import com.itsmartsystems.bookyourseat.model.User;
 import com.itsmartsystems.bookyourseat.repository.PostgresUserRepository;
@@ -22,7 +23,13 @@ public class UserSyncService {
         postgresUser.setName(mongoUser.getName());
         postgresUser.setEmail(mongoUser.getEmail());
 
-        postgresUser.setRole(Role.valueOf(mongoUser.getRole().name()));
+        Role role = Role.valueOf(mongoUser.getRole().name());
+        postgresUser.setRole(role);
+
+        Department department = Department.fromRole(role);
+        if (department != null) {
+            postgresUser.setDepartmentId(department.getId());
+        }
 
         return postgresUserRepository.save(postgresUser);
     }

@@ -1,18 +1,46 @@
 package com.itsmartsystems.bookyourseat.repository;
 
 import com.itsmartsystems.bookyourseat.model.Department;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
 @Repository
-public interface DepartmentRepository extends JpaRepository<Department, Long> {
+public class DepartmentRepository {
 
-    Optional<Department> findByName(String name);
+    public Optional<Department> findByName(String name) {
+        if (name == null) {
+            return Optional.empty();
+        }
 
-    Optional<Department> findByNameIgnoreCase(String name);
+        for (Department department : Department.values()) {
+            if (department.getName().equalsIgnoreCase(name)) {
+                return Optional.of(department);
+            }
+        }
 
-    boolean existsByName(String name);
+        return Optional.empty();
+    }
 
+    public Optional<Department> findByNameIgnoreCase(String name) {
+        return findByName(name);
+    }
+
+    public Optional<Department> findById(Long id) {
+        if (id == null) {
+            return Optional.empty();
+        }
+
+        for (Department department : Department.values()) {
+            if (department.getId() == id.intValue()) {
+                return Optional.of(department);
+            }
+        }
+
+        return Optional.empty();
+    }
+
+    public boolean existsByName(String name) {
+        return findByName(name).isPresent();
+    }
 }

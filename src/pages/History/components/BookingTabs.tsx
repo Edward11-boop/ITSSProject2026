@@ -13,9 +13,8 @@ export default function BookingTabs({ activeTab, onChange }: BookingTabsProps) {
           key={tab}
           type="button"
           onClick={() => onChange(tab)}
-          className={`min-w-0 flex-1 rounded-full px-2 py-3 text-xs font-semibold transition-all sm:text-sm ${
-            activeTab === tab ? "bg-white text-black shadow-sm" : "text-gray-500 hover:text-gray-700"
-          }`}
+          className={`min-w-0 flex-1 rounded-full px-2 py-3 text-xs font-semibold transition-all sm:text-sm ${activeTab === tab ? "bg-white text-black shadow-sm" : "text-gray-500 hover:text-gray-700"
+            }`}
         >
           {tab}
         </button>

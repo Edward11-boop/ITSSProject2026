@@ -91,6 +91,11 @@ public class ReservationController {
         return reservationService.rejectReservation(id);
     }
 
+    @PutMapping("/cancel/{id}")
+    public Reservation cancelReservation(@PathVariable Long id) {
+        return reservationService.cancelReservation(id);
+    }
+
     @GetMapping("/active")
     public List<Reservation> activeReservations(@RequestParam("start") LocalDateTime start,
                                               @RequestParam("end") LocalDateTime end) {

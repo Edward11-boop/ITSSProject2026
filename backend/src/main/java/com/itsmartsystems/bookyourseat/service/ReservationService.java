@@ -194,6 +194,19 @@ public class ReservationService {
         return reservationRepository.save(reservationObj);
     }
 
+    public Reservation cancelReservation(Long reservationId) {
+        Optional<Reservation> reservation = reservationRepository.findById(reservationId);
+        if (reservation.isEmpty())
+            throw new IllegalArgumentException("Reservation does not exist !");
+
+        if (!reservation.get().getStatus().equals(Status.PENDING))
+            throw new IllegalArgumentException("Only pending reservations can be cancelled!");
+
+        Reservation reservationObj = reservation.get();
+        reservationObj.setStatus(Status.REJECTED);
+        return reservationRepository.save(reservationObj);
+    }
+
     public List<Reservation> getActiveReservations(LocalDateTime start, LocalDateTime end) {
         return reservationRepository.findAll().stream()
                 .filter(reservation -> reservation.getStatus() == Status.APPROVED

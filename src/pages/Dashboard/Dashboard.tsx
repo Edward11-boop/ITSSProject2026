@@ -26,14 +26,14 @@ const Dashboard = () => {
 
             {isHr && (
               <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
-                <Link 
+                <Link
                   to="/istoric"
                   className="rounded-full bg-[#6D28D9] px-6 py-3 text-center font-semibold text-white transition-all hover:bg-[#5B21B6]"
                 >
                   Istoric angajati
                 </Link>
 
-                <Link 
+                <Link
                   to="/preferinte"
                   className="rounded-full border-2 border-[#6D28D9] bg-white px-6 py-3 text-center font-semibold text-[#6D28D9] transition-all hover:bg-[#EDE9FE]"
                 >

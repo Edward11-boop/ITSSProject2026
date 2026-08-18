@@ -257,11 +257,10 @@ const CityOverviewCard = () => {
             Traffic - Bucharest
           </h3>
 
-          <span className={`rounded-full px-3 py-1 text-xs font-semibold ${
-            isLive
+          <span className={`rounded-full px-3 py-1 text-xs font-semibold ${isLive
               ? "bg-green-100 text-green-600"
               : "bg-gray-100 text-gray-500"
-          }`}>
+            }`}>
             {isLive ? "Live" : "Fallback"}
           </span>
         </div>

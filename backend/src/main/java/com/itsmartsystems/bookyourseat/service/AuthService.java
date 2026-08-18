@@ -165,6 +165,11 @@ public class AuthService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("User doesnt exist !"));
 
-        return new UserDetails(user.getId(), user.getName(), user.getEmail(), user.getRole());
+        Integer postgresUserId = postgresUserRepository.findByEmail(email)
+                .map(PostgresUser::getId)
+                .map(Long::intValue)
+                .orElse(null);
+
+        return new UserDetails(user.getId(), postgresUserId, user.getName(), user.getEmail(), user.getRole());
     }
 }

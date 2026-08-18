@@ -47,7 +47,9 @@ public class InvitationService {
                 invitation.setStatus("PENDING");
                 invitation.setCreatedAt(LocalDateTime.now());
 
-                return invitationRepository.save(invitation);
+                Invitation savedInvitation = invitationRepository.save(invitation);
+                notificationService.createInvitationNotification(savedInvitation);
+                return savedInvitation;
         }
 
         public List<Invitation> getPendingInvitationsForUser(Long userId) {
