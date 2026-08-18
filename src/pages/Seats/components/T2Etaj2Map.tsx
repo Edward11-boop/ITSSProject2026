@@ -4,52 +4,52 @@ import SingleSeat from './SingleSeat'
 type SeatStatus = 'available' | 'occupied' | 'unavailable' | 'pending';
 
 interface SeatMapProps {
-    getSeatStatus: (id: string) => SeatStatus;
-    onRoomSelect?: (isRoom: boolean) => void;
-    onSeatSelect?: (hasSelected: boolean) => void;
-    onOccupiedSelect?: (isOccupied: boolean) => void;
-    onSelectedSeatChange?: (seatCode: string) => void;
+  getSeatStatus: (id: string) => SeatStatus;
+  onRoomSelect?: (isRoom: boolean) => void;
+  onSeatSelect?: (hasSelected: boolean) => void;
+  onOccupiedSelect?: (isOccupied: boolean) => void;
+  onSelectedSeatChange?: (seatCode: string) => void;
 }
 
 const T2Etaj2 = ({ getSeatStatus, onRoomSelect, onSeatSelect, onOccupiedSelect, onSelectedSeatChange }: SeatMapProps) => {
-    const { handleSeatClick, getSelectedState } = useSeatSelection([{ groupId: 'G-O2', matches: (id: string) => id.includes('T2-O2') }]);
-    const handleSeatSelection = (id: string, type?: 'individual' | 'room') => {
-        const wasSelectedBeforeClick = getSelectedState(id) !== null;
-        const status = getSeatStatus(id);
-        const isOccupied = status === 'occupied';
+  const { handleSeatClick, getSelectedState } = useSeatSelection([{ groupId: 'G-O2', matches: (id: string) => id.includes('T2-O2') }]);
+  const handleSeatSelection = (id: string, type?: 'individual' | 'room') => {
+    const wasSelectedBeforeClick = getSelectedState(id) !== null;
+    const status = getSeatStatus(id);
+    const isOccupied = status === 'occupied';
 
-        if (status !== 'available') {
-            onOccupiedSelect?.(isOccupied);
-            return;
-        }
+    if (status !== 'available') {
+      onOccupiedSelect?.(isOccupied);
+      return;
+    }
 
-        handleSeatClick(id);
+    handleSeatClick(id);
 
-        if (wasSelectedBeforeClick) {
-            onSelectedSeatChange?.('');
-            onRoomSelect?.(false);
-            onSeatSelect?.(false);
-            onOccupiedSelect?.(false);
-            return;
-        }
+    if (wasSelectedBeforeClick) {
+      onSelectedSeatChange?.('');
+      onRoomSelect?.(false);
+      onSeatSelect?.(false);
+      onOccupiedSelect?.(false);
+      return;
+    }
 
-        onSelectedSeatChange?.(id);
-        onRoomSelect?.(type === 'room');
-        onSeatSelect?.(true);
-        onOccupiedSelect?.(false);
-    };
-  
+    onSelectedSeatChange?.(id);
+    onRoomSelect?.(type === 'room');
+    onSeatSelect?.(true);
+    onOccupiedSelect?.(false);
+  };
+
   return (
     <div className="relative mx-auto h-[620px] w-full max-w-[1000px] overflow-hidden border border-gray-800 bg-[#F5F3FF] shadow-sm">
       <div className="absolute left-0 top-[85px] h-[350px] w-[400px] border-y border-r border-gray-800">
         <h3 className="absolute left-[15px] top-[10px] text-base font-semibold leading-tight text-[#1E1B4B]">
           Outland
-          <br/> 
+          <br />
           O2
         </h3>
 
         <div className="absolute left-[120px] top-[70px] h-[150px] w-[80px] border border-[#7C7777] bg-[#C1BDD2]"></div>
-        
+
         <SingleSeat
           id="T2-O2-01"
           type="room"
@@ -171,7 +171,6 @@ const T2Etaj2 = ({ getSeatStatus, onRoomSelect, onSeatSelect, onOccupiedSelect, 
           className="left-[72px] top-[120px]"
         />
 
-        {/* Masa rotundÄ de jos */}
         <div className="absolute left-[110px] top-[250px] h-[60px] w-[60px] rounded-full border border-[#7C7777] bg-[#C1BDD2]" />
 
         <SingleSeat
@@ -200,10 +199,9 @@ const T2Etaj2 = ({ getSeatStatus, onRoomSelect, onSeatSelect, onOccupiedSelect, 
           B2
         </h3>
 
-        {/* Masa verticalÄ de sus */}
         <div className="absolute left-[150px] top-[90px] h-[145px] w-[60px] border border-[#7C7777] bg-[#C1BDD2]" />
 
-        {/* Scaunele din stĂ˘nga primei mese */}
+
         <SingleSeat
           id="T2-B2-05"
           number="5"
@@ -231,7 +229,6 @@ const T2Etaj2 = ({ getSeatStatus, onRoomSelect, onSeatSelect, onOccupiedSelect, 
           className="left-[105px] top-[195px]"
         />
 
-        {/* Scaunele din dreapta primei mese */}
         <SingleSeat
           id="T2-B2-11"
           number="11"
@@ -259,10 +256,8 @@ const T2Etaj2 = ({ getSeatStatus, onRoomSelect, onSeatSelect, onOccupiedSelect, 
           className="left-[225px] top-[195px]"
         />
 
-        {/* Masa verticalÄ de jos */}
         <div className="absolute left-[150px] top-[240px] h-[145px] w-[60px] border border-[#7C7777] bg-[#C1BDD2]" />
 
-        {/* Scaunele din stĂ˘nga celei de-a doua mese */}
         <SingleSeat
           id="T2-B2-08"
           number="8"
@@ -290,7 +285,6 @@ const T2Etaj2 = ({ getSeatStatus, onRoomSelect, onSeatSelect, onOccupiedSelect, 
           className="left-[105px] top-[335px]"
         />
 
-        {/* Scaunele din dreapta celei de-a doua mese */}
         <SingleSeat
           id="T2-B2-14"
           number="14"
@@ -323,9 +317,3 @@ const T2Etaj2 = ({ getSeatStatus, onRoomSelect, onSeatSelect, onOccupiedSelect, 
 }
 
 export default T2Etaj2
-
-
-
-
-
-

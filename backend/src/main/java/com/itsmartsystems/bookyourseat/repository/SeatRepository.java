@@ -31,4 +31,15 @@ public interface SeatRepository extends JpaRepository<Seat, Long> {
             @Param("roomId") Long roomId,
             @Param("startDateTime") LocalDateTime startDateTime,
             @Param("endDateTime") LocalDateTime endDateTime);
+
+    // Locking variant to avoid race conditions when assigning seats (SELECT ... FOR UPDATE)
+    @org.springframework.data.jpa.repository.Lock(jakarta.persistence.LockModeType.PESSIMISTIC_WRITE)
+    @Query("SELECT s FROM Seat s WHERE s.room.id = :roomId AND s.id NOT IN " +
+            "(SELECT r.seat.id FROM Reservation r WHERE r.room.id = :roomId " +
+            "AND r.status = 'APPROVED' " +
+            "AND r.startDateTime < :endDateTime AND r.endDateTime > :startDateTime)")
+    List<Seat> findAndLockAvailableSeatsInRoom(
+            @Param("roomId") Long roomId,
+            @Param("startDateTime") LocalDateTime startDateTime,
+            @Param("endDateTime") LocalDateTime endDateTime);
 } 

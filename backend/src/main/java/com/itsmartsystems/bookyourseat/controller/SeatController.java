@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -43,16 +44,17 @@ public class SeatController {
                 .map(Seat::getId)
                 .collect(Collectors.toSet());
 
-        if (occupiedSeatIds.isEmpty()) {
-            return;
-        }
+        List<Seat> seatsToUpdate = new ArrayList<>();
 
-        List<Seat> seatsToUpdate = locRepository.findAll()
-                .stream()
-                .filter(seat -> occupiedSeatIds.contains(seat.getId()))
-                .filter(seat -> !"OCCUPIED".equalsIgnoreCase(seat.getStatus()))
-                .peek(seat -> seat.setStatus("OCCUPIED"))
-                .toList();
+        for (Seat seat : locRepository.findAll()) {
+            boolean isOccupied = occupiedSeatIds.contains(seat.getId());
+            String desiredStatus = isOccupied ? "OCCUPIED" : "ACTIVE";
+
+            if (!desiredStatus.equalsIgnoreCase(seat.getStatus())) {
+                seat.setStatus(desiredStatus);
+                seatsToUpdate.add(seat);
+            }
+        }
 
         if (!seatsToUpdate.isEmpty()) {
             locRepository.saveAll(seatsToUpdate);

@@ -5,6 +5,7 @@ import com.itsmartsystems.bookyourseat.model.*;
 import com.itsmartsystems.bookyourseat.repository.ReservationRepository;
 import com.itsmartsystems.bookyourseat.repository.RoomRepository;
 import com.itsmartsystems.bookyourseat.repository.SeatRepository;
+import com.itsmartsystems.bookyourseat.service.NotificationService;
 
 import com.itsmartsystems.bookyourseat.repository.PostgresUserRepository;
 import com.itsmartsystems.bookyourseat.repository.InvitationRepository;
@@ -27,18 +28,40 @@ public class ReservationService {
 
     private final PostgresUserRepository postgresUserRepository;
     private final InvitationRepository invitationRepository;
+    private final NotificationService notificationService;
 
     public ReservationService(
             ReservationRepository reservationRepository,
             RoomRepository roomRepository,
             SeatRepository seatRepository,
             PostgresUserRepository postgresUserRepository,
-            InvitationRepository invitationRepository) {
+            InvitationRepository invitationRepository,
+            NotificationService notificationService) {
         this.reservationRepository = reservationRepository;
         this.roomRepository = roomRepository;
         this.seatRepository = seatRepository;
         this.postgresUserRepository = postgresUserRepository;
         this.invitationRepository = invitationRepository;
+        this.notificationService = notificationService;
+    }
+
+    private Status determineReservationStatus(Seat seat, Integer recurrence, LocalDateTime start, LocalDateTime end) {
+        boolean sameDaySingleSeat = seat != null && (recurrence == null || recurrence == 0)
+                && start.toLocalDate().equals(end.toLocalDate());
+        return sameDaySingleSeat ? Status.APPROVED : Status.PENDING;
+    }
+
+    private void markSeatOccupiedIfNeeded(Seat seat) {
+        if (seat == null) {
+            return;
+        }
+
+        try {
+            seat.setStatus("OCCUPIED");
+            seatRepository.save(seat);
+        } catch (Exception ex) {
+            System.err.println("Failed to mark seat as occupied: " + ex.getMessage());
+        }
     }
 
     public Reservation createReservation(PostgresUser user, String roomCode, String seatCode, LocalDateTime start,
@@ -68,7 +91,12 @@ public class ReservationService {
         }
 
         Room roomToSave = (seatObj != null) ? null : room.get();
-        Reservation reservation = new Reservation(user, seatObj, roomToSave, start, end, Status.PENDING, recurrence);
+        Status initialStatus = determineReservationStatus(seatObj, recurrence, start, end);
+        if (initialStatus == Status.APPROVED) {
+            markSeatOccupiedIfNeeded(seatObj);
+        }
+
+        Reservation reservation = new Reservation(user, seatObj, roomToSave, start, end, initialStatus, recurrence);
 
         Reservation savedReservation = reservationRepository.save(reservation);
 
@@ -127,7 +155,13 @@ public class ReservationService {
         reservationObj.setSeat(seatObj);
         reservationObj.setStartDateTime(start);
         reservationObj.setEndDateTime(end);
-        reservationObj.setStatus(Status.PENDING);
+
+        Status newStatus = determineReservationStatus(seatObj, recurrence, start, end);
+        if (newStatus == Status.APPROVED) {
+            markSeatOccupiedIfNeeded(seatObj);
+        }
+
+        reservationObj.setStatus(newStatus);
         reservationObj.setRecurrence(recurrence);
 
         return reservationRepository.save(reservationObj);
@@ -143,6 +177,7 @@ public class ReservationService {
 
         Reservation reservationObj = reservation.get();
         reservationObj.setStatus(Status.APPROVED);
+        markSeatOccupiedIfNeeded(reservationObj.getSeat());
         return reservationRepository.save(reservationObj);
     }
 
@@ -157,6 +192,15 @@ public class ReservationService {
         Reservation reservationObj = reservation.get();
         reservationObj.setStatus(Status.REJECTED);
         return reservationRepository.save(reservationObj);
+    }
+
+    public List<Reservation> getActiveReservations(LocalDateTime start, LocalDateTime end) {
+        return reservationRepository.findAll().stream()
+                .filter(reservation -> reservation.getStatus() == Status.APPROVED
+                        || reservation.getStatus() == Status.PENDING)
+                .filter(reservation -> !end.isBefore(reservation.getStartDateTime())
+                        && !start.isAfter(reservation.getEndDateTime()))
+                .toList();
     }
 
     public List<Reservation> historyReservation(Long userId) {
@@ -176,13 +220,14 @@ public class ReservationService {
     }
 
     private void checkAndSendAutomaticInvitations(Reservation savedReservation) {
+        // New behavior: when threshold reached, create internal notifications for colleagues
         PostgresUser currentUser = savedReservation.getUser();
 
         if (currentUser.getDepartmentId() == null) {
             return;
         }
 
-        Long deptId = currentUser.getDepartmentId().longValue();
+        Integer deptId = currentUser.getDepartmentId();
 
         LocalDateTime startOfDay = savedReservation.getStartDateTime().toLocalDate().atStartOfDay();
         LocalDateTime endOfDay = savedReservation.getStartDateTime().toLocalDate().atTime(java.time.LocalTime.MAX);
@@ -190,6 +235,7 @@ public class ReservationService {
         List<Reservation> deptReservations = reservationRepository.findByUserDepartmentIdAndStartDateTimeBetween(
                 deptId, startOfDay, endOfDay);
 
+        // Threshold: when 2 or more colleagues already have reservations this day
         if (deptReservations.size() >= 2) {
 
             List<PostgresUser> allColleagues = postgresUserRepository.findByDepartmentId(deptId);
@@ -202,42 +248,20 @@ public class ReservationService {
 
                 boolean hasReservation = reservationRepository.existsByUserAndStartDateTimeBetween(colleague,
                         startOfDay, endOfDay);
-                boolean hasInvitation = invitationRepository.existsByReceiverIdAndStartDateTimeBetween(colleague,
-                        startOfDay, endOfDay);
 
-                if (!hasReservation && !hasInvitation) {
-
-                    Long roomId;
-                    if (savedReservation.getRoom() != null) {
-                        roomId = savedReservation.getRoom().getId();
-                    } else if (savedReservation.getSeat() != null) {
-                        roomId = savedReservation.getSeat().getRoom().getId();
-                    } else {
+                if (!hasReservation) {
+                    // avoid creating duplicate notifications for the same reservation & user
+                    boolean alreadyNotified = notificationService.notificationExistsForUserAndReservation(colleague.getId(), savedReservation.getId());
+                    if (alreadyNotified) {
+                        System.out.println("Skipping notification for user " + colleague.getEmail() + " — already exists for reservation " + savedReservation.getId());
                         continue;
                     }
 
-                    List<Seat> availableSeats = seatRepository.findAvailableSeatsInRoom(
-                            roomId,
-                            savedReservation.getStartDateTime(),
-                            savedReservation.getEndDateTime());
-
-                    if (!availableSeats.isEmpty()) {
-
-                        Seat seatForColleague = availableSeats.get(0);
-
-                        Invitation invitation = new Invitation();
-                        invitation.setSenderId(currentUser);
-                        invitation.setReceiverId(colleague);
-                        invitation.setSeatId(seatForColleague);
-                        invitation.setStartDateTime(savedReservation.getStartDateTime());
-                        invitation.setEndDateTime(savedReservation.getEndDateTime());
-                        invitation.setStatus("PENDING");
-                        invitation.setCreatedAt(LocalDateTime.now());
-
-                        invitationRepository.save(invitation);
-
-                        triggerN8nWebhook(invitation);
-                    }
+                    // create a Notification for colleague (no external n8n call)
+                    String message = "Your colleagues are coming to the office on "
+                            + savedReservation.getStartDateTime().toLocalDate().toString();
+                    Notification createdNotif = notificationService.createColleaguesComingNotification(colleague, savedReservation, message);
+                    System.out.println("Created colleagues-coming notification id=" + createdNotif.getId() + " for user=" + colleague.getEmail());
                 }
             }
         }

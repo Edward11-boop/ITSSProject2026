@@ -5,45 +5,7 @@ import { Bell } from "lucide-react";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import NotificationItem, { type Notification } from "./components/NotificationItem";
 
-export const initialNotifications: Notification[] = [
-  {
-    id: 1,
-    message: "Andrei invited you to book a seat together.",
-    date: "2026-08-05",
-    startTime: "09:00",
-    endTime: "17:00",
-    status: "pending",
-    isRead: false,
-  },
-  {
-    id: 2,
-    message: "Your colleagues are coming to the office.",
-    date: "2026-10-09",
-    startTime: "09:00",
-    endTime: "17:00",
-    status: "pending",
-    isRead: false,
-  },
-  {
-    id: 3,
-    message: "Your colleagues are coming to the office.",
-    date: "2026-10-25",
-    startTime: "09:00",
-    endTime: "17:00",
-    status: "pending",
-    isRead: false,
-  },
-  {
-    id: 4,
-    message: "Your colleagues are coming to the office.",
-    date: "2026-10-25",
-    startTime: "09:00",
-    endTime: "17:00",
-    status: "pending",
-    isRead: false,
-  },
-];
-
+export const initialNotifications: Notification[] = [];
 type BackendNotification = {
   id: number;
   title?: string;
@@ -88,7 +50,7 @@ const toNotificationModel = (item: BackendNotification): Notification => {
 
 const Notifications = ({ onNotificationRemoved }: NotificationsProps) => {
   const { user } = useCurrentUser();
-  const [notifications, setNotifications] = useState<Notification[]>(initialNotifications);
+  const [notifications, setNotifications] = useState<Notification[]>([]);
   const scheduledRemovalIds = useRef<Set<number>>(new Set());
 
   useEffect(() => {
@@ -96,12 +58,8 @@ const Notifications = ({ onNotificationRemoved }: NotificationsProps) => {
       return;
     }
 
-    const userId = Number(user.id);
-    if (!Number.isFinite(userId)) {
-      return;
-    }
-
-    fetch(`http://localhost:8080/api/notifications/user/${userId}`, {
+    // Only fetch unread notifications so a dismissed/accepted notification does not reappear
+    fetch(`http://localhost:8080/api/notifications/me/unread`, {
       credentials: "include",
     })
       .then((response) => {
@@ -112,12 +70,14 @@ const Notifications = ({ onNotificationRemoved }: NotificationsProps) => {
         return response.json() as Promise<BackendNotification[]>;
       })
       .then((data) => {
-        if (Array.isArray(data) && data.length > 0) {
+        if (Array.isArray(data)) {
           setNotifications(data.map(toNotificationModel));
+        } else {
+          setNotifications([]);
         }
       })
       .catch(() => {
-        setNotifications(initialNotifications);
+        setNotifications([]);
       });
   }, [user.id]);
 
@@ -146,7 +106,7 @@ const Notifications = ({ onNotificationRemoved }: NotificationsProps) => {
     const invitationId = notification.invitationId ?? notification.id;
 
     try {
-      await fetch(`http://localhost:8080/api/invitations/${invitationId}/accept`, {
+      await fetch(`http://localhost:8080/api/notifications/${notification.id}/accept`, {
         method: "POST",
         credentials: "include",
       });
@@ -158,10 +118,10 @@ const Notifications = ({ onNotificationRemoved }: NotificationsProps) => {
       previousNotifications.map((item) =>
         item.id === notification.id
           ? {
-              ...item,
-              status: "accepted",
-              isRead: true,
-            }
+            ...item,
+            status: "accepted",
+            isRead: true,
+          }
           : item,
       ),
     );
@@ -174,7 +134,7 @@ const Notifications = ({ onNotificationRemoved }: NotificationsProps) => {
     const invitationId = notification?.invitationId ?? notificationId;
 
     try {
-      await fetch(`http://localhost:8080/api/invitations/${invitationId}/decline`, {
+      await fetch(`http://localhost:8080/api/notifications/${notification.id}/decline`, {
         method: "POST",
         credentials: "include",
       });
@@ -186,10 +146,10 @@ const Notifications = ({ onNotificationRemoved }: NotificationsProps) => {
       previousNotifications.map((item) =>
         item.id === notificationId
           ? {
-              ...item,
-              status: "declined",
-              isRead: true,
-            }
+            ...item,
+            status: "declined",
+            isRead: true,
+          }
           : item,
       ),
     );

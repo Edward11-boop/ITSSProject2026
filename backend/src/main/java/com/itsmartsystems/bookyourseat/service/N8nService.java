@@ -23,9 +23,13 @@ public class N8nService {
         this.restClient = restClient;
     }
 
+    // Map status -> color for notifications. Per project requirements:
+    // - APPROVED (seat confirmed/occupied) should be shown as red
+    // - ACCEPTED (invitation accepted) should also be red (occupied)
+    // - PENDING should be yellow
     private static final Map<Status, String> STATUS_COLORS = Map.of(
-            Status.APPROVED, "#16A34A",
-            Status.ACCEPTED, "#16A34A",
+            Status.APPROVED, "#DC2626",
+            Status.ACCEPTED, "#DC2626",
             Status.PENDING, "#CA8A04",
             Status.REJECTED, "#DC2626",
             Status.DECLINED, "#DC2626");

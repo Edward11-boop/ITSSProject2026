@@ -68,47 +68,47 @@ const SeatsNavbar = ({ activeTab, setActiveTab, isRoomSelected, hasSelectedSeat,
     }
 
     const bookingType = location.state?.bookingType;
-      const date = location.state?.date;
-      const startHour = location.state?.startHour;
-      const endHour = location.state?.endHour;
-      const recurrenceWeeks = location.state?.recurrenceWeeks;
+    const date = location.state?.date;
+    const startHour = location.state?.startHour;
+    const endHour = location.state?.endHour;
+    const recurrenceWeeks = location.state?.recurrenceWeeks;
 
-      let response: Response;
+    let response: Response;
 
-      try {
-        response = await fetch("http://localhost:8080/reservations", {
-          method: "POST",
-          credentials: "include",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            roomCode: selectedRoomCode,
-            seatCode: isRoomSelected ? null : selectedSeatCode,
-            start: `${date}T${String(startHour).padStart(2, "0")}:00:00`,
-            end: `${date}T${String(endHour).padStart(2, "0")}:00:00`,
-            recurrence: bookingType === "RECURENTA" ? recurrenceWeeks : 0,
-          }),
-        });
-      } catch {
-        setErrorMessage('Backend-ul nu raspunde. Verifica daca serverul este pornit pe localhost:8080.');
-        setPopupState('error-admin-fail');
-        return;
-      }
+    try {
+      response = await fetch("http://localhost:8080/reservations", {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          roomCode: selectedRoomCode,
+          seatCode: isRoomSelected ? null : selectedSeatCode,
+          start: `${date}T${String(startHour).padStart(2, "0")}:00:00`,
+          end: `${date}T${String(endHour).padStart(2, "0")}:00:00`,
+          recurrence: bookingType === "RECURENTA" ? recurrenceWeeks : 0,
+        }),
+      });
+    } catch {
+      setErrorMessage('Backend-ul nu raspunde. Verifica daca serverul este pornit pe localhost:8080.');
+      setPopupState('error-admin-fail');
+      return;
+    }
 
-      if (!response.ok) {
-        const backendMessage = await response.text();
-        setErrorMessage(backendMessage || `Eroare backend: ${response.status}`);
-        setPopupState('error-admin-fail');
-        return;
-      }
+    if (!response.ok) {
+      const backendMessage = await response.text();
+      setErrorMessage(backendMessage || `Eroare backend: ${response.status}`);
+      setPopupState('error-admin-fail');
+      return;
+    }
 
-      if (bookingType === 'RECURENTA' || isRoomSelected) {
-        setPopupState('success-admin');
-      } else {
-        setPopupState('success-direct');
-      }
-    };
+    if (bookingType === 'RECURENTA' || isRoomSelected) {
+      setPopupState('success-admin');
+    } else {
+      setPopupState('success-direct');
+    }
+  };
   return (
     <>
       <div className="bg-[#F5F3FF] px-4 py-4 sm:px-8 sm:py-6">
@@ -279,28 +279,3 @@ const SeatsNavbar = ({ activeTab, setActiveTab, isRoomSelected, hasSelectedSeat,
 };
 
 export default SeatsNavbar;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

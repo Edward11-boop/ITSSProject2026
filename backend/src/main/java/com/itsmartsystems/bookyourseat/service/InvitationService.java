@@ -26,6 +26,9 @@ public class InvitationService {
         @Autowired
         private SeatRepository seatRepository;
 
+        @Autowired
+        private NotificationService notificationService;
+
         public Invitation createInvitation(InvitationRequest request) {
                 Invitation invitation = new Invitation();
 
@@ -80,6 +83,7 @@ public class InvitationService {
                 invitation.setCreatedReservationId(savedReservation);
 
                 invitationRepository.save(invitation);
+                notificationService.markInvitationNotificationAsRead(invitationId);
         }
 
         public void declineInvitation(Long invitationId) {
@@ -89,5 +93,6 @@ public class InvitationService {
                 invitation.setStatus("DECLINED");
                 invitation.setRespondedAt(LocalDateTime.now());
                 invitationRepository.save(invitation);
+                notificationService.markInvitationNotificationAsRead(invitationId);
         }
 }

@@ -86,13 +86,13 @@ const ParterMap = ({ onRoomSelect, onSeatSelect, onOccupiedSelect, onSelectedSea
                 <div className="absolute top-[115px] left-[225px] h-[75px] w-[45px] border-x border-[#7C7777] bg-[#C1BDD2]">
                     <div className="absolute bottom-0 right-0 h-px w-[34px] bg-[#7C7777]"></div>
                 </div>
-                <SingleSeat 
-                    selectedSeat={getSelectedState("P-S0-01")} 
-                    onSelect={handleSeatSelection} 
-                    id="P-S0-01" number="1" 
-                    status={getSeatStatus("P-S0-01")} 
-                    type="room" 
-                    className="top-[35px] left-[80px]" 
+                <SingleSeat
+                    selectedSeat={getSelectedState("P-S0-01")}
+                    onSelect={handleSeatSelection}
+                    id="P-S0-01" number="1"
+                    status={getSeatStatus("P-S0-01")}
+                    type="room"
+                    className="top-[35px] left-[80px]"
                 />
                 <SingleSeat selectedSeat={getSelectedState("P-S0-02")} onSelect={handleSeatSelection} id="P-S0-02" number="2" status={getSeatStatus("P-S0-02")} type="room" className="top-[35px] left-[125px]" />
                 <SingleSeat selectedSeat={getSelectedState("P-S0-03")} onSelect={handleSeatSelection} id="P-S0-03" number="3" status={getSeatStatus("P-S0-03")} type="room" className="top-[35px] left-[170px]" />
@@ -135,6 +135,3 @@ const ParterMap = ({ onRoomSelect, onSeatSelect, onOccupiedSelect, onSelectedSea
 };
 
 export default ParterMap;
-
-
-

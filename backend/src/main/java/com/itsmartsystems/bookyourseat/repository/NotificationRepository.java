@@ -28,6 +28,8 @@ public interface NotificationRepository extends JpaRepository<Notification, Long
 
     Optional<Notification> findByInvitation_Id(Long invitationId);
 
+    boolean existsByUser_IdAndReservation_Id(Long userId, Long reservationId);
+
     @Modifying
     @Query("""
         delete from Notification n
@@ -35,4 +37,8 @@ public interface NotificationRepository extends JpaRepository<Notification, Long
         and n.invitation.startDateTime < :now
     """)
     void deletePastInvitationNotifications(@Param("now") LocalDateTime now);
+
+    @Modifying
+    @Query(value = "DELETE FROM notification n WHERE (lower(n.message) LIKE '%' || lower(:pattern) || '%' OR lower(n.title) LIKE '%' || lower(:pattern) || '%' OR n.type IN (:types))", nativeQuery = true)
+    int deleteMockNotifications(@Param("pattern") String pattern, @Param("types") java.util.List<String> types);
 }

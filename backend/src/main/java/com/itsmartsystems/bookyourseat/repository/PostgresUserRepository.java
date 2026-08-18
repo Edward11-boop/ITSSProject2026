@@ -14,7 +14,7 @@ public interface PostgresUserRepository extends JpaRepository<PostgresUser, Long
 
     List<PostgresUser> findByRole(String role);
 
-    List<PostgresUser> findByDepartmentId(Long departmentId);
+    List<PostgresUser> findByDepartmentId(Integer departmentId);
 
     Optional<PostgresUser> findByMongoUserId(String id);
 }

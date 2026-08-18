@@ -4,7 +4,7 @@ interface SingleSeatProps {
     status: 'available' | 'occupied' | 'unavailable' | 'pending';
     type?: 'individual' | 'room';
     selectedSeat: string | null;
-    onSelect: (id: string, type?: 'individual' | 'room') => void; 
+    onSelect: (id: string, type?: 'individual' | 'room') => void;
     className?: string;
 }
 
@@ -63,6 +63,3 @@ const SingleSeat = ({
 };
 
 export default SingleSeat;
-
-
-
