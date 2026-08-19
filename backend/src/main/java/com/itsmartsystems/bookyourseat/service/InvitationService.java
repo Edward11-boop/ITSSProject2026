@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class InvitationService {
@@ -29,15 +30,22 @@ public class InvitationService {
         @Autowired
         private NotificationService notificationService;
 
-        public Invitation createInvitation(InvitationRequest request) {
+        @Transactional
+        public Invitation createInvitation(PostgresUser sender, InvitationRequest request) {
+                validateInvitationInterval(request);
+
                 Invitation invitation = new Invitation();
 
-                PostgresUser sender = postgresUserRepository.findById(request.getSenderId())
-                                .orElseThrow(() -> new RuntimeException("Sender not found"));
                 PostgresUser receiver = postgresUserRepository.findById(request.getReceiverId())
                                 .orElseThrow(() -> new RuntimeException("Receiver not found"));
                 Seat seat = seatRepository.findById(request.getSeatId())
                                 .orElseThrow(() -> new RuntimeException("Seat not found"));
+
+                if (sender.getId().equals(receiver.getId())) {
+                        throw new IllegalArgumentException("Nu te poți invita pe tine însuți!");
+                }
+
+                ensureSeatIsAvailable(seat.getId(), request.getStartDateTime(), request.getEndDateTime());
 
                 invitation.setSenderId(sender);
                 invitation.setReceiverId(receiver);
@@ -57,13 +65,22 @@ public class InvitationService {
         }
 
         @Transactional
-        public void acceptInvitation(Long invitationId) {
+        public void acceptInvitation(Long invitationId, Long currentUserId) {
                 Invitation invitation = invitationRepository.findById(invitationId)
                                 .orElseThrow(() -> new RuntimeException("Invitation not found!"));
 
                 if (!"PENDING".equals(invitation.getStatus())) {
                         throw new RuntimeException("Invitation has already been processed!");
                 }
+
+                if (!invitation.getReceiverId().getId().equals(currentUserId)) {
+                        throw new IllegalArgumentException("Această invitație nu îți aparține!");
+                }
+
+                ensureSeatIsAvailable(
+                                invitation.getSeatId().getId(),
+                                invitation.getStartDateTime(),
+                                invitation.getEndDateTime());
 
                 PostgresUser utilizatorPentruRezervare = postgresUserRepository
                                 .findById(invitation.getReceiverId().getId())
@@ -72,7 +89,7 @@ public class InvitationService {
                 Reservation reservation = new Reservation();
                 reservation.setUser(utilizatorPentruRezervare);
                 reservation.setSeat(invitation.getSeatId());
-                reservation.setRoom(invitation.getSeatId().getRoom());
+
                 reservation.setStartDateTime(invitation.getStartDateTime());
                 reservation.setEndDateTime(invitation.getEndDateTime());
                 reservation.setStatus(Status.APPROVED);
@@ -88,13 +105,46 @@ public class InvitationService {
                 notificationService.markInvitationNotificationAsRead(invitationId);
         }
 
-        public void declineInvitation(Long invitationId) {
+        @Transactional
+        public void declineInvitation(Long invitationId, Long currentUserId) {
                 Invitation invitation = invitationRepository.findById(invitationId)
                                 .orElseThrow(() -> new RuntimeException("Invitation not found!"));
+
+                if (!"PENDING".equals(invitation.getStatus())) {
+                        throw new RuntimeException("Invitation has already been processed!");
+                }
+
+                if (!invitation.getReceiverId().getId().equals(currentUserId)) {
+                        throw new IllegalArgumentException("Această invitație nu îți aparține!");
+                }
 
                 invitation.setStatus("DECLINED");
                 invitation.setRespondedAt(LocalDateTime.now());
                 invitationRepository.save(invitation);
                 notificationService.markInvitationNotificationAsRead(invitationId);
+        }
+
+        private void validateInvitationInterval(InvitationRequest request) {
+                if (request.getReceiverId() == null || request.getSeatId() == null
+                                || request.getStartDateTime() == null || request.getEndDateTime() == null) {
+                        throw new IllegalArgumentException("Datele invitației sunt incomplete!");
+                }
+
+                if (!request.getEndDateTime().isAfter(request.getStartDateTime())) {
+                        throw new IllegalArgumentException("Ora de final trebuie să fie după ora de început!");
+                }
+        }
+
+        private void ensureSeatIsAvailable(Long seatId, LocalDateTime startDateTime, LocalDateTime endDateTime) {
+                boolean isReserved = reservationRepository
+                                .existsBySeat_IdAndStatusInAndStartDateTimeLessThanAndEndDateTimeGreaterThan(
+                                                seatId,
+                                                Set.of(Status.APPROVED, Status.ACCEPTED),
+                                                endDateTime,
+                                                startDateTime);
+
+                if (isReserved) {
+                        throw new IllegalStateException("Locul nu mai este disponibil pentru intervalul selectat!");
+                }
         }
 }

@@ -1,5 +1,4 @@
 import ErrorPopUp from "@/components/ErrorPopUp";
-import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { useEffect, useState } from "react";
 import type { ChangeEvent, FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
@@ -32,11 +31,9 @@ type Seat = {
 };
 
 type User = {
-  id: string;
-  postgresUserId?: number;
+  postgresUserId: number;
   name: string;
   email: string;
-  role?: string;
 };
 
 type Reservation = {
@@ -50,7 +47,10 @@ type Reservation = {
 
 const getRoomFloorId = (room: Room) => room.floor?.id ?? room.floor_id?.id ?? room.floorId ?? room.floor?.name ?? room.floor_id?.name;
 const getSeatRoomId = (seat: Seat) => seat.room?.id ?? seat.roomId ?? seat.salaId;
-const isAvailable = (status?: string) => status?.trim().toUpperCase() === "AVAILABLE";
+const isAvailable = (status?: string) => {
+  const normalizedStatus = status?.trim().toUpperCase();
+  return normalizedStatus === "ACTIVE" || normalizedStatus === "AVAILABLE";
+};
 const isConferenceRoom = (type?: string) => {
   const normalizedType = type?.trim().toUpperCase() ?? "";
   return normalizedType.includes("SEDINTE");
@@ -65,7 +65,6 @@ const overlapsInterval = (reservation: Reservation, start: Date, end: Date) => {
 
 const InviteModal = () => {
   const navigate = useNavigate();
-  const { user: currentUser } = useCurrentUser();
   const [rooms, setRooms] = useState<Room[]>([]);
   const [seats, setSeats] = useState<Seat[]>([]);
   const [floors, setFloors] = useState<Floor[]>([]);
@@ -98,7 +97,7 @@ const InviteModal = () => {
       .then((data) => setFloors(Array.isArray(data) ? data : []))
       .catch(() => setFloors([]));
 
-    fetch("http://localhost:8080/hr/users", { credentials: "include" })
+    fetch("http://localhost:8080/api/invitations/colleagues", { credentials: "include" })
       .then((res) => (res.ok ? res.json() : []))
       .then((data) => setUsers(Array.isArray(data) ? data : []))
       .catch(() => setUsers([]));
@@ -195,7 +194,7 @@ const InviteModal = () => {
   });
 
   const seatsForSelectedRoom = availableSeatsForInterval.filter(
-    (seat) => getSeatRoomId(seat) === selectedRoomId
+    (seat) => String(getSeatRoomId(seat)) === String(selectedRoomId)
   );
 
   const isFormInvalid =
@@ -222,20 +221,14 @@ const InviteModal = () => {
       return;
     }
 
-    if (!currentUser.postgresUserId) {
-      setSubmitError("Nu am putut identifica utilizatorul curent. Te rog autentifica-te din nou.");
-      return;
-    }
-
     const selectedColleague = users.find((user) => String(user.postgresUserId) === formData.colleagueId);
 
-    if (!selectedColleague?.postgresUserId) {
+    if (!selectedColleague) {
       setSubmitError("Nu am putut identifica utilizatorul invitat in Postgres.");
       return;
     }
 
     const invitationData = {
-      senderId: currentUser.postgresUserId,
       receiverId: selectedColleague.postgresUserId,
       seatId: selectedSeat.id,
       startDateTime: `${formData.date}T${formData.startTime}:00`,
@@ -296,7 +289,7 @@ const InviteModal = () => {
                 <option value="">Select a colleague</option>
 
                 {users.map((user) => (
-                  <option key={user.id} value={user.postgresUserId ?? ""} disabled={!user.postgresUserId}>
+                  <option key={user.postgresUserId} value={user.postgresUserId}>
                     {user.name}
                   </option>
                 ))}

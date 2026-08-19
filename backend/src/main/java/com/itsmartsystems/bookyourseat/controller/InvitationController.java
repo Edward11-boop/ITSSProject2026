@@ -4,6 +4,7 @@ import com.itsmartsystems.bookyourseat.model.Invitation;
 import com.itsmartsystems.bookyourseat.model.PostgresUser;
 import com.itsmartsystems.bookyourseat.repository.PostgresUserRepository;
 import com.itsmartsystems.bookyourseat.service.InvitationService;
+import com.itsmartsystems.bookyourseat.dto.ColleagueDto;
 import com.itsmartsystems.bookyourseat.dto.InvitationRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -36,8 +37,18 @@ public class InvitationController {
 
     @PostMapping
     public ResponseEntity<Invitation> createInvitation(@RequestBody InvitationRequest cerere) {
-        Invitation savedInvitation = invitationService.createInvitation(cerere);
+        Invitation savedInvitation = invitationService.createInvitation(getCurrentUser(), cerere);
         return ResponseEntity.ok(savedInvitation);
+    }
+
+    @GetMapping("/colleagues")
+    public ResponseEntity<List<ColleagueDto>> getColleagues() {
+        Long currentUserId = getCurrentUser().getId();
+        List<ColleagueDto> colleagues = postgresUserRepository.findAll().stream()
+                .filter(user -> !user.getId().equals(currentUserId))
+                .map(user -> new ColleagueDto(user.getId(), user.getName(), user.getEmail()))
+                .toList();
+        return ResponseEntity.ok(colleagues);
     }
 
     @GetMapping("/pending")
@@ -49,13 +60,13 @@ public class InvitationController {
 
     @PostMapping("/{id}/accept")
     public ResponseEntity<Void> acceptInvitation(@PathVariable Long id) {
-        invitationService.acceptInvitation(id);
+        invitationService.acceptInvitation(id, getCurrentUser().getId());
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/{id}/decline")
     public ResponseEntity<Void> declineInvitation(@PathVariable Long id) {
-        invitationService.declineInvitation(id);
+        invitationService.declineInvitation(id, getCurrentUser().getId());
         return ResponseEntity.ok().build();
     }
 }

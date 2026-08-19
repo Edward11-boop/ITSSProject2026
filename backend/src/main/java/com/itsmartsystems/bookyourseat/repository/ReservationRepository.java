@@ -6,6 +6,7 @@ import com.itsmartsystems.bookyourseat.model.Reservation;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
 
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
@@ -32,5 +33,11 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
             PostgresUser user,
             LocalDateTime startOfDay,
             LocalDateTime endOfDay);
+
+    boolean existsBySeat_IdAndStatusInAndStartDateTimeLessThanAndEndDateTimeGreaterThan(
+            Long seatId,
+            Collection<Status> statuses,
+            LocalDateTime endDateTime,
+            LocalDateTime startDateTime);
 
 }

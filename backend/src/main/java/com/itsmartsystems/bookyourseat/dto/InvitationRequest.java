@@ -4,19 +4,10 @@ import java.time.LocalDateTime;
 
 public class InvitationRequest {
 
-    private Long senderId;
     private Long receiverId;
     private Long seatId;
     private LocalDateTime startDateTime;
     private LocalDateTime endDateTime;
-
-    public Long getSenderId() {
-        return senderId;
-    }
-
-    public void setSenderId(Long senderId) {
-        this.senderId = senderId;
-    }
 
     public Long getReceiverId() {
         return receiverId;

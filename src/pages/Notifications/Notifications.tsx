@@ -103,15 +103,22 @@ const Notifications = ({ onNotificationRemoved }: NotificationsProps) => {
   }
 
   const handleAccept = async (notification: Notification) => {
-    const invitationId = notification.invitationId ?? notification.id;
-
     try {
-      await fetch(`http://localhost:8080/api/notifications/${notification.id}/accept`, {
+      const response = await fetch(
+        notification.invitationId
+          ? `http://localhost:8080/api/invitations/${notification.invitationId}/accept`
+          : `http://localhost:8080/api/notifications/${notification.id}/accept`,
+        {
         method: "POST",
         credentials: "include",
-      });
+        },
+      );
+
+      if (!response.ok) {
+        throw new Error("Invitation could not be accepted");
+      }
     } catch {
-      // no-op: keep local optimistic update if backend is unavailable
+      return;
     }
 
     setNotifications((previousNotifications) =>
@@ -131,15 +138,27 @@ const Notifications = ({ onNotificationRemoved }: NotificationsProps) => {
 
   const handleDecline = async (notificationId: number) => {
     const notification = notifications.find((item) => item.id === notificationId);
-    const invitationId = notification?.invitationId ?? notificationId;
+
+    if (!notification) {
+      return;
+    }
 
     try {
-      await fetch(`http://localhost:8080/api/notifications/${notification.id}/decline`, {
+      const response = await fetch(
+        notification.invitationId
+          ? `http://localhost:8080/api/invitations/${notification.invitationId}/decline`
+          : `http://localhost:8080/api/notifications/${notification.id}/decline`,
+        {
         method: "POST",
         credentials: "include",
-      });
+        },
+      );
+
+      if (!response.ok) {
+        throw new Error("Invitation could not be declined");
+      }
     } catch {
-      // no-op: keep local optimistic update if backend is unavailable
+      return;
     }
 
     setNotifications((previousNotifications) =>
@@ -192,4 +211,3 @@ const Notifications = ({ onNotificationRemoved }: NotificationsProps) => {
 }
 
 export default Notifications;
-
