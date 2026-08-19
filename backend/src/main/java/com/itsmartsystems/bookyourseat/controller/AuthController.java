@@ -67,4 +67,20 @@ public class AuthController {
     public UserDetails getMe() {
         return authService.UserDet();
     }
+
+    @PutMapping("/me/phone")
+    public UserDetails updatePhone(@Valid @RequestBody UpdatePhoneRequest request) {
+        return authService.updateCurrentUserPhone(request);
+    }
+
+    @PutMapping("/me/password")
+    public String updatePassword(@Valid @RequestBody UpdateCurrentPasswordRequest request) {
+        authService.updateCurrentUserPassword(request);
+        return "Password has been successfully changed!";
+    }
+
+    @GetMapping("/me/reservations")
+    public BookingSummaryResponse getMyReservations() {
+        return authService.getCurrentUserBookingSummary();
+    }
 }

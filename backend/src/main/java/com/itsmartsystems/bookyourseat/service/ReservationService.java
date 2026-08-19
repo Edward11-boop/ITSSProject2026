@@ -1,6 +1,9 @@
 package com.itsmartsystems.bookyourseat.service;
 
 import com.itsmartsystems.bookyourseat.Status;
+import com.itsmartsystems.bookyourseat.dto.BookingHistoryItem;
+import com.itsmartsystems.bookyourseat.dto.BookingStats;
+import com.itsmartsystems.bookyourseat.dto.BookingSummaryResponse;
 import com.itsmartsystems.bookyourseat.model.*;
 import com.itsmartsystems.bookyourseat.repository.ReservationRepository;
 import com.itsmartsystems.bookyourseat.repository.RoomRepository;
@@ -18,6 +21,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.Comparator;
 
 @Service
 public class ReservationService {
@@ -218,6 +222,42 @@ public class ReservationService {
 
     public List<Reservation> historyReservation(Long userId) {
         return reservationRepository.findByUser_Id(userId);
+    }
+
+    public BookingSummaryResponse getBookingSummary(Long userId) {
+        List<Reservation> reservations = reservationRepository.findByUser_Id(userId);
+
+        BookingStats stats = new BookingStats(
+                reservations.stream().filter(reservation -> reservation.getStatus() == Status.APPROVED || reservation.getStatus() == Status.ACCEPTED).count(),
+                reservations.stream().filter(reservation -> reservation.getStatus() == Status.PENDING).count(),
+                reservations.stream().filter(reservation -> reservation.getStatus() == Status.REJECTED || reservation.getStatus() == Status.DECLINED).count()
+        );
+
+        List<BookingHistoryItem> history = reservations.stream()
+                .sorted(Comparator.comparing(Reservation::getStartDateTime).reversed())
+                .map(this::toBookingHistoryItem)
+                .toList();
+
+        return new BookingSummaryResponse(stats, history);
+    }
+
+    private BookingHistoryItem toBookingHistoryItem(Reservation reservation) {
+        Seat seat = reservation.getSeat();
+        Room room = seat != null ? seat.getRoom() : reservation.getRoom();
+
+        return new BookingHistoryItem(
+                reservation.getId(),
+                reservation.getStartDateTime(),
+                seat == null ? "-" : seat.getCode(),
+                room == null ? "-" : room.getName(),
+                switch (reservation.getStatus()) {
+                    case APPROVED -> "Confirmat";
+                    case ACCEPTED -> "Confirmat";
+                    case PENDING -> "In asteptare";
+                    case REJECTED -> "Anulat";
+                    case DECLINED -> "Anulat";
+                }
+        );
     }
 
     public List<Reservation> approvedReservations() {

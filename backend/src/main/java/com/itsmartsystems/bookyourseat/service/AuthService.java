@@ -2,7 +2,9 @@ package com.itsmartsystems.bookyourseat.service;
 
 import com.itsmartsystems.bookyourseat.dto.*;
 import com.itsmartsystems.bookyourseat.model.PostgresUser;import com.itsmartsystems.bookyourseat.model.User;
+import com.itsmartsystems.bookyourseat.model.Department;
 import com.itsmartsystems.bookyourseat.repository.PostgresUserRepository;import com.itsmartsystems.bookyourseat.repository.UserRepository;
+import com.itsmartsystems.bookyourseat.repository.DepartmentRepository;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -31,13 +33,18 @@ public class AuthService {
     private final EmailService emailService;
     private final UserSyncService userSyncService;
     private final PostgresUserRepository postgresUserRepository;
-    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, EmailService emailService, UserSyncService userSyncService , PostgresUserRepository postgresUserRepository) {
+    private final DepartmentRepository departmentRepository;
+    private final ReservationService reservationService;
+
+    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, EmailService emailService, UserSyncService userSyncService, PostgresUserRepository postgresUserRepository, DepartmentRepository departmentRepository, ReservationService reservationService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.authenticationManager = authenticationManager;
         this.emailService = emailService;
         this.userSyncService = userSyncService;
         this.postgresUserRepository = postgresUserRepository;
+        this.departmentRepository = departmentRepository;
+        this.reservationService = reservationService;
     }
 
     // Method for checking the password
@@ -156,20 +163,67 @@ public class AuthService {
     }
 
     public UserDetails UserDet() {
+        User user = getAuthenticatedUser();
+
+        PostgresUser postgresUser = postgresUserRepository.findByEmail(user.getEmail()).orElse(null);
+        Integer postgresUserId = postgresUser == null ? null : Math.toIntExact(postgresUser.getId());
+
+        UserDetails details = new UserDetails(user.getId(), postgresUserId, user.getName(), user.getEmail(), user.getRole());
+        if (postgresUser != null) {
+            details.setPhoneNumber(postgresUser.getPhoneNumber());
+            details.setDepartmentId(postgresUser.getDepartmentId());
+            if (postgresUser.getDepartmentId() != null) {
+                departmentRepository.findById(Long.valueOf(postgresUser.getDepartmentId()))
+                        .map(Department::getName)
+                        .ifPresent(details::setDepartmentName);
+            }
+        }
+
+        return details;
+    }
+
+    public UserDetails updateCurrentUserPhone(UpdatePhoneRequest request) {
+        User user = getAuthenticatedUser();
+        PostgresUser postgresUser = postgresUserRepository.findByEmail(user.getEmail())
+                .orElseThrow(() -> new IllegalArgumentException("PostgreSQL user does not exist!"));
+
+        postgresUser.setPhoneNumber(request.getPhoneNumber().trim());
+        postgresUserRepository.save(postgresUser);
+        return UserDet();
+    }
+
+    public void updateCurrentUserPassword(UpdateCurrentPasswordRequest request) {
+        User user = getAuthenticatedUser();
+        String newPassword = request.getNewPassword();
+
+        if (passwordEncoder.matches(newPassword, user.getPassword())) {
+            throw new IllegalArgumentException("Parola nouă trebuie să fie diferită de parola actuală!");
+        }
+
+        if (!checkPassword(newPassword)) {
+            throw new IllegalArgumentException("Password must contain at least 10 characters and 2 special characters (!@#$%&*)!");
+        }
+
+        user.setPassword(passwordEncoder.encode(newPassword));
+        user.setFirstLog(false);
+        userRepository.save(user);
+    }
+
+    public BookingSummaryResponse getCurrentUserBookingSummary() {
+        User user = getAuthenticatedUser();
+        PostgresUser postgresUser = postgresUserRepository.findByEmail(user.getEmail())
+                .orElseThrow(() -> new IllegalArgumentException("PostgreSQL user does not exist!"));
+        return reservationService.getBookingSummary(postgresUser.getId());
+    }
+
+    private User getAuthenticatedUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !authentication.isAuthenticated()) {
             throw new IllegalArgumentException("User is not authenticated !");
         }
 
         String email = authentication.getName();
-        User user = userRepository.findByEmail(email)
+        return userRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("User doesnt exist !"));
-
-        Integer postgresUserId = postgresUserRepository.findByEmail(email)
-                .map(PostgresUser::getId)
-                .map(Long::intValue)
-                .orElse(null);
-
-        return new UserDetails(user.getId(), postgresUserId, user.getName(), user.getEmail(), user.getRole());
     }
 }
