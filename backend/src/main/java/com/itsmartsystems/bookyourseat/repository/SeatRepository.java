@@ -13,6 +13,14 @@ public interface SeatRepository extends JpaRepository<Seat, Long> {
 
     Optional<Seat> findByCode(String code);
 
+    @org.springframework.data.jpa.repository.Lock(jakarta.persistence.LockModeType.PESSIMISTIC_WRITE)
+    @Query("SELECT s FROM Seat s WHERE s.code = :code")
+    Optional<Seat> findByCodeForUpdate(@Param("code") String code);
+
+    @org.springframework.data.jpa.repository.Lock(jakarta.persistence.LockModeType.PESSIMISTIC_WRITE)
+    @Query("SELECT s FROM Seat s WHERE s.id = :seatId")
+    Optional<Seat> findByIdForUpdate(@Param("seatId") Long seatId);
+
     List<Seat> findByRoomId(Long roomId);
 
     List<Seat> findByStatus(String status);
@@ -42,4 +50,4 @@ public interface SeatRepository extends JpaRepository<Seat, Long> {
             @Param("roomId") Long roomId,
             @Param("startDateTime") LocalDateTime startDateTime,
             @Param("endDateTime") LocalDateTime endDateTime);
-} 
+}

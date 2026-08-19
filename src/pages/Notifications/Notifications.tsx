@@ -21,10 +21,6 @@ type BackendNotification = {
   };
 };
 
-type NotificationsProps = {
-  onNotificationRemoved?: () => void;
-};
-
 const formatTime = (value: Date) => value.toLocaleTimeString("ro-RO", {
   hour: "2-digit",
   minute: "2-digit",
@@ -48,37 +44,49 @@ const toNotificationModel = (item: BackendNotification): Notification => {
   };
 };
 
-const Notifications = ({ onNotificationRemoved }: NotificationsProps) => {
+const Notifications = () => {
   const { user } = useCurrentUser();
   const [notifications, setNotifications] = useState<Notification[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const scheduledRemovalIds = useRef<Set<number>>(new Set());
 
   useEffect(() => {
     if (!user.id) {
+      setIsLoading(false);
       return;
     }
 
-    // Only fetch unread notifications so a dismissed/accepted notification does not reappear
-    fetch(`http://localhost:8080/api/notifications/me/unread`, {
-      credentials: "include",
-    })
-      .then((response) => {
+    const abortController = new AbortController();
+    setIsLoading(true);
+
+    // Only fetch unread notifications so a dismissed/accepted notification does not reappear.
+    const loadNotifications = async () => {
+      try {
+        const response = await fetch(`http://localhost:8080/api/notifications/me/unread`, {
+          credentials: "include",
+          signal: abortController.signal,
+        });
+
         if (!response.ok) {
           throw new Error("Failed to load notifications");
         }
 
-        return response.json() as Promise<BackendNotification[]>;
-      })
-      .then((data) => {
-        if (Array.isArray(data)) {
-          setNotifications(data.map(toNotificationModel));
-        } else {
+        const data = await response.json() as BackendNotification[];
+        setNotifications(Array.isArray(data) ? data.map(toNotificationModel) : []);
+      } catch (error) {
+        if ((error as DOMException).name !== "AbortError") {
           setNotifications([]);
         }
-      })
-      .catch(() => {
-        setNotifications([]);
-      });
+      } finally {
+        if (!abortController.signal.aborted) {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    void loadNotifications();
+
+    return () => abortController.abort();
   }, [user.id]);
 
   const removeNotification = (
@@ -97,8 +105,6 @@ const Notifications = ({ onNotificationRemoved }: NotificationsProps) => {
           (notification) => notificationId !== notification.id
         )
       );
-
-      onNotificationRemoved?.();
     }, delay)
   }
 
@@ -133,6 +139,7 @@ const Notifications = ({ onNotificationRemoved }: NotificationsProps) => {
       ),
     );
 
+    window.dispatchEvent(new CustomEvent("notifications:changed", { detail: { delta: -1 } }));
     removeNotification(notification.id);
   }
 
@@ -173,6 +180,7 @@ const Notifications = ({ onNotificationRemoved }: NotificationsProps) => {
       ),
     );
 
+    window.dispatchEvent(new CustomEvent("notifications:changed", { detail: { delta: -1 } }));
     removeNotification(notificationId);
   }
 
@@ -194,7 +202,14 @@ const Notifications = ({ onNotificationRemoved }: NotificationsProps) => {
       </div>
 
       <div className="mt-10 flex flex-col gap-4">
-        {notifications.map((notification) => (
+        {isLoading && (
+          <div className="flex items-center justify-center gap-3 py-10 text-[#29255E]" role="status" aria-live="polite">
+            <span className="h-6 w-6 animate-spin rounded-full border-2 border-[#C4B5FD] border-t-[#6D28D9]" aria-hidden="true" />
+            <span>Se încarcă notificările...</span>
+          </div>
+        )}
+
+        {!isLoading && notifications.map((notification) => (
           <NotificationItem
             key={notification.id}
             notification={notification}

@@ -37,7 +37,7 @@ public class NotificationService {
 
     @Transactional(readOnly = true)
     public List<Notification> getUnreadNotificationsForUser(Integer userId) {
-        return notificationRepository.findByUser_IdAndIsReadFalse(userId);
+        return notificationRepository.findUnreadWithDetailsByUserId(userId);
     }
 
     public long countUnreadNotificationsForUser(Integer userId) {

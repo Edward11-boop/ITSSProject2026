@@ -36,18 +36,18 @@ export default function NotificationItem({
       </div>
 
       {notification.status === "pending" && (
-        <div className="flex w-full flex-wrap items-center gap-3 md:ml-auto md:w-auto md:gap-4">
+        <div className="flex w-full flex-nowrap items-center gap-3 md:ml-auto md:w-auto md:gap-4">
           <button
             type="button"
             onClick={() => onAccept(notification)}
-            className="rounded-[60px] bg-[#6D28D9] px-5 py-2 font-bold text-white hover:bg-[#5B21B6] sm:px-8"
+            className="flex-1 rounded-[60px] bg-[#6D28D9] px-5 py-2 font-bold text-white hover:bg-[#5B21B6] sm:flex-none sm:px-8"
           >
             Accept
           </button>
           <button
             type="button"
             onClick={() => onDecline(notification.id)}
-            className="rounded-[60px] border border-[#6D28D9] bg-white px-5 py-2 font-bold text-[#6D28D9] hover:bg-[#F5F3FF] sm:px-8"
+            className="flex-1 rounded-[60px] border border-[#6D28D9] bg-white px-5 py-2 font-bold text-[#6D28D9] hover:bg-[#F5F3FF] sm:flex-none sm:px-8"
           >
             Decline
           </button>

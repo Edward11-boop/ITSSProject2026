@@ -14,6 +14,7 @@ import com.itsmartsystems.bookyourseat.repository.PostgresUserRepository;
 import com.itsmartsystems.bookyourseat.repository.InvitationRepository;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
@@ -22,6 +23,7 @@ import java.util.Optional;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Comparator;
+import java.util.Set;
 
 @Service
 public class ReservationService {
@@ -55,19 +57,7 @@ public class ReservationService {
         return sameDaySingleSeat ? Status.APPROVED : Status.PENDING;
     }
 
-    private void markSeatOccupiedIfNeeded(Seat seat) {
-        if (seat == null) {
-            return;
-        }
-
-        try {
-            seat.setStatus("OCCUPIED");
-            seatRepository.save(seat);
-        } catch (Exception ex) {
-            System.err.println("Failed to mark seat as occupied: " + ex.getMessage());
-        }
-    }
-
+    @Transactional
     public Reservation createReservation(PostgresUser user, String roomCode, String seatCode, LocalDateTime start,
             LocalDateTime end, Integer recurrence) {
         Optional<Room> room = roomRepository.findByCode(roomCode);
@@ -76,7 +66,7 @@ public class ReservationService {
 
         Seat seatObj = null;
         if (seatCode != null) {
-            Optional<Seat> seat = seatRepository.findByCode(seatCode);
+            Optional<Seat> seat = seatRepository.findByCodeForUpdate(seatCode);
             if (seat.isEmpty())
                 throw new IllegalArgumentException("This seat does not exist !");
 
@@ -85,9 +75,10 @@ public class ReservationService {
                 throw new IllegalArgumentException("This seat does not belong to this room !");
         }
 
+        Set<Status> blockingStatuses = Set.of(Status.APPROVED, Status.ACCEPTED, Status.PENDING);
         List<Reservation> reservations = seatCode == null
-                ? reservationRepository.findByRoom_IdAndStatus(room.get().getId(), Status.APPROVED)
-                : reservationRepository.findBySeat_IdAndStatus(seatObj.getId(), Status.APPROVED);
+                ? reservationRepository.findByRoom_IdAndStatusIn(room.get().getId(), blockingStatuses)
+                : reservationRepository.findBySeat_IdAndStatusIn(seatObj.getId(), blockingStatuses);
 
         for (Reservation r : reservations) {
             if (start.isBefore(r.getEndDateTime()) && end.isAfter(r.getStartDateTime()))
@@ -96,10 +87,6 @@ public class ReservationService {
 
         Room roomToSave = (seatObj != null) ? null : room.get();
         Status initialStatus = determineReservationStatus(seatObj, recurrence, start, end);
-        if (initialStatus == Status.APPROVED) {
-            markSeatOccupiedIfNeeded(seatObj);
-        }
-
         Reservation reservation = new Reservation(user, seatObj, roomToSave, start, end, initialStatus, recurrence);
 
         Reservation savedReservation = reservationRepository.save(reservation);
@@ -117,6 +104,7 @@ public class ReservationService {
         reservationRepository.delete(reservation.get());
     }
 
+    @Transactional
     public Reservation modifyReservation(PostgresUser user, Long reservationId, String roomCode, String seatCode,
             LocalDateTime start, LocalDateTime end, Integer recurrence) {
         Optional<Reservation> reservation = reservationRepository.findById(reservationId);
@@ -129,7 +117,7 @@ public class ReservationService {
 
         Seat seatObj = null;
         if (seatCode != null) {
-            Optional<Seat> seat = seatRepository.findByCode(seatCode);
+            Optional<Seat> seat = seatRepository.findByCodeForUpdate(seatCode);
             if (seat.isEmpty())
                 throw new IllegalArgumentException("Invalid seat !");
 
@@ -139,9 +127,10 @@ public class ReservationService {
 
         }
 
+        Set<Status> blockingStatuses = Set.of(Status.APPROVED, Status.ACCEPTED, Status.PENDING);
         List<Reservation> reservations = seatCode == null
-                ? reservationRepository.findByRoom_IdAndStatus(room.get().getId(), Status.APPROVED)
-                : reservationRepository.findBySeat_IdAndStatus(seatObj.getId(), Status.APPROVED);
+                ? reservationRepository.findByRoom_IdAndStatusIn(room.get().getId(), blockingStatuses)
+                : reservationRepository.findBySeat_IdAndStatusIn(seatObj.getId(), blockingStatuses);
 
         for (Reservation res : reservations) {
             if (res.getId().equals(reservationId))
@@ -161,10 +150,6 @@ public class ReservationService {
         reservationObj.setEndDateTime(end);
 
         Status newStatus = determineReservationStatus(seatObj, recurrence, start, end);
-        if (newStatus == Status.APPROVED) {
-            markSeatOccupiedIfNeeded(seatObj);
-        }
-
         reservationObj.setStatus(newStatus);
         reservationObj.setRecurrence(recurrence);
 
@@ -181,7 +166,6 @@ public class ReservationService {
 
         Reservation reservationObj = reservation.get();
         reservationObj.setStatus(Status.APPROVED);
-        markSeatOccupiedIfNeeded(reservationObj.getSeat());
         return reservationRepository.save(reservationObj);
     }
 

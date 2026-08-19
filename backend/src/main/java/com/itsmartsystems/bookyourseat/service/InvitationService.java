@@ -38,7 +38,9 @@ public class InvitationService {
 
                 PostgresUser receiver = postgresUserRepository.findById(request.getReceiverId())
                                 .orElseThrow(() -> new RuntimeException("Receiver not found"));
-                Seat seat = seatRepository.findById(request.getSeatId())
+                // Serializes competing invitations/reservations for the same seat while its
+                // availability and the pending hold are written in this transaction.
+                Seat seat = seatRepository.findByIdForUpdate(request.getSeatId())
                                 .orElseThrow(() -> new RuntimeException("Seat not found"));
 
                 if (sender.getId().equals(receiver.getId())) {
@@ -54,6 +56,19 @@ public class InvitationService {
                 invitation.setEndDateTime(request.getEndDateTime());
                 invitation.setStatus("PENDING");
                 invitation.setCreatedAt(LocalDateTime.now());
+
+                // A pending reservation is the time-bound hold. It is deliberately not a
+                // global Seat.status change, because the seat may still be used outside this
+                // invitation's interval.
+                Reservation pendingReservation = new Reservation(
+                                receiver,
+                                seat,
+                                null,
+                                request.getStartDateTime(),
+                                request.getEndDateTime(),
+                                Status.PENDING,
+                                0);
+                invitation.setCreatedReservationId(reservationRepository.save(pendingReservation));
 
                 Invitation savedInvitation = invitationRepository.save(invitation);
                 notificationService.createInvitationNotification(savedInvitation);
@@ -77,25 +92,35 @@ public class InvitationService {
                         throw new IllegalArgumentException("Această invitație nu îți aparține!");
                 }
 
-                ensureSeatIsAvailable(
-                                invitation.getSeatId().getId(),
-                                invitation.getStartDateTime(),
-                                invitation.getEndDateTime());
+                Reservation savedReservation = invitation.getCreatedReservationId();
+                if (savedReservation != null) {
+                        if (savedReservation.getStatus() != Status.PENDING) {
+                                throw new RuntimeException("Invitation hold is no longer pending!");
+                        }
 
-                PostgresUser utilizatorPentruRezervare = postgresUserRepository
-                                .findById(invitation.getReceiverId().getId())
-                                .orElseThrow(() -> new RuntimeException("User not found to create the reservation!"));
+                        savedReservation.setStatus(Status.APPROVED);
+                        savedReservation = reservationRepository.save(savedReservation);
+                } else {
+                        // Backward compatibility for invitations created before the pending
+                        // reservation hold was introduced.
+                        ensureSeatIsAvailable(
+                                        invitation.getSeatId().getId(),
+                                        invitation.getStartDateTime(),
+                                        invitation.getEndDateTime());
 
-                Reservation reservation = new Reservation();
-                reservation.setUser(utilizatorPentruRezervare);
-                reservation.setSeat(invitation.getSeatId());
+                        PostgresUser utilizatorPentruRezervare = postgresUserRepository
+                                        .findById(invitation.getReceiverId().getId())
+                                        .orElseThrow(() -> new RuntimeException("User not found to create the reservation!"));
 
-                reservation.setStartDateTime(invitation.getStartDateTime());
-                reservation.setEndDateTime(invitation.getEndDateTime());
-                reservation.setStatus(Status.APPROVED);
-                reservation.setRecurrence(0);
-
-                Reservation savedReservation = reservationRepository.save(reservation);
+                        Reservation reservation = new Reservation();
+                        reservation.setUser(utilizatorPentruRezervare);
+                        reservation.setSeat(invitation.getSeatId());
+                        reservation.setStartDateTime(invitation.getStartDateTime());
+                        reservation.setEndDateTime(invitation.getEndDateTime());
+                        reservation.setStatus(Status.APPROVED);
+                        reservation.setRecurrence(0);
+                        savedReservation = reservationRepository.save(reservation);
+                }
 
                 invitation.setStatus("ACCEPTED");
                 invitation.setRespondedAt(LocalDateTime.now());
@@ -120,6 +145,11 @@ public class InvitationService {
 
                 invitation.setStatus("DECLINED");
                 invitation.setRespondedAt(LocalDateTime.now());
+                Reservation pendingReservation = invitation.getCreatedReservationId();
+                if (pendingReservation != null && pendingReservation.getStatus() == Status.PENDING) {
+                        pendingReservation.setStatus(Status.REJECTED);
+                        reservationRepository.save(pendingReservation);
+                }
                 invitationRepository.save(invitation);
                 notificationService.markInvitationNotificationAsRead(invitationId);
         }
@@ -139,7 +169,7 @@ public class InvitationService {
                 boolean isReserved = reservationRepository
                                 .existsBySeat_IdAndStatusInAndStartDateTimeLessThanAndEndDateTimeGreaterThan(
                                                 seatId,
-                                                Set.of(Status.APPROVED, Status.ACCEPTED),
+                                                Set.of(Status.APPROVED, Status.ACCEPTED, Status.PENDING),
                                                 endDateTime,
                                                 startDateTime);
 

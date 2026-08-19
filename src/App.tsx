@@ -1,4 +1,5 @@
 ﻿import { useState, useEffect } from "react"
+import { useCallback } from "react"
 import { Routes, Route, useLocation } from "react-router-dom"
 import Topbar from "@/components/Topbar"
 import Sidebar from "@/components/Sidebar"
@@ -24,10 +25,10 @@ export default function App() {
   const [notificationCount, setNotificationCount] = useState(0)
   const location = useLocation()
 
-  // fetch unread notifications count for current authenticated user
-  useEffect(() => {
+  const refreshNotificationCount = useCallback(async () => {
     fetch("http://localhost:8080/api/notifications/me/unread-count", {
       credentials: "include",
+      cache: "no-store",
     })
       .then((res) => {
         if (!res.ok) return 0;
@@ -39,6 +40,34 @@ export default function App() {
       })
       .catch(() => setNotificationCount(0));
   }, []);
+
+  useEffect(() => {
+    const handleNotificationChange = (event: Event) => {
+      const delta = (event as CustomEvent<{ delta?: number }>).detail?.delta
+      if (typeof delta === "number") {
+        setNotificationCount((currentCount) => Math.max(0, currentCount + delta))
+      }
+
+      void refreshNotificationCount()
+    }
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "visible") {
+        void refreshNotificationCount()
+      }
+    }
+
+    void refreshNotificationCount()
+    window.addEventListener("notifications:changed", handleNotificationChange)
+    window.addEventListener("focus", refreshNotificationCount)
+    document.addEventListener("visibilitychange", handleVisibilityChange)
+
+    return () => {
+      window.removeEventListener("notifications:changed", handleNotificationChange)
+      window.removeEventListener("focus", refreshNotificationCount)
+      document.removeEventListener("visibilitychange", handleVisibilityChange)
+    }
+  }, [location.pathname, refreshNotificationCount])
 
   const dashboardPages = [
     "/dashboard",
@@ -109,16 +138,7 @@ export default function App() {
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/change-password" element={<ChangePassword />} />
             <Route path="/dashboard" element={<Dashboard />} />
-            <Route
-              path="/notifications"
-              element={
-                <Notifications
-                  onNotificationRemoved={() =>
-                    setNotificationCount((currentCount) => Math.max(0, currentCount - 1))
-                  }
-                />
-              }
-            />
+            <Route path="/notifications" element={<Notifications />} />
             <Route path="/history" element={<History />} />
             <Route path="/user-details" element={<UserDetails />} />
             <Route path="/type-of-reservation" element={<TypeOfReservation />} />
