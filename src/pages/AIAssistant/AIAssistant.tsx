@@ -15,7 +15,7 @@ const formatLocalDateTime = (date: Date) => {
 const backendTravelModeBySelection: Record<TravelMode, string> = {
   driving: "DRIVE",
   walking: "WALK",
-  bicycling: "TWO_WHEELER",
+  bicycling: "BICYCLE",
   transit: "TRANSIT",
   "two-wheeler": "TWO_WHEELER",
 }
@@ -110,4 +110,3 @@ const AIAssistant = () => {
 }
 
 export default AIAssistant
-

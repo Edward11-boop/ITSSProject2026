@@ -1,6 +1,7 @@
 package com.itsmartsystems.bookyourseat.service;
 
 import com.itsmartsystems.bookyourseat.Status;
+import com.itsmartsystems.bookyourseat.model.PostgresUser;
 import com.itsmartsystems.bookyourseat.model.Reservation;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -16,6 +18,9 @@ public class N8nService {
 
     @Value("${n8n.webhook.url}")
     private String webhook;
+
+    @Value("${N8N_MANAGER_APPROVAL_WEBHOOK_URL:}")
+    private String managerApprovalWebhook;
 
     private final RestClient restClient;
 
@@ -55,6 +60,42 @@ public class N8nService {
 
         } catch (Exception e) {
             System.err.println("Failed to send n8n notification: " + e.getMessage());
+        }
+    }
+
+    @Async
+    public void sendRecurringReservationApprovalRequest(Reservation reservation, List<PostgresUser> approvers) {
+        if (managerApprovalWebhook.isBlank() || approvers.isEmpty()) {
+            return;
+        }
+
+        try {
+            Map<String, Object> payload = new HashMap<>();
+            payload.put("reservationId", reservation.getId());
+            payload.put("requesterName", reservation.getUser().getName());
+            payload.put("requesterEmail", reservation.getUser().getEmail());
+            payload.put("roomCode", reservation.getSeat() != null
+                    ? reservation.getSeat().getRoom().getCode()
+                    : reservation.getRoom().getCode());
+            payload.put("roomName", reservation.getSeat() != null
+                    ? reservation.getSeat().getRoom().getName()
+                    : reservation.getRoom().getName());
+            payload.put("seatCode", reservation.getSeat() != null ? reservation.getSeat().getCode() : null);
+            payload.put("startDateTime", reservation.getStartDateTime().toString());
+            payload.put("endDateTime", reservation.getEndDateTime().toString());
+            payload.put("recurrence", reservation.getRecurrence());
+            payload.put("approvers", approvers.stream()
+                    .map(approver -> Map.of("name", approver.getName(), "email", approver.getEmail()))
+                    .toList());
+
+            restClient.post()
+                    .uri(managerApprovalWebhook)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(payload)
+                    .retrieve()
+                    .toBodilessEntity();
+        } catch (Exception e) {
+            System.err.println("Failed to send recurring reservation approval webhook: " + e.getMessage());
         }
     }
 

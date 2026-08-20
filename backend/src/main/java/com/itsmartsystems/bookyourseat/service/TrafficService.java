@@ -9,10 +9,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Service
 public class TrafficService {
 
+    private static final Set<String> VALID_TRAVEL_MODES = Set.of(
+            "DRIVE", "WALK", "BICYCLE", "TRANSIT", "TWO_WHEELER");
+    private static final Set<String> MODES_SUPPORTING_ROUTING_PREFERENCE = Set.of(
+            "DRIVE", "TWO_WHEELER");
+    private static final Set<String> MODES_SUPPORTING_ALTERNATIVE_ROUTES = Set.of(
+            "DRIVE", "WALK", "BICYCLE", "TWO_WHEELER");
 
     // coordonatele firmei
     private static final double latDest = 44.4485;
@@ -33,6 +40,9 @@ public class TrafficService {
     }
 
     public List<RoutesOption> getTrafficRoutes(double latOrigin, double longOrigin , String metodaDeplasare) {
+        String travelMode = VALID_TRAVEL_MODES.contains(metodaDeplasare)
+                ? metodaDeplasare
+                : "DRIVE";
         // am creat structura map urilor pentru json - > origin
         /*
         "origin":{
@@ -76,9 +86,13 @@ public class TrafficService {
         HashMap<String,Object> requestBody = new HashMap<>();
         requestBody.put("origin" , origin);
         requestBody.put("destination" , originDest);
-        requestBody.put("travelMode" , metodaDeplasare);
-        requestBody.put("routingPreference", "TRAFFIC_AWARE");
-        requestBody.put("computeAlternativeRoutes", true );
+        requestBody.put("travelMode" , travelMode);
+        if (MODES_SUPPORTING_ROUTING_PREFERENCE.contains(travelMode)) {
+            requestBody.put("routingPreference", "TRAFFIC_AWARE");
+        }
+        if (MODES_SUPPORTING_ALTERNATIVE_ROUTES.contains(travelMode)) {
+            requestBody.put("computeAlternativeRoutes", true);
+        }
 
         // Trimitem cererea (HEADERS + BODY, direct in lant, cu RestClient)
         Map<String, Object> response = restClient.post()
@@ -92,6 +106,10 @@ public class TrafficService {
 
         // Primim raspunsul
         List<Map<String, Object>> routes = (List<Map<String, Object>>) response.get("routes");
+
+        if (routes == null) {
+            return new ArrayList<>();
+        }
 
 
         // creez o lista care sa contina toate rutele

@@ -1,12 +1,14 @@
 package com.itsmartsystems.bookyourseat.controller;
 
 import com.itsmartsystems.bookyourseat.Role;
+import com.itsmartsystems.bookyourseat.Status;
 import com.itsmartsystems.bookyourseat.dto.ReservationRequest;
 import com.itsmartsystems.bookyourseat.dto.ReservationResponse;
 import com.itsmartsystems.bookyourseat.model.PostgresUser;
 import com.itsmartsystems.bookyourseat.model.Reservation;
 import com.itsmartsystems.bookyourseat.repository.PostgresUserRepository;
 import com.itsmartsystems.bookyourseat.service.ReservationService;
+import com.itsmartsystems.bookyourseat.service.N8nService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -18,20 +20,28 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 import java.util.List;
 
 @RestController
 @RequestMapping("/reservations")
 public class ReservationController {
 
+    private static final Logger logger = LoggerFactory.getLogger(ReservationController.class);
+
     private final ReservationService reservationService;
     private final PostgresUserRepository postgresUserRepository;
+    private final N8nService n8nService;
 
-    public ReservationController(ReservationService reservationService, PostgresUserRepository postgresUserRepository) {
+    public ReservationController(ReservationService reservationService, PostgresUserRepository postgresUserRepository,
+                                 N8nService n8nService) {
         this.reservationService = reservationService;
         this.postgresUserRepository = postgresUserRepository;
+        this.n8nService = n8nService;
     }
 
     private PostgresUser getCurrentUser() {
@@ -51,7 +61,7 @@ public class ReservationController {
     @PostMapping
     public Reservation createReservation(@RequestBody ReservationRequest reservationRequest) {
         PostgresUser user = getCurrentUser();
-        return reservationService.createReservation(
+        Reservation reservation = reservationService.createReservation(
                 user,
                 reservationRequest.getRoomCode(),
                 reservationRequest.getSeatCode(),
@@ -59,6 +69,21 @@ public class ReservationController {
                 reservationRequest.getEnd(),
                 reservationRequest.getRecurrence()
         );
+
+        if (reservation.getStatus() == Status.PENDING
+                && reservation.getRecurrence() != null
+                && reservation.getRecurrence() > 0) {
+            try {
+                List<PostgresUser> approvers = postgresUserRepository.findByRoleIn(
+                        Set.of(Role.PM, Role.CEO, Role.MANAGER));
+                n8nService.sendRecurringReservationApprovalRequest(reservation, approvers);
+            } catch (Exception e) {
+                logger.error("Recurring reservation {} was saved, but its approval email could not be requested",
+                        reservation.getId(), e);
+            }
+        }
+
+        return reservation;
     }
 
     @PutMapping("/{id}")
