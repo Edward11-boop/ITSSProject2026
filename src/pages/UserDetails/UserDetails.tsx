@@ -11,6 +11,7 @@ type BookingSummaryResponse = {
 };
 
 const API_URL = 'http://localhost:8080';
+const ROMANIAN_PHONE_PATTERN = /^\d{10}$/;
 
 const formatBookingDate = (date: string) => new Intl.DateTimeFormat('ro-RO', {
   day: '2-digit', month: 'short', year: 'numeric',
@@ -73,11 +74,16 @@ const UserDetails = () => {
     preferredTime: "09:00 - 17:00"
   };
 
+  const isPhoneValid = ROMANIAN_PHONE_PATTERN.test(editPhone);
+  const phoneValidationMessage = isEditing && !isPhoneValid
+    ? 'Numărul de telefon trebuie să conțină exact 10 cifre.'
+    : '';
+  const phoneError = errors.phone || phoneValidationMessage;
+
   // --- HANDLERS (LOGICA DE SALVARE) ---
   const handleSaveProfile = async () => {
-    // Validare telefon (Câmp obligatoriu)
-    if (!editPhone || editPhone.trim() === "") {
-      setErrors((prev) => ({ ...prev, phone: 'Numărul de telefon este obligatoriu!' }));
+    if (!isPhoneValid) {
+      setErrors((prev) => ({ ...prev, phone: 'Numărul de telefon trebuie să conțină exact 10 cifre.' }));
       return;
     }
 
@@ -186,7 +192,8 @@ const UserDetails = () => {
                 ) : (
                   <button
                     onClick={handleSaveProfile}
-                    className="rounded-full bg-[#8B5CF6] px-8 py-2.5 text-sm font-bold text-white shadow-sm hover:bg-[#6D28D9] transition-colors"
+                    disabled={!isPhoneValid}
+                    className={`rounded-full px-8 py-2.5 text-sm font-bold text-white shadow-sm transition-colors ${isPhoneValid ? 'bg-[#8B5CF6] hover:bg-[#6D28D9]' : 'cursor-not-allowed bg-[#C4B5FD]'}`}
                   >
                     Save
                   </button>
@@ -211,8 +218,8 @@ const UserDetails = () => {
                 </div>
 
                 {/* TELEFON */}
-                <div className={`flex items-center gap-4 rounded-xl p-3 border ${errors.phone ? 'border-red-400 bg-red-50' : 'bg-white border-transparent'}`}>
-                  <span className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg ${errors.phone ? 'bg-red-100 text-red-500' : 'bg-[#F4F3FF] text-[#8B5CF6]'}`}>
+                <div className={`flex items-center gap-4 rounded-xl p-3 border ${phoneError ? 'border-red-400 bg-red-50' : 'bg-white border-transparent'}`}>
+                  <span className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg ${phoneError ? 'bg-red-100 text-red-500' : 'bg-[#F4F3FF] text-[#8B5CF6]'}`}>
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" /></svg>
                   </span>
                   <div className="flex-1">
@@ -220,20 +227,23 @@ const UserDetails = () => {
                     {isEditing ? (
                       <input
                         type="text"
+                        inputMode="numeric"
+                        maxLength={10}
                         value={editPhone}
                         onChange={(e) => {
-                          setEditPhone(e.target.value);
+                          const digitsOnly = e.target.value.replace(/\D/g, '').slice(0, 10);
+                          setEditPhone(digitsOnly);
                           if (errors.phone) setErrors(prev => ({ ...prev, phone: '' }));
                         }}
                         className="w-full bg-transparent text-sm font-semibold text-[#29255E] outline-none placeholder-gray-400"
-                        placeholder="Ex: +40 721 123 456"
+                        placeholder="Ex: 0721123456"
                       />
                     ) : (
                       <p className="text-sm font-semibold text-[#29255E]">{userProfile.phone}</p>
                     )}
                   </div>
                 </div>
-                {errors.phone && <span className="text-xs font-semibold text-red-500 pl-2">{errors.phone}</span>}
+                {phoneError && <span className="text-xs font-semibold text-red-500 pl-2">{phoneError}</span>}
 
                 {/* DEPARTAMENT */}
                 <div className="flex items-center gap-4 rounded-xl bg-white p-3 border border-transparent">

@@ -49,9 +49,12 @@ const SeatsNavbar = ({ activeTab, setActiveTab, isRoomSelected, hasSelectedSeat,
 
   const [popupState, setPopupState] = useState<'none' | 'success-admin' | 'success-direct' | 'error-taken' | 'error-admin-fail' | 'error-unavailable' | 'error-no-selection' | 'error-no-room'>('none');
   const [isLegendOpen, setIsLegendOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState('Te rugam sa incerci din nou mai tarziu.');
 
   const handleConfirmSelection = async () => {
+    if (isSubmitting) return;
+
     if (!selectedSeatCode) {
       setPopupState('error-no-selection');
       return;
@@ -67,6 +70,8 @@ const SeatsNavbar = ({ activeTab, setActiveTab, isRoomSelected, hasSelectedSeat,
       return;
     }
 
+    setIsSubmitting(true);
+
     const bookingType = location.state?.bookingType;
     const date = location.state?.date;
     const startHour = location.state?.startHour;
@@ -78,10 +83,8 @@ const SeatsNavbar = ({ activeTab, setActiveTab, isRoomSelected, hasSelectedSeat,
       : "http://localhost:8080/reservations";
     const reservationMethod = editReservationId ? "PUT" : "POST";
 
-    let response: Response;
-
     try {
-      response = await fetch(reservationUrl, {
+      const response = await fetch(reservationUrl, {
         method: reservationMethod,
         credentials: "include",
         headers: {
@@ -95,23 +98,31 @@ const SeatsNavbar = ({ activeTab, setActiveTab, isRoomSelected, hasSelectedSeat,
           recurrence: bookingType === "RECURENTA" ? recurrenceWeeks : 0,
         }),
       });
+      if (!response.ok) {
+        const backendMessage = await response.text();
+        const isOverlapError = response.status === 409 || (
+          response.status === 400 && /overlap|occupied|reserved|suprapun|ocupat|rezervat/i.test(backendMessage)
+        );
+
+        if (isOverlapError) {
+          setPopupState('error-taken');
+        } else {
+          setErrorMessage(backendMessage || `Eroare backend: ${response.status}`);
+          setPopupState('error-admin-fail');
+        }
+        return;
+      }
+
+      if (bookingType === 'RECURENTA' || isRoomSelected) {
+        setPopupState('success-admin');
+      } else {
+        setPopupState('success-direct');
+      }
     } catch {
       setErrorMessage('Backend-ul nu raspunde. Verifica daca serverul este pornit pe localhost:8080.');
       setPopupState('error-admin-fail');
-      return;
-    }
-
-    if (!response.ok) {
-      const backendMessage = await response.text();
-      setErrorMessage(backendMessage || `Eroare backend: ${response.status}`);
-      setPopupState('error-admin-fail');
-      return;
-    }
-
-    if (bookingType === 'RECURENTA' || isRoomSelected) {
-      setPopupState('success-admin');
-    } else {
-      setPopupState('success-direct');
+    } finally {
+      setIsSubmitting(false);
     }
   };
   return (
@@ -175,9 +186,10 @@ const SeatsNavbar = ({ activeTab, setActiveTab, isRoomSelected, hasSelectedSeat,
             <button
               type="button"
               onClick={handleConfirmSelection}
-              className="w-full rounded-full bg-[#8B5CF6] px-5 py-3 font-semibold text-white transition-all hover:bg-[#7C3AED] hover:shadow-lg lg:w-auto lg:px-8 lg:order-1"
+              disabled={isSubmitting}
+              className={`w-full rounded-full px-5 py-3 font-semibold text-white transition-all lg:w-auto lg:px-8 lg:order-1 ${isSubmitting ? 'cursor-not-allowed bg-[#C4B5FD]' : 'bg-[#8B5CF6] hover:bg-[#7C3AED] hover:shadow-lg'}`}
             >
-              Confirm new selection
+              {isSubmitting ? 'Se procesează...' : 'Confirm new selection'}
             </button>
           </div>
         </div>
