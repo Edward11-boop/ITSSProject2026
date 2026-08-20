@@ -2,17 +2,35 @@ import AIAssistant from "@/pages/AIAssistant";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { useState, useEffect } from 'react';
 import { getBookingStatusClassName } from '@/lib/bookingStatus';
+import { CheckCircle2, XCircle } from 'lucide-react';
 
 type BookingStats = { confirmed: number; pending: number; canceled: number };
 type BookingHistoryItem = { id: number; date: string; seat: string; room: string; status: string };
 type BookingPreferences = { preferredRoom: string; preferredSeat: string; preferredTime: string };
+type PasswordRule = { label: string; isValid: boolean };
 type BookingSummaryResponse = {
   bookingStats: BookingStats;
   bookingHistory: Array<Omit<BookingHistoryItem, 'date'> & { date: string }>;
 };
 
 const API_URL = 'http://localhost:8080';
-const ROMANIAN_PHONE_PATTERN = /^\d{10}$/;
+const ROMANIAN_MOLDOVAN_PHONE_PATTERN = /^(?:0|\+40)[2-9]\d{8}$|^(?:0|\+373)[2-9]\d{7}$/;
+const PHONE_VALIDATION_MESSAGE = 'Format invalid. Exemple valide: 0722123456, +40722123456, 069123456, +37369123456';
+const specialCharacterRegex = /[!@#$%&*]/g;
+
+const PasswordRules = ({ rules }: { rules: PasswordRule[] }) => (
+  <div className="space-y-1 rounded-xl bg-white px-3 py-2 text-xs shadow-sm">
+    {rules.map((rule) => (
+      <div
+        key={rule.label}
+        className={`flex items-center gap-2 font-semibold ${rule.isValid ? 'text-green-600' : 'text-red-500'}`}
+      >
+        {rule.isValid ? <CheckCircle2 className="h-4 w-4" /> : <XCircle className="h-4 w-4" />}
+        <span>{rule.label}</span>
+      </div>
+    ))}
+  </div>
+);
 
 const formatBookingDate = (date: string) => new Intl.DateTimeFormat('ro-RO', {
   day: '2-digit', month: 'short', year: 'numeric',
@@ -122,16 +140,23 @@ const UserDetails = () => {
     preferredTime: bookingPreferences.preferredTime,
   };
 
-  const isPhoneValid = ROMANIAN_PHONE_PATTERN.test(editPhone);
+  const isPhoneValid = ROMANIAN_MOLDOVAN_PHONE_PATTERN.test(editPhone);
   const phoneValidationMessage = isEditing && !isPhoneValid
-    ? 'Numărul de telefon trebuie să conțină exact 10 cifre.'
+    ? PHONE_VALIDATION_MESSAGE
     : '';
   const phoneError = errors.phone || phoneValidationMessage;
+  const specialCharactersCount = newPassword.match(specialCharacterRegex)?.length ?? 0;
+  const passwordsMatch = newPassword !== '' && newPassword === confirmPassword;
+  const passwordRules: PasswordRule[] = [
+    { label: 'Minim 10 caractere', isValid: newPassword.length >= 10 },
+    { label: 'Cel putin 2 caractere speciale (!@#$%&*)', isValid: specialCharactersCount >= 2 },
+    { label: 'Parolele coincid', isValid: passwordsMatch },
+  ];
 
   // --- HANDLERS (LOGICA DE SALVARE) ---
   const handleSaveProfile = async () => {
     if (!isPhoneValid) {
-      setErrors((prev) => ({ ...prev, phone: 'Numărul de telefon trebuie să conțină exact 10 cifre.' }));
+      setErrors((prev) => ({ ...prev, phone: PHONE_VALIDATION_MESSAGE }));
       return;
     }
 
@@ -275,16 +300,14 @@ const UserDetails = () => {
                     {isEditing ? (
                       <input
                         type="text"
-                        inputMode="numeric"
-                        maxLength={10}
+                        inputMode="tel"
                         value={editPhone}
                         onChange={(e) => {
-                          const digitsOnly = e.target.value.replace(/\D/g, '').slice(0, 10);
-                          setEditPhone(digitsOnly);
+                          setEditPhone(e.target.value);
                           if (errors.phone) setErrors(prev => ({ ...prev, phone: '' }));
                         }}
                         className="w-full bg-transparent text-sm font-semibold text-[#29255E] outline-none placeholder-gray-400"
-                        placeholder="Ex: 0721123456"
+                        placeholder="Ex: 0722123456 sau +40722123456"
                       />
                     ) : (
                       <p className="text-sm font-semibold text-[#29255E]">{userProfile.phone}</p>
@@ -368,6 +391,8 @@ const UserDetails = () => {
                       )}
                     </button>
                   </div>
+
+                  <PasswordRules rules={passwordRules} />
 
                   {/* Mesaje de eroare sau succes */}
                   {errors.password && <span className="text-xs font-semibold text-red-500 pl-2">{errors.password}</span>}

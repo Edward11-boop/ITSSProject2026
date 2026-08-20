@@ -232,7 +232,7 @@ const SeatsNavbar = ({ activeTab, setActiveTab, isRoomSelected, hasSelectedSeat,
           title="Cererea a fost trimisa catre administrator. Se asteapta raspunsul..."
           sideMessage="Cererea a fost trimisa catre administrator"
           highlightedText="CU SUCCES"
-          onClose={() => setPopupState('none')}
+          onClose={() => { setPopupState('none'); setIsSubmitting(false); navigate('/dashboard'); }}
         />
       )}
 
@@ -241,7 +241,7 @@ const SeatsNavbar = ({ activeTab, setActiveTab, isRoomSelected, hasSelectedSeat,
           title="Rezervare efectuata cu succes. O puteti vizualiza in Rezervarile mele"
           sideMessage="Cererea a fost efectuata"
           highlightedText="CU SUCCES"
-          onClose={() => setPopupState('none')}
+          onClose={() => { setPopupState('none'); setIsSubmitting(false); navigate('/dashboard'); }}
         />
       )}
 

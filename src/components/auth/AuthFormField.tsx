@@ -10,6 +10,7 @@ type AuthFormFieldProps = {
   placeholder?: string
   required?: boolean
   children?: ReactNode
+  rightElement?: ReactNode
   className?: string
 }
 
@@ -23,9 +24,10 @@ const AuthFormField = ({
   placeholder,
   required = true,
   children,
+  rightElement,
   className = "",
 }: AuthFormFieldProps) => {
-  const fieldClassName = `w-full rounded-lg border-2 border-[#DDD6FE] px-4 py-2 focus:border-[#6D28D9] focus:outline-none ${className}`.trim()
+  const fieldClassName = `w-full rounded-lg border-2 border-[#DDD6FE] px-4 py-2 focus:border-[#6D28D9] focus:outline-none ${rightElement ? "pr-12" : ""} ${className}`.trim()
 
   return (
     <>
@@ -45,16 +47,23 @@ const AuthFormField = ({
           {children}
         </select>
       ) : (
-        <input
-          id={id}
-          name={name}
-          type={type}
-          placeholder={placeholder}
-          value={value}
-          onChange={onChange}
-          required={required}
-          className={fieldClassName}
-        />
+        <div className="relative">
+          <input
+            id={id}
+            name={name}
+            type={type}
+            placeholder={placeholder}
+            value={value}
+            onChange={onChange}
+            required={required}
+            className={fieldClassName}
+          />
+          {rightElement && (
+            <div className="absolute inset-y-0 right-3 flex items-center">
+              {rightElement}
+            </div>
+          )}
+        </div>
       )}
     </>
   )
