@@ -5,7 +5,6 @@ import com.itsmartsystems.bookyourseat.service.AuthService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
-import jakarta.mail.MessagingException;
 
 @RestController
 public class AuthController {
@@ -28,39 +27,14 @@ public class AuthController {
     @PostMapping("/login")
     public String login(@Valid @RequestBody LoginRequest request)
     {
-        boolean mustChangePassword = authService.login(request);
-        if(mustChangePassword) {
-            return "Password must be changed !";
-        }
-        else {
-            return "Logged successfully !";
-        }
+        authService.login(request);
+        return "Logged successfully !";
     }
 
     @PostMapping("/logout")
     public String logout(HttpServletRequest request) throws Exception {
         request.logout();
         return "Logged out successfully!";
-    }
-
-    @PutMapping("/change-password")
-    public String changePassword( @Valid @RequestBody ChangePasswordRequest request)
-    {
-        authService.changePassword(request);
-        return "Password has been successfully changed !";
-    }
-
-    @PostMapping("/forgot-password")
-    public String forgotPassword(@Valid @RequestBody EmailRequest emailRequest) throws MessagingException{
-        authService.emailRequestforChanging(emailRequest);
-        return "If the email exists you'll receive an email to change the password !";
-    }
-
-    @PostMapping("/reset-password")
-    public String resetPassword(@Valid @RequestBody ChangeNewPasswordRequest request){
-        authService.forgotPassword(request);
-        return "Successfully changing the password , next time note it ! :))" ;
-
     }
 
     @GetMapping("/me")

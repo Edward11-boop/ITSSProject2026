@@ -4,11 +4,9 @@ import { Routes, Route, useLocation } from "react-router-dom"
 import Topbar from "@/components/Topbar"
 import Sidebar from "@/components/Sidebar"
 import Login from "@/pages/Login"
-import ForgotPassword from "@/pages/ForgotPassword"
 import Register from "@/pages/Register"
 import Home from "@/pages/Home"
 import Dashboard from "@/pages/Dashboard"
-import ChangePassword from "@/pages/ChangePassword"
 import Notifications from "@/pages/Notifications"
 import History from "@/pages/History"
 import UserDetails from "@/pages/UserDetails"
@@ -88,8 +86,6 @@ export default function App() {
   const authPages = [
     "/login",
     "/signup",
-    "/forgot-password",
-    "/change-password",
     "/legacy-home",
     "/"
   ]
@@ -135,8 +131,6 @@ export default function App() {
             <Route path="/legacy-home" element={<Dashboard />} />
             <Route path="/login" element={<Login setIsLoggedIn={setIsLoggedIn} />} />
             <Route path="/signup" element={<Register />} />
-            <Route path="/forgot-password" element={<ForgotPassword />} />
-            <Route path="/change-password" element={<ChangePassword />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/notifications" element={<Notifications />} />
             <Route path="/history" element={<History />} />

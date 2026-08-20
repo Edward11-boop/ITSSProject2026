@@ -48,8 +48,6 @@ const Topbar = ({ notificationCount = 0, onOpenMobileMenu }: TopbarProps) => {
     "/",
     "/login",
     "/signup",
-    "/forgot-password",
-    "/change-password",
   ]
 
   const hiddenButtons = authPages.includes(location.pathname)
@@ -333,7 +331,6 @@ const Topbar = ({ notificationCount = 0, onOpenMobileMenu }: TopbarProps) => {
 }
 
 export default Topbar
-
 
 
 

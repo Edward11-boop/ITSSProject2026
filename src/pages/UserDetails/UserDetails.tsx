@@ -5,6 +5,7 @@ import { getBookingStatusClassName } from '@/lib/bookingStatus';
 
 type BookingStats = { confirmed: number; pending: number; canceled: number };
 type BookingHistoryItem = { id: number; date: string; seat: string; room: string; status: string };
+type BookingPreferences = { preferredRoom: string; preferredSeat: string; preferredTime: string };
 type BookingSummaryResponse = {
   bookingStats: BookingStats;
   bookingHistory: Array<Omit<BookingHistoryItem, 'date'> & { date: string }>;
@@ -16,6 +17,42 @@ const ROMANIAN_PHONE_PATTERN = /^\d{10}$/;
 const formatBookingDate = (date: string) => new Intl.DateTimeFormat('ro-RO', {
   day: '2-digit', month: 'short', year: 'numeric',
 }).format(new Date(date));
+
+const formatBookingTime = (date: string) => new Intl.DateTimeFormat('ro-RO', {
+  hour: '2-digit', minute: '2-digit',
+}).format(new Date(date));
+
+const mostFrequent = (values: string[]) => {
+  const counts = values.reduce<Record<string, number>>((acc, value) => {
+    if (!value || value === '-') return acc;
+    acc[value] = (acc[value] || 0) + 1;
+    return acc;
+  }, {});
+
+  return Object.entries(counts).sort((a, b) => b[1] - a[1])[0]?.[0];
+};
+
+const getBookingPreferences = (items: BookingSummaryResponse['bookingHistory']): BookingPreferences => {
+  const confirmedItems = items.filter((item) => item.status === 'Confirmat');
+
+  if (!confirmedItems.length) {
+    return {
+      preferredRoom: 'Nu exista rezervari confirmate',
+      preferredSeat: 'Nu exista rezervari confirmate',
+      preferredTime: 'Nu exista rezervari confirmate',
+    };
+  }
+
+  const favoriteRoom = mostFrequent(confirmedItems.map((item) => item.room));
+  const favoriteSeat = mostFrequent(confirmedItems.map((item) => item.seat));
+  const favoriteTime = mostFrequent(confirmedItems.map((item) => formatBookingTime(item.date)));
+
+  return {
+    preferredRoom: favoriteRoom || 'Nu exista preferinta clara',
+    preferredSeat: favoriteSeat || 'Nu exista preferinta clara',
+    preferredTime: favoriteTime ? `In jur de ${favoriteTime}` : 'Nu exista preferinta clara',
+  };
+};
 
 const UserDetails = () => {
   const { user: currentUser, isLoading } = useCurrentUser();
@@ -32,6 +69,11 @@ const UserDetails = () => {
   const [errors, setErrors] = useState({ phone: '', password: '' });
   const [bookingStats, setBookingStats] = useState<BookingStats>({ confirmed: 0, pending: 0, canceled: 0 });
   const [bookingHistory, setBookingHistory] = useState<BookingHistoryItem[]>([]);
+  const [bookingPreferences, setBookingPreferences] = useState<BookingPreferences>({
+    preferredRoom: 'Se incarca...',
+    preferredSeat: 'Se incarca...',
+    preferredTime: 'Se incarca...',
+  });
   const [passwordSuccess, setPasswordSuccess] = useState(""); // Mesajul de succes pentru parolă
 
   // Sincronizează numărul de telefon curent când datele utilizatorului sunt încărcate
@@ -51,18 +93,23 @@ const UserDetails = () => {
       })
       .then((data) => {
         setBookingStats(data.bookingStats);
+        setBookingPreferences(getBookingPreferences(data.bookingHistory));
         setBookingHistory(data.bookingHistory.map((item) => ({ ...item, date: formatBookingDate(item.date) })));
       })
       .catch((error: unknown) => {
         if (error instanceof DOMException && error.name === 'AbortError') return;
         setBookingStats({ confirmed: 0, pending: 0, canceled: 0 });
         setBookingHistory([]);
+        setBookingPreferences({
+          preferredRoom: 'Nu exista rezervari confirmate',
+          preferredSeat: 'Nu exista rezervari confirmate',
+          preferredTime: 'Nu exista rezervari confirmate',
+        });
       });
 
     return () => controller.abort();
   }, []);
 
-  // MOCK DATA - Date statice temporare
   const userProfile = {
     name: currentUser?.name || "User",
     role: currentUser?.role || "USER",
@@ -70,8 +117,9 @@ const UserDetails = () => {
     // Afișăm telefonul modificat local, altfel cel din baza de date
     phone: savedPhone !== null ? savedPhone : (isLoading ? "Se incarca..." : currentUser?.phoneNumber || "Telefon indisponibil"),
     department: isLoading ? "Se incarca..." : currentUser?.departmentName || "Departament indisponibil",
-    preferredSeat: "Rand 3, Mijloc - Sala A",
-    preferredTime: "09:00 - 17:00"
+    preferredRoom: bookingPreferences.preferredRoom,
+    preferredSeat: bookingPreferences.preferredSeat,
+    preferredTime: bookingPreferences.preferredTime,
   };
 
   const isPhoneValid = ROMANIAN_PHONE_PATTERN.test(editPhone);
@@ -337,6 +385,15 @@ const UserDetails = () => {
               <div className="rounded-3xl bg-[#F4F3FF] p-6 shadow-sm animate-in fade-in duration-300">
                 <h3 className="mb-4 font-bold text-[#29255E]">Preferinte rezervare</h3>
                 <div className="flex flex-col gap-3">
+                  <div className="flex items-center gap-4 rounded-xl bg-white p-3">
+                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#F4F3FF] text-[#8B5CF6]">
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7a2 2 0 012-2h14a2 2 0 012 2v12H3V7z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 21v-6h8v6" /></svg>
+                    </span>
+                    <div>
+                      <p className="text-[10px] text-gray-400">Sala preferata</p>
+                      <p className="text-sm font-semibold text-[#29255E]">{userProfile.preferredRoom}</p>
+                    </div>
+                  </div>
                   <div className="flex items-center gap-4 rounded-xl bg-white p-3">
                     <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#F4F3FF] text-[#8B5CF6]">
                       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" /></svg>

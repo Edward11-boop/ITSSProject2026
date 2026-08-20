@@ -67,16 +67,6 @@ const Login = ({ setIsLoggedIn }: LoginProps) => {
       if (!loginResponse.ok) {
         const message = await loginResponse.text()
 
-        if (message.includes("Password must be changed")) {
-          navigate("/change-password", {
-            state: {
-              email: formData.email.trim(),
-              oldPassword: formData.password,
-            },
-          })
-          return
-        }
-
         setError(message || "Emailul sau parola introduse nu sunt corecte.")
         return
       }
@@ -130,15 +120,6 @@ const Login = ({ setIsLoggedIn }: LoginProps) => {
         </Link>
       </p>
 
-      <p className="mt-4 text-center text-base text-[#6B7280] sm:text-[20px]">
-        Did you forget your password?
-        <Link
-          to="/forgot-password"
-          className="ml-1 font-semibold text-[#6D28D9]"
-        >
-          Reset it
-        </Link>
-      </p>
     </AuthFormShell>
   )
 }
