@@ -2,9 +2,19 @@ import { useMemo, useState } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 import BackButton from "@/components/BackButton"
 import Calendar from "@/components/Calendar"
+import ErrorPopUp from "@/components/ErrorPopUp"
 
 type TipRezervare = "RECURENTA" | "O_ZI"
-type LocationState = { bookingType: TipRezervare; recurrenceWeeks?: number }
+type LocationState = {
+  bookingType?: TipRezervare;
+  recurrenceWeeks?: number;
+  editReservationId?: number;
+  roomCode?: string;
+  seatCode?: string;
+  date?: string;
+  startHour?: number;
+  endHour?: number;
+}
 
 const HOURS = Array.from({ length: 11 }, (_, i) => 8 + i)
 const MS_IN_DAY = 24 * 60 * 60 * 1000
@@ -26,17 +36,23 @@ const SelectDateTime = () => {
   const state = location.state as LocationState | null
   const bookingType = state?.bookingType ?? "O_ZI"
   const recurrenceWeeks = state?.recurrenceWeeks ?? 0
+  const editReservationId = state?.editReservationId
   const isRecurring = bookingType === "RECURENTA"
 
   const [date, setDate] = useState(() => {
+    if (state?.date) {
+      const [year, month, day] = state.date.split("-").map(Number)
+      return new Date(year, month - 1, day)
+    }
     const azi = new Date();
     azi.setHours(0, 0, 0, 0);
     return azi;
   });
 
-  const [startHour, setStartHour] = useState(9)
-  const [endHour, setEndHour] = useState(17)
+  const [startHour, setStartHour] = useState(state?.startHour ?? 9)
+  const [endHour, setEndHour] = useState(state?.endHour ?? 17)
   const [error, setError] = useState("")
+  const [showWeekendError, setShowWeekendError] = useState(false)
 
   const recurrenceDates = useMemo(() => {
     if (!isRecurring || recurrenceWeeks <= 0) {
@@ -54,6 +70,11 @@ const SelectDateTime = () => {
     if (newDate < azi) {
       setError("Nu poți selecta o dată din trecut.");
       return;
+    }
+
+    if (newDate.getDay() === 0 || newDate.getDay() === 6) {
+      setShowWeekendError(true)
+      return
     }
 
     setError("");
@@ -85,6 +106,9 @@ const SelectDateTime = () => {
         startHour,
         endHour,
         recurrenceWeeks,
+        editReservationId,
+        roomCode: state?.roomCode,
+        seatCode: state?.seatCode,
       },
     })
   }
@@ -147,6 +171,14 @@ const SelectDateTime = () => {
           Continua
         </button>
       </div>
+      {showWeekendError && (
+        <ErrorPopUp
+          title="Dată invalidă"
+          message="Poți selecta doar zile de luni până vineri."
+          buttonText="Închide"
+          onClose={() => setShowWeekendError(false)}
+        />
+      )}
     </div>
   )
 }

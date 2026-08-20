@@ -148,13 +148,6 @@ public class NotificationService {
         Reservation created = new Reservation(accepter, seatForUser, null, ref.getStartDateTime(), ref.getEndDateTime(), Status.APPROVED, 0);
         Reservation saved = reservationRepository.save(created);
 
-        try {
-            seatForUser.setStatus("OCCUPIED");
-            seatRepository.save(seatForUser);
-        } catch (Exception ex) {
-            System.err.println("Failed to mark seat occupied on accept: " + ex.getMessage());
-        }
-
         notification.setRead(true);
         notification.setReservation(saved);
         notificationRepository.save(notification);

@@ -2,6 +2,7 @@ package com.itsmartsystems.bookyourseat.controller;
 
 import com.itsmartsystems.bookyourseat.Role;
 import com.itsmartsystems.bookyourseat.dto.ReservationRequest;
+import com.itsmartsystems.bookyourseat.dto.ReservationResponse;
 import com.itsmartsystems.bookyourseat.model.PostgresUser;
 import com.itsmartsystems.bookyourseat.model.Reservation;
 import com.itsmartsystems.bookyourseat.repository.PostgresUserRepository;
@@ -97,9 +98,11 @@ public class ReservationController {
     }
 
     @GetMapping("/active")
-    public List<Reservation> activeReservations(@RequestParam("start") LocalDateTime start,
-                                              @RequestParam("end") LocalDateTime end) {
-        return reservationService.getActiveReservations(start, end);
+    public List<ReservationResponse> activeReservations(@RequestParam("start") LocalDateTime start,
+                                                      @RequestParam("end") LocalDateTime end) {
+        return reservationService.getActiveReservations(start, end).stream()
+                .map(ReservationResponse::new)
+                .toList();
     }
 
     @GetMapping("/history")

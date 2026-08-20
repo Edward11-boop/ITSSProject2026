@@ -111,6 +111,13 @@ public class ReservationService {
         if (reservation.isEmpty())
             throw new IllegalArgumentException("Reservation does not exist !");
 
+        Reservation reservationObj = reservation.get();
+        if (reservationObj.getUser() == null || !reservationObj.getUser().getId().equals(user.getId()))
+            throw new IllegalArgumentException("You can only modify your own reservations!");
+
+        if (reservationObj.getStatus() != Status.PENDING)
+            throw new IllegalArgumentException("Only pending reservations can be modified!");
+
         Optional<Room> room = roomRepository.findByCode(roomCode);
         if (room.isEmpty())
             throw new IllegalArgumentException("Invalid room !");
@@ -139,9 +146,6 @@ public class ReservationService {
                 throw new IllegalArgumentException("This seat is already occupied !");
         }
 
-        Reservation reservationObj = reservation.get();
-        reservationObj.setUser(user);
-
         Room roomToSave = (seatObj != null) ? null : room.get();
         reservationObj.setRoom(roomToSave);
 
@@ -149,9 +153,8 @@ public class ReservationService {
         reservationObj.setStartDateTime(start);
         reservationObj.setEndDateTime(end);
 
-        Status newStatus = determineReservationStatus(seatObj, recurrence, start, end);
-        reservationObj.setStatus(newStatus);
-        reservationObj.setRecurrence(recurrence);
+        reservationObj.setStatus(Status.PENDING);
+        reservationObj.setRecurrence(recurrence == null ? 0 : recurrence);
 
         return reservationRepository.save(reservationObj);
     }

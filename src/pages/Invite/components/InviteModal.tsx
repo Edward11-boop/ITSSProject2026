@@ -73,6 +73,15 @@ const isSelectableSeat = (status?: string) => {
   return normalizedStatus !== "UNAVAILABLE";
 };
 
+const isWeekend = (dateValue: string) => {
+  if (!dateValue) return false;
+  const [year, month, day] = dateValue.split("-").map(Number);
+  const dayOfWeek = new Date(year, month - 1, day).getDay();
+  return dayOfWeek === 0 || dayOfWeek === 6;
+};
+
+const isTimeOutOfRange = (time: string) => time !== "" && (time < "08:00" || time > "22:00");
+
 const isConferenceRoom = (type?: string) => {
   const normalizedType = type?.trim().toUpperCase() ?? "";
   return normalizedType.includes("SEDINTE");
@@ -94,6 +103,7 @@ const InviteModal = () => {
   const [isCheckingAvailability, setIsCheckingAvailability] = useState(false);
   const [availabilityError, setAvailabilityError] = useState("");
   const [submitError, setSubmitError] = useState("");
+  const [validationError, setValidationError] = useState("");
   const [isSuccess, setIsSuccess] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
@@ -129,7 +139,7 @@ const InviteModal = () => {
 
   }, []);
 
-  // ---> SPIONUL PENTRU DEBUG (V2) <---
+
   useEffect(() => {
     if (seats.length > 0 && rooms.length > 0) {
       console.log("=== DIAGNOSTIC G2 & SD0 (V2) ===");
@@ -148,6 +158,17 @@ const InviteModal = () => {
 
   const handleChange = (event: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = event.target;
+    if (name === "date" && isWeekend(value)) {
+      setValidationError("Poți selecta doar zile de luni până vineri.");
+      setFormData((previousData) => ({ ...previousData, date: "", seatFloor: "", seatRoom: "", seatId: "" }));
+      return;
+    }
+    if ((name === "startTime" || name === "endTime") && isTimeOutOfRange(value)) {
+      setValidationError("Orele trebuie să fie între 08:00 și 22:00.");
+      setFormData((previousData) => ({ ...previousData, [name]: "", seatFloor: "", seatRoom: "", seatId: "" }));
+      return;
+    }
+    setValidationError("");
     setFormData((previousData) => ({
       ...previousData,
       [name]: value,
@@ -160,7 +181,8 @@ const InviteModal = () => {
   };
 
   const isTimeInvalid = formData.startTime !== "" && formData.endTime !== "" && formData.endTime <= formData.startTime;
-  const hasValidDateTime = formData.date !== "" && formData.startTime !== "" && formData.endTime !== "" && !isTimeInvalid;
+  const isDateInvalid = isWeekend(formData.date);
+  const hasValidDateTime = formData.date !== "" && formData.startTime !== "" && formData.endTime !== "" && !isDateInvalid && !isTimeOutOfRange(formData.startTime) && !isTimeOutOfRange(formData.endTime) && !isTimeInvalid;
 
   useEffect(() => {
     if (!hasValidDateTime) {
@@ -259,10 +281,22 @@ const InviteModal = () => {
   const isFormInvalid =
     formData.colleagueId === "" || formData.date === "" || formData.startTime === "" ||
     formData.endTime === "" || formData.seatFloor === "" || formData.seatRoom === "" ||
-    formData.seatId === "" || isTimeInvalid || isCheckingAvailability || availabilityError !== "";
+    formData.seatId === "" || isDateInvalid || isTimeOutOfRange(formData.startTime) || isTimeOutOfRange(formData.endTime) || isTimeInvalid || isCheckingAvailability || availabilityError !== "";
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    if (isDateInvalid) {
+      setValidationError("Poți selecta doar zile de luni până vineri.");
+      return;
+    }
+    if (isTimeOutOfRange(formData.startTime) || isTimeOutOfRange(formData.endTime)) {
+      setValidationError("Orele trebuie să fie între 08:00 și 22:00.");
+      return;
+    }
+    if (isTimeInvalid) {
+      setValidationError("Ora de sfârșit trebuie să fie după ora de început.");
+      return;
+    }
     if (isFormInvalid || isSubmitting) return;
 
     const selectedRoom = rooms.find((room) => String(room.id) === formData.seatRoom);
@@ -307,6 +341,9 @@ const InviteModal = () => {
     <>
       {submitError !== "" && (
         <ErrorPopUp title="Invitatia nu a fost trimisa" message={submitError} buttonText="Incearca din nou" onClose={() => setSubmitError("")} />
+      )}
+      {validationError !== "" && (
+        <ErrorPopUp title="Date invalide" message={validationError} buttonText="Închide" onClose={() => setValidationError("")} />
       )}
 
       {isSuccess && (

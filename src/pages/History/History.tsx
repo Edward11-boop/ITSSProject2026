@@ -6,6 +6,7 @@ import ConfirmDeleteModal from "./components/ConfirmDeleteModal";
 import SuccessPopUp from "@/components/SuccessPopUp";
 import ErrorPopUp from "@/components/ErrorPopUp";
 import type { Booking, BookingTab } from "./types";
+import { useNavigate } from "react-router-dom";
 import { getBookingStatusClassName } from "@/lib/bookingStatus";
 
 type ReservationApi = {
@@ -14,17 +15,23 @@ type ReservationApi = {
   startDateTime: string;
   endDateTime: string;
   seat?: {
+    id: number;
     code: string;
     room?: {
+      id: number;
+      code: string;
       name: string;
     };
   } | null;
   room?: {
+    id: number;
+    code: string;
     name: string;
   } | null;
 }
 
 const History = () => {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<BookingTab>("Viitoare");
 
   const [popupState, setPopupState] = useState<'none' | 'confirm' | 'success' | 'error'>('none');
@@ -83,6 +90,19 @@ const History = () => {
   const handleDeleteClick = (id: number) => {
     setBookingToDelete(id);
     setPopupState('confirm');
+  };
+
+  const handleModifyClick = (booking: Booking) => {
+    navigate("/select-date", {
+      state: {
+        editReservationId: booking.id,
+        date: booking.startDateTime.slice(0, 10),
+        startHour: Number(booking.startDateTime.slice(11, 13)),
+        endHour: Number(booking.endDateTime.slice(11, 13)),
+        roomCode: booking.roomCode,
+        seatCode: booking.seatCode,
+      },
+    });
   };
 
   const confirmDelete = async () => {
@@ -153,6 +173,10 @@ const History = () => {
             time: formatTime(reservation.startDateTime, reservation.endDateTime),
             status: getBookingStatus(reservation),
             tab: getBookingTab(reservation),
+            startDateTime: reservation.startDateTime,
+            endDateTime: reservation.endDateTime,
+            seatCode: reservation.seat?.code,
+            roomCode: reservation.seat?.room?.code ?? reservation.room?.code,
           }))
         );
       })
@@ -218,6 +242,7 @@ const History = () => {
                         </button>
                         <button
                           type="button"
+                          onClick={canModify ? () => handleModifyClick(booking) : undefined}
                           className={
                             canModify
                               ? "rounded-full border border-[#6D28D9] px-6 py-2 text-sm font-bold text-[#6D28D9] transition hover:bg-purple-50"

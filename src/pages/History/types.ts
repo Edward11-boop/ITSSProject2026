@@ -9,6 +9,10 @@ export type Booking = {
   time: string
   status: string
   tab: BookingTab
+  startDateTime: string
+  endDateTime: string
+  seatCode?: string
+  roomCode?: string
 }
 
 export const bookingTabs: BookingTab[] = ["Viitoare", "Trecute", "Anulate"]
