@@ -31,6 +31,12 @@ public class AuthController {
         return "Logged successfully !";
     }
 
+    @PostMapping("/forgot-password")
+    public String requestPasswordReset(@Valid @RequestBody PasswordResetEmailRequest request) {
+        authService.requestPasswordReset(request);
+        return "Daca exista un cont asociat acestei adrese, vei primi instructiunile de resetare.";
+    }
+
     @PostMapping("/logout")
     public String logout(HttpServletRequest request) throws Exception {
         request.logout();

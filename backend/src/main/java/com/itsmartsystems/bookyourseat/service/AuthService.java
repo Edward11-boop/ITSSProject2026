@@ -13,7 +13,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.UUID;
+import jakarta.mail.MessagingException;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.security.web.context.SecurityContextRepository;
 import jakarta.servlet.http.HttpServletRequest;
@@ -30,8 +33,9 @@ public class AuthService {
     private final PostgresUserRepository postgresUserRepository;
     private final DepartmentRepository departmentRepository;
     private final ReservationService reservationService;
+    private final EmailService emailService;
 
-    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, UserSyncService userSyncService, PostgresUserRepository postgresUserRepository, DepartmentRepository departmentRepository, ReservationService reservationService) {
+    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, UserSyncService userSyncService, PostgresUserRepository postgresUserRepository, DepartmentRepository departmentRepository, ReservationService reservationService, EmailService emailService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.authenticationManager = authenticationManager;
@@ -39,6 +43,7 @@ public class AuthService {
         this.postgresUserRepository = postgresUserRepository;
         this.departmentRepository = departmentRepository;
         this.reservationService = reservationService;
+        this.emailService = emailService;
     }
 
     // Method for checking the password
@@ -82,6 +87,24 @@ public class AuthService {
         repo.saveContext(context, httpRequest, httpResponse);
 
         return false;
+    }
+
+    public void requestPasswordReset(PasswordResetEmailRequest request) {
+        userRepository.findByEmail(request.getEmail().trim()).ifPresent(user -> {
+            String token = UUID.randomUUID().toString();
+            user.setToken(token);
+            user.setTokenExpiresAt(LocalDateTime.now().plusMinutes(15));
+            userRepository.save(user);
+
+            try {
+                emailService.emailToSend(user.getEmail(), token);
+            } catch (MessagingException exception) {
+                user.setToken(null);
+                user.setTokenExpiresAt(null);
+                userRepository.save(user);
+                throw new IllegalArgumentException("Emailul de resetare nu a putut fi trimis. Incearca din nou.");
+            }
+        });
     }
 
     public UserDetails UserDet() {
