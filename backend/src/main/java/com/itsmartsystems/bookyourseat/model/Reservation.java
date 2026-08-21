@@ -1,99 +1,124 @@
 package com.itsmartsystems.bookyourseat.model;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-
-
+import com.itsmartsystems.bookyourseat.Status;
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
-@Document(collection = "reservations")
+@Entity
+@Table(name = "reservation")
 public class Reservation {
 
     @Id
-    private String id;
-    private String seriesId ;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    public String getSeriesId() {
-        return seriesId;
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private PostgresUser user;
+
+    @ManyToOne
+    @JoinColumn(name = "seat_id")
+    private Seat seat;
+
+    @ManyToOne
+    @JoinColumn(name = "room_id")
+    private Room room;
+
+    @Column(name = "start_date_time", nullable = false)
+    private LocalDateTime startDateTime;
+
+    @Column(name = "end_date_time", nullable = false)
+    private LocalDateTime endDateTime;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false, length = 100)
+    private Status status;
+
+    @Column(name = "recurrence", nullable = false)
+    private Integer recurrence;
+
+    @Column(name = "reminder_sent")
+    private boolean reminderSent = false;
+
+    public Reservation() {
     }
 
-    public void setSeriesId(String seriesId) {
-        this.seriesId = seriesId;
+    public Reservation(PostgresUser user, Seat seat, Room room, LocalDateTime startDateTime,
+            LocalDateTime endDateTime, Status status, Integer recurrence) {
+        this.user = user;
+        this.seat = seat;
+        this.room = room;
+        this.startDateTime = startDateTime;
+        this.endDateTime = endDateTime;
+        this.status = status;
+        this.recurrence = recurrence;
     }
 
-    public String getUserId() {
-        return userId;
+    public Long getId() {
+        return id;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public PostgresUser getUser() {
+        return user;
     }
 
-    public String getSpaceId() {
-        return spaceId;
+    public void setUser(PostgresUser user) {
+        this.user = user;
     }
 
-    public void setSpaceId(String spaceId) {
-        this.spaceId = spaceId;
+    public Seat getSeat() {
+        return seat;
     }
 
-    public String getSeatId() {
-        return seatId;
+    public void setSeat(Seat seat) {
+        this.seat = seat;
     }
 
-    public void setSeatId(String seatId) {
-        this.seatId = seatId;
+    public Room getRoom() {
+        return room;
     }
 
-    public LocalDateTime getStartTime() {
-        return startTime;
+    public void setRoom(Room room) {
+        this.room = room;
     }
 
-    public void setStartTime(LocalDateTime startTime) {
-        this.startTime = startTime;
+    public LocalDateTime getStartDateTime() {
+        return startDateTime;
     }
 
-    public LocalDateTime getEndTime() {
-        return endTime;
+    public void setStartDateTime(LocalDateTime startDateTime) {
+        this.startDateTime = startDateTime;
     }
 
-    public void setEndTime(LocalDateTime endTime) {
-        this.endTime = endTime;
+    public LocalDateTime getEndDateTime() {
+        return endDateTime;
     }
 
-    public String getStatus() {
+    public void setEndDateTime(LocalDateTime endDateTime) {
+        this.endDateTime = endDateTime;
+    }
+
+    public Status getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(Status status) {
         this.status = status;
     }
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
+    public Integer getRecurrence() {
+        return recurrence;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
+    public void setRecurrence(Integer recurrence) {
+        this.recurrence = recurrence;
     }
 
-    private String userId ;
-    private String spaceId;
-    private String seatId ;
-    private LocalDateTime startTime ;
-    private LocalDateTime endTime ;
-    private String status;
-    private LocalDateTime createdAt;
-
-    public Reservation(String seriesId, String userId, String spaceId, String seatId, LocalDateTime startTime, LocalDateTime endTime, String status, LocalDateTime createdAt) {
-        this.seriesId = seriesId;
-        this.userId = userId;
-        this.spaceId = spaceId;
-        this.seatId = seatId;
-        this.startTime = startTime;
-        this.endTime = endTime;
-        this.status = status;
-        this.createdAt = createdAt;
+    public boolean isReminderSent() {
+        return reminderSent;
     }
-    public Reservation(){}
+
+    public void setReminderSent(boolean reminderSent) {
+        this.reminderSent = reminderSent;
+    }
 }

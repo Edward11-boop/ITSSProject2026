@@ -1,16 +1,47 @@
 package com.itsmartsystems.bookyourseat.repository;
 
+import com.itsmartsystems.bookyourseat.Status;
+import com.itsmartsystems.bookyourseat.model.PostgresUser;
 import com.itsmartsystems.bookyourseat.model.Reservation;
-import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 
-public interface ReservationRepository extends MongoRepository<Reservation, String> {
-    List<Reservation> findBySeriesId(String seriesId);
-    List<Reservation> findByUserId(String userId);
-    List<Reservation> findBySpaceId(String spaceId);
-    List<Reservation> findBySeatId(String seatId);
-    List<Reservation> findByStatus(String status);
-    List<Reservation> findByUserIdAndStatus(String userId, String status);
+public interface ReservationRepository extends JpaRepository<Reservation, Long> {
+
+    List<Reservation> findByUser_Id(Long userId);
+
+    List<Reservation> findBySeat_IdAndStatus(Long seatId, Status status);
+
+    List<Reservation> findBySeat_IdAndStatusIn(Long seatId, Collection<Status> statuses);
+
+    List<Reservation> findByRoom_IdAndStatus(Long roomId, Status status);
+
+    List<Reservation> findByRoom_IdAndStatusIn(Long roomId, Collection<Status> statuses);
+
+    List<Reservation> findByStatus(Status status);
+
+    List<Reservation> findByRecurrence(Integer recurrence);
+
+    List<Reservation> findByUserDepartmentIdAndStartDateTimeBetween(
+            Integer departmentId,
+            LocalDateTime startOfDay,
+            LocalDateTime endOfDay);
+
+    List<Reservation> findByStatusAndReminderSentFalseAndStartDateTimeBetween(Status status, LocalDateTime start,
+            LocalDateTime end);
+
+    boolean existsByUserAndStartDateTimeBetween(
+            PostgresUser user,
+            LocalDateTime startOfDay,
+            LocalDateTime endOfDay);
+
+    boolean existsBySeat_IdAndStatusInAndStartDateTimeLessThanAndEndDateTimeGreaterThan(
+            Long seatId,
+            Collection<Status> statuses,
+            LocalDateTime endDateTime,
+            LocalDateTime startDateTime);
+
 }

@@ -1,33 +1,48 @@
 package com.itsmartsystems.bookyourseat.service;
 
 import com.itsmartsystems.bookyourseat.dto.*;
-import com.itsmartsystems.bookyourseat.model.User;
-import com.itsmartsystems.bookyourseat.repository.UserRepository;
+import com.itsmartsystems.bookyourseat.model.PostgresUser;import com.itsmartsystems.bookyourseat.model.User;
+import com.itsmartsystems.bookyourseat.model.Department;
+import com.itsmartsystems.bookyourseat.repository.PostgresUserRepository;import com.itsmartsystems.bookyourseat.repository.UserRepository;
+import com.itsmartsystems.bookyourseat.repository.DepartmentRepository;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import jakarta.mail.MessagingException;
-
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
-
+import jakarta.mail.MessagingException;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
+import org.springframework.security.web.context.SecurityContextRepository;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 @Service
 public class AuthService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
+    private final UserSyncService userSyncService;
+    private final PostgresUserRepository postgresUserRepository;
+    private final DepartmentRepository departmentRepository;
+    private final ReservationService reservationService;
     private final EmailService emailService;
 
-    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, EmailService emailService) {
+    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, UserSyncService userSyncService, PostgresUserRepository postgresUserRepository, DepartmentRepository departmentRepository, ReservationService reservationService, EmailService emailService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.authenticationManager = authenticationManager;
+        this.userSyncService = userSyncService;
+        this.postgresUserRepository = postgresUserRepository;
+        this.departmentRepository = departmentRepository;
+        this.reservationService = reservationService;
         this.emailService = emailService;
     }
 
@@ -51,83 +66,109 @@ public class AuthService {
 
         if(!checkPassword(request.getPassword())) throw new IllegalArgumentException("Password must contain at least 2 special chars and to be >= 10 chars");
         String crypted = passwordEncoder.encode(request.getPassword());
-        User user = new User(request.getName(), request.getEmail(), crypted, request.getRole(), true);
-        userRepository.save(user);
+        User user = new User(request.getName(), request.getEmail(), crypted, request.getRole(), false);
+        User savedUser = userRepository.save(user);
+        userSyncService.syncUser(savedUser);
     }
 
     // --- LOGIN ---
     public boolean login(LoginRequest request){
         Optional<User> u = userRepository.findByEmail(request.getEmail());
         Authentication auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
-        if (u.get().isFirstLog()) throw new IllegalArgumentException("Password must be changed before login !");
-        SecurityContextHolder.getContext().setAuthentication(auth);
+        SecurityContext context = SecurityContextHolder.createEmptyContext();
+        context.setAuthentication(auth);
+        SecurityContextHolder.setContext(context);
+
+        // salvare explicită în sesiune HTTP
+        ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+        HttpServletRequest httpRequest = attr.getRequest();
+        HttpServletResponse httpResponse = attr.getResponse();
+        SecurityContextRepository repo = new HttpSessionSecurityContextRepository();
+        repo.saveContext(context, httpRequest, httpResponse);
+
         return false;
     }
 
-    // method for getting the details that we need of the user
-    public UserDetails UserDet()
-    {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String email = auth.getName();
-        Optional<User> user = userRepository.findByEmail(email);
-        UserDetails userDetails = new UserDetails();
-        userDetails.setEmail(user.get().getEmail());
-        userDetails.setName(user.get().getName());
-        userDetails.setRole(user.get().getRole());
-        return userDetails;
+    public void requestPasswordReset(PasswordResetEmailRequest request) {
+        userRepository.findByEmail(request.getEmail().trim()).ifPresent(user -> {
+            String token = UUID.randomUUID().toString();
+            user.setToken(token);
+            user.setTokenExpiresAt(LocalDateTime.now().plusMinutes(15));
+            userRepository.save(user);
+
+            try {
+                emailService.emailToSend(user.getEmail(), token);
+            } catch (MessagingException exception) {
+                user.setToken(null);
+                user.setTokenExpiresAt(null);
+                userRepository.save(user);
+                throw new IllegalArgumentException("Emailul de resetare nu a putut fi trimis. Incearca din nou.");
+            }
+        });
     }
 
+    public UserDetails UserDet() {
+        User user = getAuthenticatedUser();
 
-    // --- PASSWORD MUST BE CHANGED ---
-    public void changePassword(ChangePasswordRequest request){
-        Optional<User> u = userRepository.findByEmail(request.getEmail());
-        // -- Validations for every field --
-        if(u.isEmpty()) throw new IllegalArgumentException("Email isnt registered !");
-        if(request.getOldPassword() == null || request.getOldPassword().length() == 0 ) throw new IllegalArgumentException("OldPassword must not be empty !");
-        if(request.getNewPassword() == null || request.getNewPassword().length() == 0 ) throw new IllegalArgumentException("NewPassword must not be empty !");
-        if(!passwordEncoder.matches(request.getOldPassword(), u.get().getPassword())) throw new IllegalArgumentException("Passwords doesnt match !");
+        PostgresUser postgresUser = postgresUserRepository.findByEmail(user.getEmail()).orElse(null);
+        Integer postgresUserId = postgresUser == null ? null : Math.toIntExact(postgresUser.getId());
 
-        if(!checkPassword(request.getNewPassword())) throw new IllegalArgumentException("Password must contain at least 2 special chars and to be >= 10 chars");
-        String crypted = passwordEncoder.encode(request.getNewPassword());
-        User existingUser = u.get();
-        existingUser.setPassword(crypted);
-        existingUser.setFirstLog(false);
-        userRepository.save(existingUser);
+        UserDetails details = new UserDetails(user.getId(), postgresUserId, user.getName(), user.getEmail(), user.getRole());
+        if (postgresUser != null) {
+            details.setPhoneNumber(postgresUser.getPhoneNumber());
+            details.setDepartmentId(postgresUser.getDepartmentId());
+            if (postgresUser.getDepartmentId() != null) {
+                departmentRepository.findById(Long.valueOf(postgresUser.getDepartmentId()))
+                        .map(Department::getName)
+                        .ifPresent(details::setDepartmentName);
+            }
+        }
+
+        return details;
     }
 
-    public void emailRequestforChanging(EmailRequest request) throws MessagingException {
-        // -- VERIFY THE EMAIL FIRST
-        //if(request.getEmail().endsWith("@itsmartsystems.eu") == false) throw new IllegalArgumentException("Wrong email !");
-        Optional<User> u = userRepository.findByEmail(request.getEmail());
-        if(u.isEmpty()) throw new IllegalArgumentException("User field is empty !");
-        String token = String.valueOf(UUID.randomUUID());
-        LocalDateTime expiresAt = LocalDateTime.now().plusMinutes(15);
-        User user = u.get();
-        user.setToken(token);
-        user.setTokenExpiresAt(expiresAt);
+    public UserDetails updateCurrentUserPhone(UpdatePhoneRequest request) {
+        User user = getAuthenticatedUser();
+        PostgresUser postgresUser = postgresUserRepository.findByEmail(user.getEmail())
+                .orElseThrow(() -> new IllegalArgumentException("PostgreSQL user does not exist!"));
+
+        postgresUser.setPhoneNumber(request.getPhoneNumber().trim());
+        postgresUserRepository.save(postgresUser);
+        return UserDet();
+    }
+
+    public void updateCurrentUserPassword(UpdateCurrentPasswordRequest request) {
+        User user = getAuthenticatedUser();
+        String newPassword = request.getNewPassword();
+
+        if (passwordEncoder.matches(newPassword, user.getPassword())) {
+            throw new IllegalArgumentException("Parola nouă trebuie să fie diferită de parola actuală!");
+        }
+
+        if (!checkPassword(newPassword)) {
+            throw new IllegalArgumentException("Password must contain at least 10 characters and 2 special characters (!@#$%&*)!");
+        }
+
+        user.setPassword(passwordEncoder.encode(newPassword));
+        user.setFirstLog(false);
         userRepository.save(user);
-        emailService.emailToSend(user.getEmail(), token);
     }
 
-    public void forgotPassword(ChangeNewPasswordRequest request)
-    {
-        if(!request.getNewPassword().equals(request.getcNewPassword())) throw new IllegalArgumentException("Passwords must be the same !");
-        if(!checkPassword(request.getcNewPassword())) throw new IllegalArgumentException("Password must contain at least 2 special chars and to be >= 10 chars !");
-
-        Optional<User> u = userRepository.findByToken(request.token());
-
-        if(u.isEmpty()) throw new IllegalArgumentException("User doesnt exist !");
-        LocalDateTime now = LocalDateTime.now();
-        if(now.isAfter(u.get().getTokenExpiresAt()) == true ) throw new IllegalArgumentException("Expired session !");
-
-        User user = u.get();
-        String crypted = passwordEncoder.encode(request.getNewPassword());
-        user.setPassword(crypted);
-        user.setToken(null);
-        // after the user changed the password one time the token will be null
-        // so that he cant reset the password 30 times in 15 minutes
-        userRepository.save(user);
+    public BookingSummaryResponse getCurrentUserBookingSummary() {
+        User user = getAuthenticatedUser();
+        PostgresUser postgresUser = postgresUserRepository.findByEmail(user.getEmail())
+                .orElseThrow(() -> new IllegalArgumentException("PostgreSQL user does not exist!"));
+        return reservationService.getBookingSummary(postgresUser.getId());
     }
 
+    private User getAuthenticatedUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new IllegalArgumentException("User is not authenticated !");
+        }
 
+        String email = authentication.getName();
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("User doesnt exist !"));
+    }
 }

@@ -2,22 +2,24 @@ package com.itsmartsystems.bookyourseat.service;
 
 import com.itsmartsystems.bookyourseat.dto.RoutesOption;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
-
-import org.springframework.http.HttpHeaders;
+import org.springframework.web.client.RestClient;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Service
 public class TrafficService {
 
+    private static final Set<String> VALID_TRAVEL_MODES = Set.of(
+            "DRIVE", "WALK", "BICYCLE", "TRANSIT", "TWO_WHEELER");
+    private static final Set<String> MODES_SUPPORTING_ROUTING_PREFERENCE = Set.of(
+            "DRIVE", "TWO_WHEELER");
+    private static final Set<String> MODES_SUPPORTING_ALTERNATIVE_ROUTES = Set.of(
+            "DRIVE", "WALK", "BICYCLE", "TWO_WHEELER");
 
     // coordonatele firmei
     private static final double latDest = 44.4485;
@@ -29,15 +31,18 @@ public class TrafficService {
     @Value("${google.maps.routes.url}")
     private String mapsURL;
 
-    private final RestTemplate restTemplate ;
+    private final RestClient restClient ;
 
 
-    public TrafficService(RestTemplate restTemplate)
+    public TrafficService(RestClient restClient)
     {
-        this.restTemplate = restTemplate;
+        this.restClient = restClient;
     }
 
-    public List<RoutesOption> getTrafficRoutes(double latOrigin, double longOrigin) {
+    public List<RoutesOption> getTrafficRoutes(double latOrigin, double longOrigin , String metodaDeplasare) {
+        String travelMode = VALID_TRAVEL_MODES.contains(metodaDeplasare)
+                ? metodaDeplasare
+                : "DRIVE";
         // am creat structura map urilor pentru json - > origin
         /*
         "origin":{
@@ -81,25 +86,30 @@ public class TrafficService {
         HashMap<String,Object> requestBody = new HashMap<>();
         requestBody.put("origin" , origin);
         requestBody.put("destination" , originDest);
-        requestBody.put("travelMode" , "DRIVE");
-        requestBody.put("routingPreference", "TRAFFIC_AWARE");
-        requestBody.put("computeAlternativeRoutes", true );
+        requestBody.put("travelMode" , travelMode);
+        if (MODES_SUPPORTING_ROUTING_PREFERENCE.contains(travelMode)) {
+            requestBody.put("routingPreference", "TRAFFIC_AWARE");
+        }
+        if (MODES_SUPPORTING_ALTERNATIVE_ROUTES.contains(travelMode)) {
+            requestBody.put("computeAlternativeRoutes", true);
+        }
 
-        // HEADERS
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("X-Goog-Api-Key" , apiKey);
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.set("X-Goog-FieldMask", "routes.duration,routes.distanceMeters");
-
-        // combinam REQUEST + HEADERS intr un ENTITY
-        HttpEntity< Map<String, Object>> entity = new HttpEntity<>(requestBody , headers);
-
-        // Trimitem cererea
-        ResponseEntity<Map> cerere = restTemplate.postForEntity(mapsURL, entity , Map.class);
+        // Trimitem cererea (HEADERS + BODY, direct in lant, cu RestClient)
+        Map<String, Object> response = restClient.post()
+                .uri(mapsURL)
+                .header("X-Goog-Api-Key", apiKey)
+                .header("X-Goog-FieldMask", "routes.duration,routes.distanceMeters")
+                .contentType(org.springframework.http.MediaType.APPLICATION_JSON)
+                .body(requestBody)
+                .retrieve()
+                .body(Map.class);
 
         // Primim raspunsul
-        Map<String , Object> response = cerere.getBody();
         List<Map<String, Object>> routes = (List<Map<String, Object>>) response.get("routes");
+
+        if (routes == null) {
+            return new ArrayList<>();
+        }
 
 
         // creez o lista care sa contina toate rutele
@@ -115,15 +125,4 @@ public class TrafficService {
         }
         return result ;
     }
-
-
-
-
-
-
-
-
-
-
-
 }

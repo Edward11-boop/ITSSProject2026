@@ -1,53 +1,24 @@
 package com.itsmartsystems.bookyourseat.dto;
 
-import com.itsmartsystems.bookyourseat.model.Rezervare;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-
 import java.time.LocalDateTime;
 
 public class ReservationRequest {
-    @NotNull(message = "Must not be unchecked !")
-    private Rezervare.TipRezervare bookingType;
+    private String roomCode;
+    private String seatCode;
+    private LocalDateTime start;
+    private LocalDateTime end;
+    private Integer recurrence;
 
-    @NotNull(message = "Start time is unchecked")
-    private LocalDateTime startTime ;
+    public ReservationRequest() {}
 
-    @NotNull(message = "End time is unchecked")
-    private LocalDateTime endTime ;
-
-    @NotBlank(message = "Space is unchecked")
-    private String spaceId;
-
-    private String seatId; // seat is optional cause you can choose between a SEAT and a ROOM
-
-    public Rezervare.TipRezervare getBookingType() {
-        return bookingType;
-    }
-
-    public LocalDateTime getStartTime() {
-        return startTime;
-    }
-
-    public LocalDateTime getEndTime() {
-        return endTime;
-    }
-
-    public String getSpaceId() {
-        return spaceId;
-    }
-
-    public String getSeatId() {
-        return seatId;
-    }
-
-    public ReservationRequest(Rezervare.TipRezervare bookingType, LocalDateTime startTime, LocalDateTime endTime, String spaceId, String seatId) {
-        this.bookingType = bookingType;
-        this.startTime = startTime;
-        this.endTime = endTime;
-        this.spaceId = spaceId;
-        this.seatId = seatId;
-    }
-
-
+    public String getRoomCode() { return roomCode; }
+    public void setRoomCode(String roomCode) { this.roomCode = roomCode; }
+    public String getSeatCode() { return seatCode; }
+    public void setSeatCode(String seatCode) { this.seatCode = seatCode; }
+    public LocalDateTime getStart() { return start; }
+    public void setStart(LocalDateTime start) { this.start = start; }
+    public LocalDateTime getEnd() { return end; }
+    public void setEnd(LocalDateTime end) { this.end = end; }
+    public Integer getRecurrence() { return recurrence; }
+    public void setRecurrence(Integer recurrence) { this.recurrence = recurrence; }
 }

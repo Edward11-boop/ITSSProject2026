@@ -5,7 +5,6 @@ import com.itsmartsystems.bookyourseat.service.AuthService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
-import jakarta.mail.MessagingException;
 
 @RestController
 public class AuthController {
@@ -28,13 +27,14 @@ public class AuthController {
     @PostMapping("/login")
     public String login(@Valid @RequestBody LoginRequest request)
     {
-        boolean mustChangePassword = authService.login(request);
-        if(mustChangePassword) {
-            return "Password must be changed !";
-        }
-        else {
-            return "Logged successfully !";
-        }
+        authService.login(request);
+        return "Logged successfully !";
+    }
+
+    @PostMapping("/forgot-password")
+    public String requestPasswordReset(@Valid @RequestBody PasswordResetEmailRequest request) {
+        authService.requestPasswordReset(request);
+        return "Daca exista un cont asociat acestei adrese, vei primi instructiunile de resetare.";
     }
 
     @PostMapping("/logout")
@@ -43,29 +43,24 @@ public class AuthController {
         return "Logged out successfully!";
     }
 
-    @PutMapping("/change-password")
-    public String changePassword( @Valid @RequestBody ChangePasswordRequest request)
-    {
-        authService.changePassword(request);
-        return "Password has been successfully changed !";
-    }
-
-    @PostMapping("/forgot-password")
-    public String forgotPassword(@Valid @RequestBody EmailRequest emailRequest) throws MessagingException{
-        authService.emailRequestforChanging(emailRequest);
-        return "If the email exists you'll receive an email to change the password !";
-    }
-
-    @PostMapping("/reset-password")
-    public String resetPassword(@Valid @RequestBody ChangeNewPasswordRequest request){
-        authService.forgotPassword(request);
-        return "Successfully changing the password , next time note it ! :))" ;
-    }
-
     @GetMapping("/me")
-    public UserDetails getMe()
-    {
+    public UserDetails getMe() {
         return authService.UserDet();
     }
 
+    @PutMapping("/me/phone")
+    public UserDetails updatePhone(@Valid @RequestBody UpdatePhoneRequest request) {
+        return authService.updateCurrentUserPhone(request);
+    }
+
+    @PutMapping("/me/password")
+    public String updatePassword(@Valid @RequestBody UpdateCurrentPasswordRequest request) {
+        authService.updateCurrentUserPassword(request);
+        return "Password has been successfully changed!";
+    }
+
+    @GetMapping("/me/reservations")
+    public BookingSummaryResponse getMyReservations() {
+        return authService.getCurrentUserBookingSummary();
+    }
 }

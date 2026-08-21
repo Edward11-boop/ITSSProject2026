@@ -22,7 +22,8 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/register", "/login" , "/change-password" , "/forgot-password" ,"/reset-password" , "/traffic-routes" , "/weather-test" ,"/recommendation","/me").permitAll()
+                        .requestMatchers("/register", "/login", "/forgot-password", "/traffic-routes", "/weather-test", "/recommendation", "/route-url").permitAll()
+                        .requestMatchers("/hr/**").hasAnyAuthority("CEO", "MANAGER")
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
@@ -36,7 +37,7 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowedOrigins(List.of("http://localhost:5173"));
-        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);
 

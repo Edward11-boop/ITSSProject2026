@@ -2,12 +2,12 @@ package com.itsmartsystems.bookyourseat.controller;
 
 import com.itsmartsystems.bookyourseat.dto.RoutesOption;
 import com.itsmartsystems.bookyourseat.dto.WeatherInfo;
-import com.itsmartsystems.bookyourseat.model.Rezervare;
 import com.itsmartsystems.bookyourseat.service.AiAssistantService;
-import com.itsmartsystems.bookyourseat.service.AprobareRezervareService;
 import com.itsmartsystems.bookyourseat.service.TrafficService;
 import com.itsmartsystems.bookyourseat.service.WeatherService;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -18,30 +18,16 @@ public class TrafficController {
     private final TrafficService trafficService;
     private final WeatherService weatherService;
     private final AiAssistantService aiAssistantService;
-    private final AprobareRezervareService aprobareRezervareService;
 
-    public TrafficController(TrafficService trafficService, WeatherService weatherService, AiAssistantService aiAssistantService, AprobareRezervareService aprobareRezervareService) {
+    public TrafficController(TrafficService trafficService, WeatherService weatherService, AiAssistantService aiAssistantService) {
         this.trafficService = trafficService;
         this.weatherService = weatherService;
         this.aiAssistantService = aiAssistantService;
-        this.aprobareRezervareService = aprobareRezervareService;
-    }
-
-    public TrafficService getTrafficService() {
-        return trafficService;
-    }
-
-    public WeatherService getWeatherService() {
-        return weatherService;
-    }
-
-    public AiAssistantService getAiAssistantService() {
-        return aiAssistantService;
     }
 
     @GetMapping("/traffic-routes")
-    public List<RoutesOption> getRoutes(@RequestParam double lat, @RequestParam double lng) {
-        return trafficService.getTrafficRoutes(lat, lng);
+    public List<RoutesOption> getRoutes(@RequestParam double lat, @RequestParam double lng, @RequestParam(defaultValue = "DRIVE") String metodaDeplasare) {
+        return trafficService.getTrafficRoutes(lat, lng, metodaDeplasare);
     }
 
     @GetMapping("/weather-test")
@@ -51,13 +37,15 @@ public class TrafficController {
     }
 
     @GetMapping("/recommendation")
-    public String getRecommendation(@RequestParam double lat, @RequestParam double lng, @RequestParam String targetHour) {
+    public String getRecommendation(@RequestParam double lat, @RequestParam double lng, @RequestParam String targetHour , @RequestParam String metodaDeplasare) {
         LocalDateTime dateTime = LocalDateTime.parse(targetHour);
-        return aiAssistantService.getRecommendation(lat, lng, dateTime);
+        return aiAssistantService.getRecommendation(lat, lng, dateTime , metodaDeplasare);
     }
 
-    @PutMapping("/rezervari/{id}/aproba")
-    public Rezervare aprobaRezervare(@PathVariable String id) {
-        return aprobareRezervareService.aprobaRezervare(id);
+    @GetMapping("/route-url")
+    public String getRouteUrl(@RequestParam double lat , @RequestParam double lng , @RequestParam String targetHour , @RequestParam String metodaDeplasare)
+    {
+        LocalDateTime dateTime = LocalDateTime.parse(targetHour);
+        return aiAssistantService.createURL(lat , lng , dateTime , metodaDeplasare);
     }
 }
